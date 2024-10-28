@@ -59,9 +59,11 @@ spring:
           github:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
-#          kakao:
-#            client-id: ${REST_API}
-#            redirect-uri: ${REDIRECT_URL}
+kakao:
+  key:
+    client-id: ${KAKAO_REST_API}
+    redirect-url: ${KAKAO_REDIRECT_URL}
+
 ---
 app:
   auth:
