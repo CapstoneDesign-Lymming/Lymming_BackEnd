@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 cloud:
   aws:
@@ -50,22 +50,22 @@ spring:
   main:
     web-application-type: servlet
 
----
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: ${GITHUB_CLIENT_ID}
-            client-secret: ${GITHUB_CLIENT_SECRET}
-kakao:
-  key:
-    client-id: ${KAKAO_REST_API}
-    redirect-url: ${KAKAO_REDIRECT_URL}
-
----
-app:
-  auth:
-    token:
-      refresh-cookie-key: ${REFRESH_COOKIE_KEY}
+#---
+#spring:
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          github:
+#            client-id: ${GITHUB_CLIENT_ID}
+#            client-secret: ${GITHUB_CLIENT_SECRET}
+#kakao:
+#  key:
+#    client-id: ${KAKAO_REST_API}
+#    redirect-url: ${KAKAO_REDIRECT_URL}
+#
+#---
+#app:
+#  auth:
+#    token:
+#      refresh-cookie-key: ${REFRESH_COOKIE_KEY}
