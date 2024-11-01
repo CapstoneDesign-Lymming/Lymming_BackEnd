@@ -1,15 +1,11 @@
 package com.supernova.lymming.chatting.controller;
 
-import com.supernova.lymming.chatting.domain.ChatRoomDto;
-import com.supernova.lymming.chatting.domain.UserChatRooms;
-import com.supernova.lymming.chatting.repository.ChatRoomRepository;
+import com.supernova.lymming.chatting.dto.ChatRoomDto;
 import com.supernova.lymming.chatting.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")

@@ -1,17 +1,13 @@
 package com.supernova.lymming.chatting.service;
 
-import com.supernova.lymming.chatting.domain.ChatRoomDto;
+import com.supernova.lymming.chatting.dto.ChatRoomDto;
 import com.supernova.lymming.chatting.domain.UserChatRooms;
 import com.supernova.lymming.chatting.repository.ChatRoomRepository;
 import com.supernova.lymming.chatting.repository.UserChatRoomsRepository;
-import com.supernova.lymming.kakao.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +39,7 @@ public class ChatRoomService {
             return new ChatRoomDto(
                     chatRoom.getRoomId(),
                     chatRoom.getUserId()
+
             );
         }else{
             System.out.println(("채팅방없음"));

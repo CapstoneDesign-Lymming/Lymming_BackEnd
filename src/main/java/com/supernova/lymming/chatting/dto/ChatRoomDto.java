@@ -1,8 +1,6 @@
-package com.supernova.lymming.chatting.domain;
+package com.supernova.lymming.chatting.dto;
 
 import lombok.Data;
-
-import javax.persistence.*;
 
 @Data
 
