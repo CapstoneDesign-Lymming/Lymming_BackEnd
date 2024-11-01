@@ -34,9 +34,11 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 // 회원가입, 로그인 관련 API는 Jwt 인증 없이 접근 가능
                 .requestMatchers(new AntPathRequestMatcher("/api/kakao/login")).permitAll()
+
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
+
                 // 나머지 모든 API는 Jwt 인증 필요
-                .anyRequest().authenticated()
+                //.anyRequest().authenticated()
                 .and()
                 // Http 요청에 대한 Jwt 유효성 선 검사
                 .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
@@ -47,10 +49,12 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOriginPattern("*");
         configuration.addAllowedOrigin("http://localhost:5173"); // 클라이언트 도메인 허용
         configuration.addAllowedOrigin("http://localhost:5174"); // 클라이언트 도메인 허용
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
+        configuration.setAllowCredentials(true); // 자격 증명 허용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
