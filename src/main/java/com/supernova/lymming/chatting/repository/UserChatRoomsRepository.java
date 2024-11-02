@@ -10,7 +10,7 @@ import java.util.List;
 
 // user- chat 관계
 
-@Repository
-public interface UserChatRoomsRepository extends JpaRepository<UserChatRooms, Long> {
-    List<UserChatRooms> findByUserId(String userId);
-}
+//@Repository
+//public interface UserChatRoomsRepository extends JpaRepository<UserChatRooms, Long> {
+//    List<UserChatRooms> findByUserId(String userId);
+//}

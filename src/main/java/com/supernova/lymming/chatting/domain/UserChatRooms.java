@@ -18,19 +18,24 @@ public class UserChatRooms implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "user_id1")
+    private String userId1;
+    @Column(name = "user_id2")
+    private String userId2;
 
     @Column(name = "room_id")
     private String roomId;
+
 
     // 기본 생성자
     public UserChatRooms() {}
 
 
-    public UserChatRooms(String roomId,String userId) {
+    public UserChatRooms(String roomId,String userId1, String userId2) {
         this.roomId = roomId;
-        this.userId = userId;
+        this.userId1 = userId1;
+        this.userId2 = userId2;
+
 
     }
 
