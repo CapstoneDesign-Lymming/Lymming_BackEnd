@@ -24,8 +24,6 @@ public class ChatRoomController {
         String userId1 = request.get("userId1");
         String userId2 = request.get("userId2");
 
-        // 요청 데이터 로그 출력
-        System.out.println("Received roomId: " + roomId + ", userId: " + userId1);
 
         ChatRoomDto chatRoom = chatRoomService.createChatRoom(roomId, userId1,userId2);
         return ResponseEntity.ok(chatRoom);
@@ -45,10 +43,10 @@ public class ChatRoomController {
 
 
     @GetMapping("/chat/chatrooms")
-    public List<UserChatRooms> getChatroomsByUserId(@RequestParam String userId) {
+    public List<ChatRoomDto> getChatroomsByUserId(@RequestParam String userId) {
 
-        List<UserChatRooms> chatRooms = chatRoomService.getChatroomsByUserId(userId);
-        System.out.println("방 개수: " + chatRooms.size());
+        List<ChatRoomDto> chatRooms = chatRoomService.getChatroomsByUserId(userId);
+
         return chatRooms;
     }
 
