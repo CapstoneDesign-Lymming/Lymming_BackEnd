@@ -1,53 +1,77 @@
 package com.supernova.lymming.github.service;
 
-import com.supernova.lymming.github.auth.CustomUserDetails;
-import com.supernova.lymming.github.jwt.JwtTokenProvider;
-import com.supernova.lymming.github.repository.UserRepository;
-import com.supernova.lymming.github.util.CookieUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import com.supernova.lymming.github.dto.GithubUser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Date;
+import java.util.Map;
 
 @Service
-@Log4j2
-@RequiredArgsConstructor
 public class AuthService {
 
-    @Value("${REFRESH_COOKIE_KEY}")
-    private String cookieKey;
+    private final RestTemplate restTemplate;
 
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    @Value("${JWT_SECRET_KEY}") // 적절한 비밀 키 사용
+    private String secretKey;
 
+    private final long EXPIRATION_TIME = 86400000; // JWT 만료 시간 (예: 1일)
 
-    public String refreshToken(HttpServletRequest request, HttpServletResponse response, String oldAccessToken) {
-        String oldRefreshToken = CookieUtil.getCookie(request, cookieKey)
-                .map(Cookie::getValue)
-                .orElseThrow(() -> new RuntimeException("refreshToken이 없습니다."));
+    public AuthService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
-        if (!jwtTokenProvider.validateToken(oldRefreshToken)) {
-            throw new RuntimeException("유효하지 않은 Refresh Token입니다.");
-        }
+    public ResponseEntity<?> validateToken(String token) {
+        String url = "https://api.github.com/user"; // GitHub API 엔드포인트
 
-        Authentication authentication = jwtTokenProvider.getAuthentication(oldAccessToken);
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
 
-        Long id = (user.getUser().getUserId());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+    }
 
-        String savedToken = userRepository.getRefreshToken(id);
+    public Map<String, Object> getUserInfo(String token) {
+        String url = "https://api.github.com/user"; // GitHub API 엔드포인트
 
-        if (!savedToken.equals(oldRefreshToken)) {
-            throw new RuntimeException("Refresh Token이 일치하지 않습니다.");
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
 
-        String accessToken = jwtTokenProvider.createAccessToken(authentication);
-        jwtTokenProvider.createRefreshToken(authentication, response);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
 
-        return accessToken;
+        // GitHub에서 사용자 정보를 반환
+        return response.getBody();
+    }
+
+    public String createJwt(Map<String, Object> userInfo) {
+        String username = (String) userInfo.get("login"); // GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
+        // 추가적인 사용자 정보 처리
+
+        return Jwts.builder()
+                .setSubject(username) // JWT의 주체 설정
+                .setIssuedAt(new Date()) // 발급 시간 설정
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
+                .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
+                .compact(); // JWT 생성
+    }
+
+    public GithubUser getGitHubUser(String accessToken) {
+        String url = "https://api.github.com/user"; // GitHub API 엔드포인트
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<GithubUser> response = restTemplate.exchange(url, HttpMethod.GET, entity, GithubUser.class);
+
+        return response.getBody(); // GithubUser 객체를 반환
     }
 }

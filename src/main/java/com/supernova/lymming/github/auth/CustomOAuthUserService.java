@@ -2,6 +2,7 @@ package com.supernova.lymming.github.auth;
 
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.ModelAndView;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class CustomOAuthUserService extends DefaultOAuth2UserService {
@@ -18,6 +20,8 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
+        log.info("loadUser Start : " + oAuth2UserRequest.toString());
+
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
         GithubOAuth2UserInfo userInfo = new GithubOAuth2UserInfo(oAuth2User.getAttributes());
 

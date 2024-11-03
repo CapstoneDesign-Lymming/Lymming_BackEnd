@@ -9,6 +9,7 @@ import com.supernova.lymming.github.jwt.JwtAuthenticationFilter;
 import com.supernova.lymming.github.jwt.JwtTokenProvider;
 import com.supernova.lymming.github.repository.CookieAuthorizationRequestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,9 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @RequiredArgsConstructor
 @EnableWebSecurity
+@Log4j2
 public class WebSecurityConfigure {
 
-    private final CustomOAuthUserService customOAuthUserService;
+    private final CustomOAuthUserService customOAuth2UserService;
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
@@ -29,7 +31,9 @@ public class WebSecurityConfigure {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        log.info("Configuring security filter chain...");
+
         http
                 .cors()
                 .and()
@@ -39,25 +43,32 @@ public class WebSecurityConfigure {
                 .rememberMe().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        //oauth2Login
+        log.info("Disabled default security features: httpBasic, csrf, formLogin, rememberMe");
+
+        // oauth2Login 설정
         http.oauth2Login()
-                .authorizationEndpoint().baseUri("/api/login/oauth2/code")  // 소셜 로그인 url
-                .authorizationRequestRepository(cookieAuthorizationRequestRepository)  // 인증 요청을 cookie 에 저장
+                .authorizationEndpoint().baseUri("/api/login/oauth2/code")
+                .authorizationRequestRepository(cookieAuthorizationRequestRepository)
                 .and()
-                .redirectionEndpoint().baseUri("/api/login/oauth/redirect/github")  // 소셜 인증 후 redirect url
+                .redirectionEndpoint().baseUri("/api/login/oauth2/redirect/github")
                 .and()
-//                userService()는 OAuth2 인증 과정에서 Authentication 생성에 필요한 OAuth2User 를 반환하는 클래스를 지정한다.
-                .userInfoEndpoint().userService(customOAuthUserService)  // 회원 정보 처리
+                .userInfoEndpoint().userService(customOAuth2UserService)
                 .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler);
+                .successHandler(oAuth2AuthenticationSuccessHandler) // 성공 핸들러 등록
+                .failureHandler(oAuth2AuthenticationFailureHandler); // 실패 핸들러 등록
+
+        log.info("OAuth2 login configured with success and failure handlers");
 
         http.exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler);
 
-        //jwt filter 설정
+        log.info("Configured exception handling with custom entry point and access denied handler");
+
+        // JWT 필터 설정
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        log.info("Added JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter");
 
         return http.build();
     }

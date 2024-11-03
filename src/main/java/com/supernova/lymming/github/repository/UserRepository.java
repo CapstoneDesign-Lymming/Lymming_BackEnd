@@ -19,6 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     void updateRefreshToken(@Param("userId") Long userId, @Param("token") String refreshToken);
 
-    @Query("Select u.refreshToken FROM User u WHERE u.userId=:userId") // :userId로 수정
-    String getRefreshToken(@Param("userId") Long userId); // 매개변수 타입도 Long으로 유지
+    @Query("Select u.refreshToken FROM User u WHERE u.userId=:id")
+    String getRefreshTokenById(@Param("id") Long id);
 }
