@@ -33,7 +33,7 @@ public class JwtTokenProvider {
 
     private final UserRepository userRepository;
 
-    public JwtTokenProvider(@Value("${JWT_SECRET_KEY}")String secretKey, @Value("${REFRESH_COOKIE_KEY}")String cookieKey, UserRepository userRepository) {
+    public JwtTokenProvider(@Value("${custom.jwt.secretKey}")String secretKey, @Value("${app.auth.token.refresh-cookie-key}")String cookieKey, UserRepository userRepository) {
         this.SECRET_KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         this.COOKIE_REFRESH_TOKEN_KEY = cookieKey;
         this.userRepository = userRepository;
