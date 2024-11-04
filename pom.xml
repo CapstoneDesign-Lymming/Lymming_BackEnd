@@ -38,7 +38,7 @@
 			<artifactId>lymming</artifactId>
 			<version>1.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/com.supernova/lymming/1.0.0/lymming-1.0.0-SNAPSHOT.jar</systemPath>
+			<systemPath>${project.basedir}/libs/com.supernova/lymming/1.0.0/lymming-1.0-SNAPSHOT.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -271,7 +271,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>com.supernova.lymmingtestback.LymmingtestbackAllication</mainClass>
+									<mainClass>com.supernova.lymming.LymmingApplication</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
