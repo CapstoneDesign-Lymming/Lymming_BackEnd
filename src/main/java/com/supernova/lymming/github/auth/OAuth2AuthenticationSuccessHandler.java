@@ -28,7 +28,7 @@ import static com.supernova.lymming.github.repository.CookieAuthorizationRequest
 @Log4j2
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Value("${GITHUB_REDIRECT_URI}")
+    @Value("${spring.security.oauth2.client.registration.github.redirect-uri}")
     private String redirectUri;
     private final JwtTokenProvider tokenProvider;
     private final CookieAuthorizationRequestRepository authorizationRequestRepository;
