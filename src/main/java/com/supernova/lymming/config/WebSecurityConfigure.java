@@ -1,4 +1,4 @@
-package com.supernova.lymming.github.config;
+package com.supernova.lymming.config;
 
 import com.supernova.lymming.github.auth.CustomOAuthUserService;
 import com.supernova.lymming.github.auth.OAuth2AuthenticationFailureHandler;
