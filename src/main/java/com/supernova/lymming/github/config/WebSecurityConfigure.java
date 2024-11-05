@@ -45,7 +45,7 @@ public class WebSecurityConfigure {
                 .and()
                 .httpBasic().disable() // 기본 인증을 비활성화 .
                 .authorizeHttpRequests()
-                    .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .and()
                 .csrf().disable() // CSRF 공격 방지를 위한 보호 기능 비활성
                 .formLogin().disable() // 기본 제공되는 폼 로그인 기능을 비활성화
@@ -79,7 +79,7 @@ public class WebSecurityConfigure {
                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 // OAuth2 로그인 성공 후 처리할 핸들러 설정
                 .failureHandler(oAuth2AuthenticationFailureHandler);
-                // 실패 후 처리할 핸들러 설정
+        // 실패 후 처리할 핸들러 설정
 
         log.info("OAuth2 login configured with success and failure handlers");
 
@@ -88,7 +88,7 @@ public class WebSecurityConfigure {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 // 인증에 실패햇을 시 처리할 엔트리 포인트 설정
                 .accessDeniedHandler(jwtAccessDeniedHandler);
-                // 권한 거부 시 처리할 핸들러 설정
+        // 권한 거부 시 처리할 핸들러 설정
 
         log.info("Configured exception handling with custom entry point and access denied handler");
 
