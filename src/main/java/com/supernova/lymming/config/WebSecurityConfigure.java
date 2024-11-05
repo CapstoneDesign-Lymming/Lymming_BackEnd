@@ -1,4 +1,4 @@
-package com.supernova.lymming.github.config;
+package com.supernova.lymming.config;
 
 import com.supernova.lymming.github.auth.CustomOAuthUserService;
 import com.supernova.lymming.github.auth.OAuth2AuthenticationFailureHandler;
@@ -44,9 +44,9 @@ public class WebSecurityConfigure {
                 .cors() // Cors 설정 활성화
                 .and()
                 .httpBasic().disable() // 기본 인증을 비활성화 .
-//                .authorizeHttpRequests()
-//                    .antMatchers("필요한 api").permitAll()
-//                .and()
+                .authorizeHttpRequests()
+                    .antMatchers("/**").permitAll()
+                .and()
                 .csrf().disable() // CSRF 공격 방지를 위한 보호 기능 비활성
                 .formLogin().disable() // 기본 제공되는 폼 로그인 기능을 비활성화
                 .rememberMe().disable() // 기억하기 기능 비활성화
