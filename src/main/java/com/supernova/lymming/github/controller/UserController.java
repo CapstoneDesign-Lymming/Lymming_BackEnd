@@ -22,21 +22,32 @@ public class UserController {
 
     private final UserRepository userRepository;
 
-    @GetMapping("/users/me")
+    @GetMapping("/api/auth/current-user")
     @PreAuthorize("hasRole('USER')")
+    // 메소드 진입을 위해 USER 역할 필요
     public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
+        // 현재 인증된 사용자의 정보를 가져온다.
+        // CustomUserDetails는 사용자의 정보를 포함하고 있는 클래스
+
         Long userId = user.getUserId();
+        // user 테이블의 getUserID() 메소드를 호출
         return userRepository.findById(userId)
+                // userID를 통해 사용자 정보를 조회하고 없으면 예외 발생
                 .orElseThrow(() -> new IllegalStateException("등록된 유저가 아닙니다."));
     }
 
-    @PutMapping("/users/me")
+    @PutMapping("/api/auth/sign-up")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<User> updateUser(@AuthenticationPrincipal CustomUserDetails user,
                                            @RequestBody SignupDto userUpdateDto) {
+        // 현재 인증된 사용자의 정보를 CustomUserDetails 객체로 주입받아 사용자 정보에 접근 가능
+
         Long userId = user.getUserId();
+        // 현재 인증 된 사용자의 ID를 가져온다.
+
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("등록된 유저가 아닙니다."));
+        // userID를 사용해 DB에서 기존 사용자인지 검사한다,
 
         // 필드 업데이트 - null이 아닌 경우에만 업데이트
         if (userUpdateDto.getNickname() != null) {

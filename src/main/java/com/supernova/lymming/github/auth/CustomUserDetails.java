@@ -15,8 +15,10 @@ import java.util.Map;
 
 @Getter
 public class CustomUserDetails implements UserDetails, OAuth2User {
-    private Long userId;
-    private String githubId;
+    // Security에서 OAuth2 사용자 정보를 관리하기 위한 클래스
+
+    private Long userId; // DB에 있는 고유한 사용자ID
+    private String githubId; // 깃허브에서 가져온 사용자 ID
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
@@ -27,6 +29,8 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     }
 
     public static CustomUserDetails create(User user) {
+        // User rorcpfmf rkwlrh CustomUserDetails 객체 생성하고 USER 권한 부여
+
         List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new CustomUserDetails(
