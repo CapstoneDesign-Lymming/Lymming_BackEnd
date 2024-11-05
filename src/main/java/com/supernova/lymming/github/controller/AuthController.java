@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class AuthController {
 
     // GitHub 액세스 토큰을 사용하여 JWT 생성
     @PostMapping("/login/github")
+    @CrossOrigin(origins = "https://lymming-back.link", maxAge = 3600)
     public ResponseEntity<?> loginWithGithub(@RequestBody Map<String, String> request) {
         log.info("GitHub login request received.");
 
@@ -53,6 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
+    @CrossOrigin(origins = "https://lymming-back.link", maxAge = 3600)
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         log.info("Refresh token request received.");
 

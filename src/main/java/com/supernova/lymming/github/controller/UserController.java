@@ -10,10 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
@@ -23,6 +20,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping("/users/me")
+    @CrossOrigin(origins = "https://lymming-back.link", maxAge = 3600)
     @PreAuthorize("hasRole('USER')")
     public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
         Long userId = user.getUserId();
