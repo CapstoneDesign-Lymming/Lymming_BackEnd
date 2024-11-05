@@ -15,7 +15,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id") //이거 테이블 user_id로 바꿔야함
     private Long userId;
 
     private Long uid;

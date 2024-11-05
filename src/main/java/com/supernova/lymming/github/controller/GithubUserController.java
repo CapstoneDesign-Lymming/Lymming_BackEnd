@@ -10,10 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
@@ -24,6 +21,7 @@ public class GithubUserController {
 
     @GetMapping("/api/auth/current-user")
     @PreAuthorize("hasRole('USER')")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     // 메소드 진입을 위해 USER 역할 필요
     public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
         // 현재 인증된 사용자의 정보를 가져온다.
