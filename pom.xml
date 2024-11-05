@@ -37,7 +37,7 @@
 			<artifactId>lymming</artifactId>
 			<version>1.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/com.supernova/lymming/1.0.0/lymming-1.0.0-SNAPSHOT.jar</systemPath>
+			<systemPath>${project.basedir}/libs/com.supernova/lymming/1.0.0/lymming-1.0-SNAPSHOT.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -164,6 +164,12 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
 	</dependencies>
 

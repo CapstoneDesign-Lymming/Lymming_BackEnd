@@ -36,8 +36,8 @@ public class KakaoService {
     private final KakaoUserRepository kakaoUserRepository;
     private final GithubJwtTokenProvider githubJwtTokenProvider;
 
-    // 클라이언트 id 리다이렉트 uri를 환경변수에서 가져오기
     @Value("${kakao.key.client-id}")
+    // 클라이언트 id 리다이렉트 uri를 환경변수에서 가져오기
     private String clientId;
     @Value("${kakao.key.redirect-url}")
     private String redirectUrl;
@@ -65,121 +65,132 @@ public class KakaoService {
 
         OAuth2User oAuth2User = (OAuth2User) userInfo.getPrincipal();
         // 사용자 정보 불러오기
-        Long uid = Long.valueOf(oAuth2User.getAttributes().get("uid").toString());
+
+        Long uid = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
         String nickName = oAuth2User.getAttributes().get("nickname").toString();
 
-    // 닉네임으로 사용자 조회시 사욪가가 db에 있으면 사용자 정보 없으면 null
-    KakaoUser kakaoUser = kakaoUserRepository.findByNickname(nickName).orElse(null);
+        // 닉네임으로 사용자 조회시 사욪가가 db에 있으면 사용자 정보 없으면 null
+        KakaoUser kakaoUser = kakaoUserRepository.findByNickname(nickName).orElse(null);
+        System.out.println("User ID: " + uid);
+        System.out.println("Nickname: " + nickName);
 
+        // 사용자가 있을경우 토큰 생성 없을경우 사용자 추가하고 토큰 생성
+        if (kakaoUser == null) {
+            kakaoUser = new KakaoUser();
+            kakaoUser.setUid(uid);
+            kakaoUser.setNickname(nickName);
+            kakaoUser.setLoginType("kakao");
+            kakaoUserRepository.save(kakaoUser);
+        }
 
-    // 사용자가 있을경우 토큰 생성 없을경우 사용자 추가하고 토큰 생성
-        if(kakaoUser ==null)
+        String tokens = githubJwtTokenProvider.createAccessToken(userInfo);
+        // 정상적으로 id와 nickname을 추출한 후 사용할 수 있습니다.
 
-    {
-        kakaoUser = new KakaoUser();
-        kakaoUser.setUid(uid);
-        kakaoUser.setNickname(nickName);
-        kakaoUser.setLoginType("kakao");
-        kakaoUserRepository.save(kakaoUser);
+        return new LoginResponse(uid, nickName, tokens);
     }
 
-    String tokens = githubJwtTokenProvider.createAccessToken(userInfo);
-        return new LoginResponse(uid,nickName,tokens);
-}
+    private Authentication getKakaoUserInfo(String accessToken) {
+        HashMap<String, Object> userInfo = new HashMap<>();
 
-// access token을 사용해 사용자 정보를 불러온다
-private Authentication  getKakaoUserInfo(String accessToken) {
-    HashMap<String, Object> userInfo = new HashMap<String, Object>();
+        // HTTP Header 생성
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
+        // HTTP 요청 보내기
+        HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.POST,
+                kakaoUserInfoRequest,
+                String.class
+        );
 
-    // HTTP Header 생성
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Bearer " + accessToken);
-    headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        // responseBody에 있는 정보를 꺼냄
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = objectMapper.readTree(responseBody);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error parsing the response from Kakao API");
+        }
 
-    // HTTP 요청 보내기
-    HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
-    RestTemplate rt = new RestTemplate();
-    ResponseEntity<String> response = rt.exchange(
-            "https://kapi.kakao.com/v2/user/me",
-            HttpMethod.POST,
-            kakaoUserInfoRequest,
-            String.class
-    );
+        // 카카오 API에서 'id'와 'nickname'을 가져오기 전에 null 체크
+        JsonNode idNode = jsonNode.get("id");
+        JsonNode propertiesNode = jsonNode.get("properties");
+        if (idNode == null || propertiesNode == null || propertiesNode.get("nickname") == null) {
+            throw new IllegalArgumentException("Kakao user attributes are missing: id or nickname is null.");
+        }
 
-    // responseBody에 있는 정보를 꺼냄
-    String responseBody = response.getBody();
-    ObjectMapper objectMapper = new ObjectMapper();
-    JsonNode jsonNode = null;
-    try {
-        jsonNode = objectMapper.readTree(responseBody);
-    } catch (JsonProcessingException e) {
-        e.printStackTrace();
+        Long id = idNode.asLong();  // id는 직접 가져와 Long으로 변환
+        String nickname = propertiesNode.get("nickname").asText(); // properties 내 nickname
+
+        // userInfo에 id와 nickname을 저장
+        userInfo.put("id", id);
+        userInfo.put("nickname", nickname);
+
+        // OAuth2User 생성 (nickname을 포함)
+        OAuth2User oAuth2User = new DefaultOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                userInfo,
+                "nickname"  // nickname을 기준으로 Principal 결정
+        );
+
+        // Authentication 객체 생성
+        Authentication authentication = new OAuth2AuthenticationToken(
+                oAuth2User,
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                "Kakao"
+        );
+
+        return authentication;
     }
 
-    Long id = jsonNode.get("id").asLong();
-    String nickname = jsonNode.get("properties").get("nickname").asText();
+    // 인가코드를 통해 엑세스 토큰 요청
+    private String getAccessToken(String code, String redirectUri) {
 
-    userInfo.put("id", id);
-    userInfo.put("nickname", nickname);
+        // HTTP Header 생성
+        HttpHeaders headers = new HttpHeaders();
+        // 서버가 데이터를 url 인코딩 방식으로 처리하도록 지정
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-    OAuth2User oAuth2User = new DefaultOAuth2User(
-            Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-            Collections.singletonMap("nickname", nickname),
-            "nickname"
-    );
+        // HTTP Body 생성
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        // 인증타입
+        body.add("grant_type", "authorization_code");
+        body.add("client_id", clientId);
+        body.add("redirect_uri", redirectUri);
+        body.add("code", code);
 
-    Authentication authentication = new OAuth2AuthenticationToken(
-            oAuth2User,
-            Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-            "Kakao"
-    );
+        // HTTP 요청 보내기
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
+        // restful 서비스를 호출할수 있는 템플릿
+        RestTemplate rt = new RestTemplate();
+        // http 요청 수행 (post 요청, http헤더 바디를 string 형식으로 리턴 받는다)
+        ResponseEntity<String> response = rt.exchange(
+                "https://kauth.kakao.com/oauth/token",
+                HttpMethod.POST,
+                kakaoTokenRequest,
+                String.class
+        );
 
-    return authentication;
-}
+        // Http 응답을 access token으로 파싱하기
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = objectMapper.readTree(responseBody);
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
-// 인가코드를 통해 엑세스 토큰 요청
-private String getAccessToken(String code, String redirectUri) {
+        // http body에서 access 토큰을 가져와 문자열 형태로 변환 후 반환
+        return jsonNode.get("access_token").asText(); //토큰 전송
 
-    // HTTP Header 생성
-    HttpHeaders headers = new HttpHeaders();
-    // 서버가 데이터를 url 인코딩 방식으로 처리하도록 지정
-    headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-    // HTTP Body 생성
-    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-    // 인증타입
-    body.add("grant_type", "authorization_code");
-    body.add("client_id", clientId);
-    body.add("redirect_uri", redirectUri);
-    body.add("code", code);
-
-    // HTTP 요청 보내기
-    HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
-    // restful 서비스를 호출할수 있는 템플릿
-    RestTemplate rt = new RestTemplate();
-    // http 요청 수행 (post 요청, http헤더 바디를 string 형식으로 리턴 받는다)
-    ResponseEntity<String> response = rt.exchange(
-            "https://kauth.kakao.com/oauth/token",
-            HttpMethod.POST,
-            kakaoTokenRequest,
-            String.class
-    );
-
-    // Http 응답을 access token으로 파싱하기
-    String responseBody = response.getBody();
-    ObjectMapper objectMapper = new ObjectMapper();
-    JsonNode jsonNode = null;
-    try {
-        jsonNode = objectMapper.readTree(responseBody);
-    } catch (JsonMappingException e) {
-        throw new RuntimeException(e);
-    } catch (JsonProcessingException e) {
-        e.printStackTrace();
     }
-
-    // http body에서 access 토큰을 가져와 문자열 형태로 변환 후 반환
-    return jsonNode.get("access_token").asText(); //토큰 전송
-
-}
 }
