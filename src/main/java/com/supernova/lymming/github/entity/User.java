@@ -18,6 +18,8 @@ public class User {
     @Column(name = "id")
     private Long userId;
 
+    private Long uid;
+
     @Column(name = "login_type")
     @Enumerated(EnumType.STRING)
     private LoginType loginType;

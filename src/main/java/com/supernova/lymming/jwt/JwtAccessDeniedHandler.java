@@ -1,4 +1,4 @@
-package com.supernova.lymming.github.jwt;
+package com.supernova.lymming.jwt;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

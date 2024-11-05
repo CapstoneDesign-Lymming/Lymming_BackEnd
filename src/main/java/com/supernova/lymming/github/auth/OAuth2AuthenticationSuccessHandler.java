@@ -1,7 +1,7 @@
 package com.supernova.lymming.github.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supernova.lymming.github.jwt.JwtTokenProvider;
+import com.supernova.lymming.jwt.GithubJwtTokenProvider;
 import com.supernova.lymming.github.repository.CookieAuthorizationRequestRepository;
 import com.supernova.lymming.github.util.CookieUtil;
 import com.supernova.lymming.github.util.ErrorResponse;
@@ -30,7 +30,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Value("${GITHUB_REDIRECT_URI}")
     private String redirectUri;
-    private final JwtTokenProvider tokenProvider;
+    private final GithubJwtTokenProvider tokenProvider;
     private final CookieAuthorizationRequestRepository authorizationRequestRepository;
 
     @Override

@@ -1,4 +1,4 @@
-package com.supernova.lymming.github.jwt;
+package com.supernova.lymming.jwt;
 
 import com.supernova.lymming.github.auth.CustomUserDetails;
 import com.supernova.lymming.github.repository.UserRepository;
@@ -10,6 +10,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,7 +23,8 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class JwtTokenProvider {
+@ComponentScan
+public class GithubJwtTokenProvider {
 
     private final Key SECRET_KEY;
     private final String COOKIE_REFRESH_TOKEN_KEY;
@@ -31,9 +33,9 @@ public class JwtTokenProvider {
     private final String AUTHORITIES_KEY = "role";
     private final String EMAIL_KEY = "email";
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    public JwtTokenProvider(@Value("${JWT_SECRET_KEY}")String secretKey, @Value("${REFRESH_COOKIE_KEY}")String cookieKey, UserRepository userRepository) {
+    public GithubJwtTokenProvider(@Value("${JWT_SECRET_KEY}")String secretKey, @Value("${REFRESH_COOKIE_KEY}")String cookieKey, UserRepository userRepository) {
         this.SECRET_KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         this.COOKIE_REFRESH_TOKEN_KEY = cookieKey;
         this.userRepository = userRepository;
@@ -102,7 +104,7 @@ public class JwtTokenProvider {
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-        CustomUserDetails principal = new CustomUserDetails(Long.valueOf(claims.getSubject()), claims.get(EMAIL_KEY, String.class), authorities);
+        CustomUserDetails principal = new CustomUserDetails(Long.valueOf(claims.getSubject()), claims.get(EMAIL_KEY, String.class),authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }

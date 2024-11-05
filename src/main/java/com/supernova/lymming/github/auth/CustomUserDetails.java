@@ -22,8 +22,8 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-    public CustomUserDetails(Long id, String githubId,Collection<? extends GrantedAuthority> authorities) {
-        this.userId = id;
+    public CustomUserDetails(Long userId, String githubId,Collection<? extends GrantedAuthority> authorities) {
+        this.userId = userId;
         this.githubId = githubId;
         this.authorities = authorities;
     }

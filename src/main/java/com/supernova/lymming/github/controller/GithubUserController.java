@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class GithubUserController {
 
     private final UserRepository userRepository;
 
