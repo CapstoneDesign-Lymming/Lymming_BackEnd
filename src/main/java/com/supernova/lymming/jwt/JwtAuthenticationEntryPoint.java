@@ -1,4 +1,4 @@
-package com.supernova.lymming.github.jwt;
+package com.supernova.lymming.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
