@@ -47,7 +47,7 @@ public class WebSecurityConfigure {
 
         // oauth2Login 설정
         http.oauth2Login()
-                .authorizationEndpoint().baseUri("/api/login/oauth2/code")
+                .authorizationEndpoint().baseUri("/api/login/oauth2/code/github")
                 .authorizationRequestRepository(cookieAuthorizationRequestRepository)
                 .and()
                 .redirectionEndpoint().baseUri("/api/login/oauth2/redirect/github")
