@@ -63,6 +63,7 @@ public class KakaoService {
         // 닉네임으로 사용자 조회시 사욪가가 db에 있으면 사용자 정보 없으면 null
         User kakaoUser = userRepository.findByNickname(nickName).orElse(null);
 
+
         // 사용자가 있을경우 토큰 생성 없을경우 사용자 추가하고 토큰 생성
         if(kakaoUser == null){
             kakaoUser = new User();
