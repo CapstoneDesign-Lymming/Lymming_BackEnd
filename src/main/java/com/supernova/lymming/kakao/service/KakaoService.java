@@ -65,12 +65,14 @@ public class KakaoService {
 
         OAuth2User oAuth2User = (OAuth2User) userInfo.getPrincipal();
         // 사용자 정보 불러오기
-        Long uid = Long.valueOf(oAuth2User.getAttributes().get("uid").toString());
+
+        Long uid = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
         String nickName = oAuth2User.getAttributes().get("nickname").toString();
 
         // 닉네임으로 사용자 조회시 사욪가가 db에 있으면 사용자 정보 없으면 null
         KakaoUser kakaoUser = kakaoUserRepository.findByNickname(nickName).orElse(null);
-
+        System.out.println("User ID: " + uid);
+        System.out.println("Nickname: " + nickName);
 
         // 사용자가 있을경우 토큰 생성 없을경우 사용자 추가하고 토큰 생성
         if (kakaoUser == null) {
@@ -82,13 +84,13 @@ public class KakaoService {
         }
 
         String tokens = githubJwtTokenProvider.createAccessToken(userInfo);
+        // 정상적으로 id와 nickname을 추출한 후 사용할 수 있습니다.
+
         return new LoginResponse(uid, nickName, tokens);
     }
 
-    // access token을 사용해 사용자 정보를 불러온다
     private Authentication getKakaoUserInfo(String accessToken) {
-        HashMap<String, Object> userInfo = new HashMap<String, Object>();
-
+        HashMap<String, Object> userInfo = new HashMap<>();
 
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -113,20 +115,31 @@ public class KakaoService {
             jsonNode = objectMapper.readTree(responseBody);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error parsing the response from Kakao API");
         }
 
-        Long id = jsonNode.get("id").asLong();
-        String nickname = jsonNode.get("properties").get("nickname").asText();
+        // 카카오 API에서 'id'와 'nickname'을 가져오기 전에 null 체크
+        JsonNode idNode = jsonNode.get("id");
+        JsonNode propertiesNode = jsonNode.get("properties");
+        if (idNode == null || propertiesNode == null || propertiesNode.get("nickname") == null) {
+            throw new IllegalArgumentException("Kakao user attributes are missing: id or nickname is null.");
+        }
 
+        Long id = idNode.asLong();  // id는 직접 가져와 Long으로 변환
+        String nickname = propertiesNode.get("nickname").asText(); // properties 내 nickname
+
+        // userInfo에 id와 nickname을 저장
         userInfo.put("id", id);
         userInfo.put("nickname", nickname);
 
+        // OAuth2User 생성 (nickname을 포함)
         OAuth2User oAuth2User = new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                Collections.singletonMap("nickname", nickname),
-                "nickname"
+                userInfo,
+                "nickname"  // nickname을 기준으로 Principal 결정
         );
 
+        // Authentication 객체 생성
         Authentication authentication = new OAuth2AuthenticationToken(
                 oAuth2User,
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),

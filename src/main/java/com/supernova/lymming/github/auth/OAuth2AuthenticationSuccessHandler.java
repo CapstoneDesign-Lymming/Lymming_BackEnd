@@ -35,9 +35,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        log.info("redirectUri는 : {}", redirectUri);
         log.info("인증 성공: 사용자 {} - 실행 위치: {}", authentication.getName(), getExecutionLocation());
 
-        String targetUrl = deterMineTargetUrl(request, response, authentication);
+        String targetUrl = "https://lymming.link";
         // deterMineTargetUrl 메소드를 호출 해서 사용자가 인증에 성공한 후 사용자가 이동하게 될 최종 URL
         // 이 url은 인증 다음단계로 이동하는데 사용된다.
         // 즉, 인증에 성공했다는 뜻
@@ -64,53 +65,48 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         //결론은 리다이렉트 할 URL에 엑세스 토큰을 추가해서 반환
     }
 
-    protected String deterMineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        //사용자가 인증에 성공한 다음에 리다이렉트 할 url을 결정하는 메소드
-        // request는 클라이언트의 요청 정보를 담고있는 객체
-        // response는 서버의 응답 정보를 담고있는 객체
-        // authentication은 인증이 완료된 사용자의 정보 (Security에서 인증 정보를 나타내는)를 포함하고 있는 객체
+    public String deterMineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        try {
+            log.info("deterMineTargetUrl 메소드 호출됨.");
+            log.info("대상 URL 결정 중... - 실행 위치: {}", getExecutionLocation());
 
-        //쿠키에서 특정한 정보를  가져오는 메소드로 리다이렉트 URI를 가져오는데 사용된다.
+            // 쿠키에서 리디렉션 URI를 가져오기
+            Optional<String> redirect = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+                    .map(Cookie::getValue);
 
-        log.info("대상 URL 결정 중... - 실행 위치: {}", getExecutionLocation());
-        Optional<String> redirect = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-                .map(Cookie::getValue);
+            ObjectMapper objectMapper = new ObjectMapper();
 
-        // CookieUtil의 getCookie 메소드를 사용해서 쿠키에서 리다이렉트 URI를 가져온다.
-        // 만약에 쿠키가 존재하면 쿠키 값을 가져와서 Opstional 형태로 저장한다.
+            // 리디렉션 URI 검증
+            if (redirect.isPresent() && !isAuthorizedRedirectUri(redirect.get())) {
+                log.error("리디렉션 URI가 허용되지 않음: {} - 실행 위치: {}", redirect.get(), getExecutionLocation());
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                objectMapper.writeValue(response.getWriter(), new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, "redirect_uri가 일치하지 않습니다."));
+                return null; // 에러 발생 시 null 반환
+            }
 
+            // 최종 리디렉션 URI 결정
+            String targetUrl = redirect.orElse(getDefaultTargetUrl());
+            log.info("결정된 리디렉션 URI: {} - 실행 위치: {}", targetUrl, getExecutionLocation());
 
-        ObjectMapper objectMapper = new ObjectMapper();
+            // JWT 생성
+            log.info("사용자 {}에 대한 액세스 토큰 생성 중... - 실행 위치: {}", authentication.getName(), getExecutionLocation());
+            String accessToken = tokenProvider.createAccessToken(authentication);
 
-        if (redirect.isPresent() && !isAuthorizedRedirectUri(redirect.get())) {
-            log.error("리디렉션 URI가 허용되지 않음: {} - 실행 위치: {}", redirect.get(), getExecutionLocation());
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            objectMapper.writeValue(response.getWriter(), new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, "redirect_uri가 일치하지 않습니다."));
-            return null; // Early return in case of error
+            // 리프레시 토큰 생성
+            tokenProvider.createRefreshToken(authentication, response);
+            log.info("리프레시 토큰 생성 완료: {} - 실행 위치: {}", accessToken, getExecutionLocation());
+
+            // 엑세스 토큰을 포함한 최종 리다이렉트 URL 반환
+            return UriComponentsBuilder.fromUriString(targetUrl)
+                    .queryParam("accessToken", accessToken)
+                    .build().toUriString();
+
+        } catch (Exception e) {
+            log.error("deterMineTargetUrl 메소드에서 예외 발생: {}", e.getMessage());
+            return null; // 예외 발생 시 null 반환
         }
-
-        String targetUrl = redirect.orElse(getDefaultTargetUrl());
-        // 쿠키에서 가져온 URI로 쿠키에 유요한 URI가 존재하면 그걸 사용하고 아니면 기본 리다이렉트 URI 사용
-
-        log.info("사용할 대상 URL: {} - 실행 위치: {}", targetUrl, getExecutionLocation());
-
-        //JWT 생성
-        log.info("사용자 {}에 대한 액세스 토큰 생성 중... - 실행 위치: {}", authentication.getName(), getExecutionLocation());
-        String accessToken = tokenProvider.createAccessToken(authentication);
-        // tokenProvider을 사용해서 사용자 인증 정보를 바탕으로  엑세스 토큰을 생성한다.
-
-
-        tokenProvider.createRefreshToken(authentication, response);
-        log.info("리프래시 토큰 생성 완료: {} - 실행 위치: {}", accessToken, getExecutionLocation());
-        // 인증 정보를 바탕으로 리프레시 토큰도 생성해서 응답에 추가한다.
-
-        return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("accessToken", accessToken)
-                .build().toUriString();
-        // 엑세스 토큰을 포함한 최종 리다이렉트 URL을 반환한다.
-        // 어디로? 이 메소드를 실행한 곳으로
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
@@ -130,6 +126,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("리디렉션 URI가 허용되는지 확인 중: {} - 실행 위치: {}", uri, getExecutionLocation());
         URI clientRedirectUri = URI.create(uri);
         URI authorizedUri = URI.create(redirectUri);
+
+        // 추가된 로그
+        log.info("authorizedUri: {}, clientRedirectUri: {}", authorizedUri, clientRedirectUri);
 
         boolean isAuthorized = authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
                 && authorizedUri.getPort() == clientRedirectUri.getPort();

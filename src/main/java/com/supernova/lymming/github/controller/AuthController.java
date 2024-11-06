@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class AuthController {
 
     // GitHub 액세스 토큰을 사용하여 JWT 생성
     @PostMapping("/login/github")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<?> loginWithGithub(@RequestBody Map<String, String> request) {
         // 경로로 들어오는 POST 요청을 처리하는 메소드로 요청 본문은 Map<String,String> 형태로 받는다
         // 이때 요청 본문에는 엑세스 토큰도 포함된다.
