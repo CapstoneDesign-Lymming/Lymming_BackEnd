@@ -3,19 +3,25 @@ package com.supernova.lymming.board.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDate;
+
+
 @Data
 @AllArgsConstructor
 public class BoardDto {
 
-    private Integer projectId;
-    private Integer userId;
-    private String title;
-    private String content;
-    private String category;
-    private String recruitmentCount;
-    private String projectMethod;
+    private Long projectId;
+    private Long userId;
+    private String studyType;
+    private LocalDate uploadTime;
+    private String recruitmentField;
+    private String description;
+    private String workType;
+    private String techStack;
+    private LocalDate deadline;
+    private int viewCount;
+    private int recruitmentCount;
+    private String studyMethod;
     private String projectDuration;
-    private String recruitmentDeadline;
-    private String position;
-    private String developmentStyle;
+    private String projectName;
 }

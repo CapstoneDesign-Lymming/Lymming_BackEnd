@@ -1,51 +1,73 @@
 package com.supernova.lymming.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="project")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BoardEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_id")
-    private Integer projectId;
+    private Long projectId;
 
     //유저 아이디는 user 테이블의 유저아이디
     @Column(nullable = false)
-    private Integer userId;
+    private Long userId;
 
-    @Column(nullable = false)
-    private String title;
+    @Column(name ="study_type",nullable = false)
+    private String studyType;
 
-    @Column(nullable = false)
-    private String content;
+    @Column(name = "upload_time",nullable = false)
+    @JsonFormat(pattern = "yyyy MM dd")
+    private LocalDate uploadTime;
 
-    @Column(nullable = false)
-    private String category;
+    //모집분야
+    @Column(name = "recruitment_field",nullable = false)
+    private String recruitmentField;
 
-    @Column(nullable = false)
-    private String recruitmentCount;
+    @Column(name = "project_name", nullable = false)
+    private String projectName;
 
-    //진행방식
-    @Column(nullable = false)
-    private String projectMethod;
+    @Column(name = "description",nullable = false)
+    private String description;
 
-    //프로젝트 기간
-    @Column(nullable = false)
-    private String projectDuration;
+    @Column(name = "work_type",nullable = false)
+    private String workType;
+
+    @Column(name = "tech_stack",nullable = false)
+    private String techStack;
+
+    @Column(name = "team_member")
+    private String teamMember;
 
     //모집 마감일
-    @Column(nullable = false)
-    private String recruitmentDeadline;
+    @Column(name = "deadline",nullable = false)
+    @JsonFormat(pattern = "yyyy MM dd")
+    private LocalDate deadline;
 
-    @Column(nullable = false)
-    private String position;
+    //조회수
+    @Column(name = "view_count",nullable = false)
+    private int viewCount;
 
-    @Column(nullable = false)
-    private String developmentStyle;
+    //모집 인원
+    @Column(name = "recruitment_count",nullable = false)
+    private int recruitmentCount;
+
+    //진행방식
+    @Column(name = "study_method",nullable = false)
+    private String studyMethod;
+
+    //프로젝트 기간
+    @Column(name = "project_duration", nullable = false)
+    private String projectDuration;
 
 }
