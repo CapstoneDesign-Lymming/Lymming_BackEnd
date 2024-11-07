@@ -40,11 +40,20 @@ public class GithubUserController {
                                            @RequestBody SignupDto userUpdateDto) {
         // 현재 인증된 사용자의 정보를 CustomUserDetails 객체로 주입받아 사용자 정보에 접근 가능
 
-        Long userId = user.getUserId();
-        // 현재 인증 된 사용자의 ID를 가져온다.
+//        Long userId = user.getUserId();\
+//        // 현재 인증 된 사용자의 ID를 가져온다.
+//
+//        User existingUser = userRepository.findById(userId)
+//                .orElseThrow(() -> new IllegalStateException("등록된 유저가 아닙니다."));
 
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("등록된 유저가 아닙니다."));
+
+        String refreshToken = userUpdateDto.getRefreshToken();
+
+        System.out.println(refreshToken+"토큰");
+
+        User existingUser = userRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(()->new IllegalStateException("등록된유저가 아닙니다"));
+
         // userID를 사용해 DB에서 기존 사용자인지 검사한다,
 
         // 필드 업데이트 - null이 아닌 경우에만 업데이트
@@ -52,7 +61,7 @@ public class GithubUserController {
             existingUser.setNickname(userUpdateDto.getNickname());
         }
         if (userUpdateDto.getStack() != null) {
-            existingUser.setStack(userUpdateDto.getStack());
+            existingUser.setStack(userUpdateDto.getStack().toString());
         }
         if (userUpdateDto.getGender() != null) {
             existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));
@@ -67,7 +76,7 @@ public class GithubUserController {
             existingUser.setFavorites(userUpdateDto.getFavorites());
         }
         if (userUpdateDto.getInterests() != null) {
-            existingUser.setInterests(userUpdateDto.getInterests());
+            existingUser.setInterests(userUpdateDto.getInterests().toString());
         }
         if (userUpdateDto.getDevStyle() != null) {
             existingUser.setDevStyle(userUpdateDto.getDevStyle());

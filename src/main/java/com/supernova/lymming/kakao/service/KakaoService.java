@@ -70,23 +70,40 @@ public class KakaoService {
         String nickName = oAuth2User.getAttributes().get("nickname").toString();
 
         // 닉네임으로 사용자 조회시 사욪가가 db에 있으면 사용자 정보 없으면 null
-        KakaoUser kakaoUser = kakaoUserRepository.findByNickname(nickName).orElse(null);
+        KakaoUser kakaoUser = kakaoUserRepository.findByServerNickname(nickName).orElse(null);
         System.out.println("User ID: " + uid);
         System.out.println("Nickname: " + nickName);
+        System.out.println("kakaoUser: " + kakaoUser);
 
         // 사용자가 있을경우 토큰 생성 없을경우 사용자 추가하고 토큰 생성
         if (kakaoUser == null) {
+            String tokens = githubJwtTokenProvider.createAccessToken(userInfo);
             kakaoUser = new KakaoUser();
-            kakaoUser.setUid(uid);
-            kakaoUser.setNickname(nickName);
-            kakaoUser.setLoginType("kakao");
+            kakaoUser.setServerNickname(nickName);
+            kakaoUser.setLoginType("Kakao");
+            kakaoUser.setRefreshToken(tokens);
             kakaoUserRepository.save(kakaoUser);
+            System.out.println("사용자 생성");
         }
 
-        String tokens = githubJwtTokenProvider.createAccessToken(userInfo);
-        // 정상적으로 id와 nickname을 추출한 후 사용할 수 있습니다.
+        // LoginResponse 객체 생성
+        LoginResponse loginResponse = LoginResponse.builder()
+                .nickname(kakaoUser.getNickname())
+                .userImg(kakaoUser.getUserImg())
+                .position(kakaoUser.getPosition())
+                .devStyle(kakaoUser.getDevStyle())
+                .stack(kakaoUser.getStack())
+                .gender(kakaoUser.getGender())
+                .job(kakaoUser.getJob())
+                .category(kakaoUser.getCategory())
+                .bio(kakaoUser.getBio())
+                .favorites(kakaoUser.getFavorites())
+                .temperature(kakaoUser.getTemperature())
+                .interests(kakaoUser.getInterests())
+                .refresh_token(kakaoUser.getRefreshToken())
+                .build();
 
-        return new LoginResponse(uid, nickName, tokens);
+        return loginResponse;
     }
 
     private Authentication getKakaoUserInfo(String accessToken) {
