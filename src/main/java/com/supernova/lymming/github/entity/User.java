@@ -1,3 +1,4 @@
+
 package com.supernova.lymming.github.entity;
 
 import lombok.*;
