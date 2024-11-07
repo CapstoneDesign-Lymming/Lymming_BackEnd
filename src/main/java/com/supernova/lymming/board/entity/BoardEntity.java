@@ -56,7 +56,7 @@ public class BoardEntity {
 
     //조회수
     @Column(name = "project_url",nullable = false)
-    private String projectUrl;
+    private String projectImg;
 
     //모집 인원
     @Column(name = "recruitment_count",nullable = false)

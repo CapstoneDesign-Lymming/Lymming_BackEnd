@@ -19,7 +19,7 @@ public class BoardDto {
     private String workType;
     private String techStack;
     private LocalDate deadline;
-    private String projectUrl;
+    private String projectImg;
     private int recruitmentCount;
     private String studyMethod;
     private String projectDuration;

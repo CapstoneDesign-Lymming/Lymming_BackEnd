@@ -40,8 +40,8 @@ public class BoardService {
         board.setWorkType(boardDto.getWorkType());
         board.setTechStack(boardDto.getTechStack());
         board.setDeadline(boardDto.getDeadline());
-        board.setProjectUrl(boardDto.getProjectUrl());
-        board.setRecruitmentCount(board.getRecruitmentCount());
+        board.setProjectImg(boardDto.getProjectImg());
+        board.setRecruitmentCount(boardDto.getRecruitmentCount());
         board.setStudyMethod(boardDto.getStudyMethod());
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
@@ -51,6 +51,7 @@ public class BoardService {
         // 게시판 저장
         boardRepository.save(board);
         log.info("게시글 저장됨: {}", board);
+        log.info("count: {}",boardDto.getRecruitmentCount());
 
         return boardDto;
     }
@@ -70,7 +71,7 @@ public class BoardService {
                     board.getWorkType(),
                     board.getTechStack(),
                     board.getDeadline(),
-                    board.getProjectUrl(),
+                    board.getProjectImg(),
                     board.getRecruitmentCount(),
                     board.getStudyMethod(),
                     board.getProjectDuration(),
@@ -108,7 +109,7 @@ public class BoardService {
                 board.getWorkType(),
                 board.getTechStack(),
                 board.getDeadline(),
-                board.getProjectUrl(),
+                board.getProjectImg(),
                 board.getRecruitmentCount(),
                 board.getStudyMethod(),
                 board.getProjectDuration(),
