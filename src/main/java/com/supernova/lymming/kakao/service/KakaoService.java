@@ -81,7 +81,7 @@ public class KakaoService {
             String tokens = githubJwtTokenProvider.createAccessToken(userInfo);
             kakaoUser = new KakaoUser();
             kakaoUser.setServerNickname(nickName);
-            kakaoUser.setLoginType("kakao");
+            kakaoUser.setLoginType("Kakao");
             kakaoUser.setRefreshToken(tokens);
             kakaoUserRepository.save(kakaoUser);
             System.out.println("사용자 생성");
