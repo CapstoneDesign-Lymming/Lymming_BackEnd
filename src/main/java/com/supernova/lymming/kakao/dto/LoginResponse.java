@@ -1,18 +1,24 @@
 package com.supernova.lymming.kakao.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.supernova.lymming.github.entity.Gender;
+import lombok.*;
 
-@Getter
+@Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class LoginResponse {
-    private Long id;
     private String nickname;
-    private String token;
-
-    public LoginResponse(Long id, String nickname,String token){
-        this.id = id;
-        this.nickname=nickname;
-        this.token=token;
-    }
+    private String userImg;
+    private String position;
+    private String devStyle;
+    private String stack;
+    private String gender;
+    private String job;
+    private String category;
+    private String bio;
+    private Integer favorites;
+    private Float temperature;
+    private String interests;
+    private String refresh_token;
 }

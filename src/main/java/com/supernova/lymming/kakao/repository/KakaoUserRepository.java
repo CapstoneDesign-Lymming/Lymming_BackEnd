@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface KakaoUserRepository extends JpaRepository<KakaoUser,Long> {
     Optional<KakaoUser> findByNickname(String nickname);
+    Optional<KakaoUser> findByServerNickname(String serverNicname);
 
-    Optional<KakaoUser> findByKeyCode(String keyCode);
+
 }
