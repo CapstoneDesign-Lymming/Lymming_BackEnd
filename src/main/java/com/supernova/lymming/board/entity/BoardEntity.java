@@ -55,8 +55,8 @@ public class BoardEntity {
     private LocalDate deadline;
 
     //조회수
-    @Column(name = "view_count",nullable = false)
-    private int viewCount;
+    @Column(name = "project_url",nullable = false)
+    private String projectUrl;
 
     //모집 인원
     @Column(name = "recruitment_count",nullable = false)

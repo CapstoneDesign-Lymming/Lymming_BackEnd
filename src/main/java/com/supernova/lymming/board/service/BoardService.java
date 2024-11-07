@@ -40,7 +40,7 @@ public class BoardService {
         board.setWorkType(boardDto.getWorkType());
         board.setTechStack(boardDto.getTechStack());
         board.setDeadline(boardDto.getDeadline());
-        board.setViewCount(board.getViewCount());
+        board.setProjectUrl(boardDto.getProjectUrl());
         board.setRecruitmentCount(board.getRecruitmentCount());
         board.setStudyMethod(boardDto.getStudyMethod());
         board.setProjectDuration(boardDto.getProjectDuration());
@@ -71,7 +71,7 @@ public class BoardService {
                     board.getWorkType(),
                     board.getTechStack(),
                     board.getDeadline(),
-                    board.getViewCount(),
+                    board.getProjectUrl(),
                     board.getRecruitmentCount(),
                     board.getStudyMethod(),
                     board.getProjectDuration(),
@@ -109,7 +109,7 @@ public class BoardService {
                 board.getWorkType(),
                 board.getTechStack(),
                 board.getDeadline(),
-                board.getViewCount(),
+                board.getProjectUrl(),
                 board.getRecruitmentCount(),
                 board.getStudyMethod(),
                 board.getProjectDuration(),
