@@ -1,3 +1,4 @@
+
 package com.supernova.lymming.jwt;
 
 import com.supernova.lymming.github.auth.CustomUserDetails;

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supernova.lymming.github.entity.LoginType;
 import com.supernova.lymming.jwt.GithubJwtTokenProvider;
 import com.supernova.lymming.kakao.dto.LoginResponse;
 import com.supernova.lymming.kakao.entity.KakaoUser;
