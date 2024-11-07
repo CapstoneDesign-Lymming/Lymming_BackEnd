@@ -45,7 +45,6 @@ public class BoardService {
         board.setStudyMethod(boardDto.getStudyMethod());
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
-        // 작성자 정보 및 프로젝트 ID 설정
         board.setUserId(boardDto.getUserId()); // 현재 사용자의 ID 설정
         board.setProjectId(boardDto.getProjectId()); // 프로젝트 ID 설정
 
