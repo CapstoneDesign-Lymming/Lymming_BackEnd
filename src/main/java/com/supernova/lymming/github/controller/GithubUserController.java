@@ -40,11 +40,12 @@ public class GithubUserController {
                                            @RequestBody SignupDto userUpdateDto) {
         // 현재 인증된 사용자의 정보를 CustomUserDetails 객체로 주입받아 사용자 정보에 접근 가능
 
-//        Long userId = user.getUserId();
+//        Long userId = user.getUserId();\
 //        // 현재 인증 된 사용자의 ID를 가져온다.
 //
 //        User existingUser = userRepository.findById(userId)
 //                .orElseThrow(() -> new IllegalStateException("등록된 유저가 아닙니다."));
+
 
         String refreshToken = userUpdateDto.getRefreshToken();
 
