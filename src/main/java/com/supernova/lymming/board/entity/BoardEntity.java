@@ -1,6 +1,7 @@
 package com.supernova.lymming.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.supernova.lymming.github.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,8 +21,9 @@ public class BoardEntity {
     private Long projectId;
 
     //유저 아이디는 user 테이블의 유저아이디
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne  // User 엔티티와의 관계 설정 , referenceedColumnName은 테이블의 참조할 컬럼명
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    private User user;
 
     @Column(name ="study_type",nullable = false)
     private String studyType;
