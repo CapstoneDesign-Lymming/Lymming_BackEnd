@@ -6,7 +6,7 @@ import com.supernova.lymming.github.auth.OAuth2AuthenticationSuccessHandler;
 import com.supernova.lymming.jwt.JwtAccessDeniedHandler;
 import com.supernova.lymming.jwt.JwtAuthenticationEntryPoint;
 import com.supernova.lymming.jwt.JwtAuthenticationFilter;
-import com.supernova.lymming.jwt.GithubJwtTokenProvider;
+import com.supernova.lymming.jwt.JwtTokenProvider;
 import com.supernova.lymming.github.repository.CookieAuthorizationRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,7 +27,7 @@ public class WebSecurityConfigure {
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    private final GithubJwtTokenProvider githubJwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
@@ -93,7 +93,7 @@ public class WebSecurityConfigure {
         log.info("Configured exception handling with custom entry point and access denied handler");
 
         // JWT 필터 추가
-        http.addFilterBefore(new JwtAuthenticationFilter(githubJwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         // JwtAuthenticationFilter을 UsernamePasswordAuthenticationFilter 앞에 추가해 JWT를 기반으로 인증 처리
 
         log.info("Added JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter");

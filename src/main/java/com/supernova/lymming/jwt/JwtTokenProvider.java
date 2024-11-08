@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @ComponentScan
-public class GithubJwtTokenProvider {
+public class JwtTokenProvider {
 
     private final Key SECRET_KEY;
     private final String COOKIE_REFRESH_TOKEN_KEY;
@@ -37,7 +37,7 @@ public class GithubJwtTokenProvider {
 
     private UserRepository userRepository;
 
-    public GithubJwtTokenProvider(@Value("${custom.jwt.secretKey}")String secretKey, @Value("${app.auth.token.refresh-cookie-key}")String cookieKey, UserRepository userRepository) {
+    public JwtTokenProvider(@Value("${custom.jwt.secretKey}")String secretKey, @Value("${app.auth.token.refresh-cookie-key}")String cookieKey, UserRepository userRepository) {
         this.SECRET_KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         this.COOKIE_REFRESH_TOKEN_KEY = cookieKey;
         this.userRepository = userRepository;
