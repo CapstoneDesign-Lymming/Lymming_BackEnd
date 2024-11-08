@@ -10,6 +10,8 @@ import com.supernova.lymming.kakao.entity.KakaoUser;
 import com.supernova.lymming.kakao.repository.KakaoUserRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +35,8 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class KakaoService {
 
+    private static final Logger logger = LoggerFactory.getLogger(KakaoService.class);
+
     private final KakaoUserRepository kakaoUserRepository;
     private final JwtTokenProvider githubJwtTokenProvider;
 
@@ -43,19 +47,23 @@ public class KakaoService {
     private String redirectUrl;
 
     public LoginResponse kakaoLogin(String code, String currentDomain) {
+        logger.info("카카오 로그인 시작 ");
 
         // 리다이렉트 uri 선택 메소드
         // 근데 테스트 용으로 진행할 것이기 때문에 도메인은 로컬호스트로
         String redirectUrl = "https://lymming.link/auth";
+        logger.debug("Redirect URL set to: {}", redirectUrl);
 
         // 인가코드 -> 엑세스 토큰 요청
         String accessToken = getAccessToken(code, redirectUrl);
 
         // 토큰으로 카카오 api 호출해 사용자 정보 받아옴
         Authentication userInfo = getKakaoUserInfo(accessToken);
+        logger.debug("Access token retrieved: {}", accessToken);
 
         // 받아온 정보로 회원가입, 로그인 처리
         LoginResponse kakaoUserResponse = kakaoUserLogin(userInfo);
+        logger.debug("Kakao user info retrieved: {}", userInfo);
 
         return kakaoUserResponse;
     }
@@ -68,15 +76,18 @@ public class KakaoService {
 
         Long uid = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
         String nickName = oAuth2User.getAttributes().get("nickname").toString();
+        logger.debug("User ID: {}, Nickname: {}", uid, nickName);
 
         // 닉네임으로 사용자 조회시 사욪가가 db에 있으면 사용자 정보 없으면 null
         KakaoUser kakaoUser = kakaoUserRepository.findByServerNickname(nickName).orElse(null);
+        logger.debug("KakaoUser found: {}", kakaoUser);
         System.out.println("User ID: " + uid);
         System.out.println("Nickname: " + nickName);
         System.out.println("kakaoUser: " + kakaoUser);
 
         // 사용자가 있을경우 토큰 생성 없을경우 사용자 추가하고 토큰 생성
         if (kakaoUser == null) {
+            logger.info("Creating new user for nickname: {}", nickName);
             String tokens = githubJwtTokenProvider.createAccessToken(userInfo);
             kakaoUser = new KakaoUser();
             kakaoUser.setServerNickname(nickName);
@@ -102,11 +113,12 @@ public class KakaoService {
                 .interests(kakaoUser.getInterests())
                 .refresh_token(kakaoUser.getRefreshToken())
                 .build();
-
+        logger.debug("LoginResponse created: {}", loginResponse);
         return loginResponse;
     }
 
     private Authentication getKakaoUserInfo(String accessToken) {
+        logger.info("Fetching Kakao user info with access token: {}", accessToken);
         HashMap<String, Object> userInfo = new HashMap<>();
 
         // HTTP Header 생성
@@ -126,6 +138,7 @@ public class KakaoService {
 
         // responseBody에 있는 정보를 꺼냄
         String responseBody = response.getBody();
+        logger.debug("Kakao API response: {}", responseBody);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = null;
         try {
@@ -144,6 +157,7 @@ public class KakaoService {
 
         Long id = idNode.asLong();  // id는 직접 가져와 Long으로 변환
         String nickname = propertiesNode.get("nickname").asText(); // properties 내 nickname
+        logger.debug("Kakao user ID: {}, Nickname: {}", id, nickname);
 
         // userInfo에 id와 nickname을 저장
         userInfo.put("id", id);
@@ -168,6 +182,7 @@ public class KakaoService {
 
     // 인가코드를 통해 엑세스 토큰 요청
     private String getAccessToken(String code, String redirectUri) {
+        logger.info("Requesting access token with code: {} and redirect URI: {}", code, redirectUri);
 
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -196,6 +211,7 @@ public class KakaoService {
 
         // Http 응답을 access token으로 파싱하기
         String responseBody = response.getBody();
+        logger.debug("Kakao token response: {}", responseBody);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = null;
         try {
@@ -207,6 +223,7 @@ public class KakaoService {
         }
 
         // http body에서 access 토큰을 가져와 문자열 형태로 변환 후 반환
+
         return jsonNode.get("access_token").asText(); //토큰 전송
 
     }
