@@ -1,5 +1,7 @@
 package com.supernova.lymming.sharepage.Entity;
 
+import com.supernova.lymming.board.entity.BoardEntity;
+import com.supernova.lymming.github.entity.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,31 +12,38 @@ import javax.persistence.*;
 public class SharePageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer sharePageId;
+    @Column(name = "share_page_id")
+    private Long sharePageId;
 
-    @Column(nullable = false)
-    private Integer userId;
+    @ManyToOne  // User 엔티티와의 관계 설정 , referenceedColumnName은 테이블의 참조할 컬럼명
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false)
-    private String projectId;
+    @ManyToOne
+    @JoinColumn(name = "project_id", referencedColumnName = "project_id", nullable = false )
+    private BoardEntity board;
 
-    @Column(nullable = false)
-    private String teamName;
+    @Column(name = "share_page_description")
+    private String sharePageDescription;
 
-    @Column(nullable = false)
-    private String content;
-
-    private String imageUrl1;
-    private String imageUrl2;
-    private String imageUrl3;
-    private String imageUrl4;
-
-    @Column(nullable = false)
+    @Column(name = "team_member")
     private String teamMember;
 
-    @Column(nullable = false)
+    @Column(name = "share_page_name")
+    private String sharePageName;
+
+    @Column(name = "end")
+    @Enumerated(EnumType.STRING)
+    private End end;
+
+    @Column(name = "project_link")
     private String projectLink;
+
+    @Column(name = "team_name")
+    private String teamName;
+
+    @Column(name = "share_page_url")
+    private String sharePageUrl;
 
 }
 

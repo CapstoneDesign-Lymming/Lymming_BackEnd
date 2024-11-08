@@ -1,24 +1,26 @@
 package com.supernova.lymming.sharepage.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.supernova.lymming.sharepage.Entity.End;
+import lombok.*;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class SharePageDto {
-    private Integer sharePageId;
-    private Integer userId;
-    private String projectId;
-    private String teamName;
-    private String content;
-    private String imageUrl1;
-    private String imageUrl2;
-    private String imageUrl3;
-    private String imageUrl4;
+    private Long sharePageId;
+    private Long userId;  // User 엔티티의 user_id 값
+    private Long projectId;  // BoardEntity 엔티티의 project_id 값
+    private String sharePageDescription;
     private String teamMember;
+    private String sharePageName;
     private String projectLink;
+    private String sharePageUrl;
+    private String teamName;
+    private End end;
+
 }
 
 

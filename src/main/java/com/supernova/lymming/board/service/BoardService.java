@@ -3,6 +3,10 @@ package com.supernova.lymming.board.service;
 import com.supernova.lymming.board.dto.BoardDto;
 import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
+import com.supernova.lymming.github.entity.User;
+import com.supernova.lymming.github.repository.UserRepository;
+import com.supernova.lymming.sharepage.Entity.SharePageEntity;
+import com.supernova.lymming.sharepage.Repository.SharePageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,11 +17,16 @@ import java.util.List;
 @Slf4j
 @Service
 public class BoardService {
+
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository; // UserRepository 추가
+    private final SharePageRepository sharePageRepository; // SharePageRepository 추가
 
     @Autowired
-    public BoardService(BoardRepository boardRepository) {
+    public BoardService(BoardRepository boardRepository, UserRepository userRepository, SharePageRepository sharePageRepository) {
         this.boardRepository = boardRepository;
+        this.userRepository = userRepository;
+        this.sharePageRepository = sharePageRepository;
     }
 
     public BoardDto createBoard(BoardDto boardDto) {
@@ -28,7 +37,6 @@ public class BoardService {
         // 필드 값 설정
         board.setProjectName(boardDto.getProjectName());
         log.info("projectName: {}", boardDto.getProjectName());
-
         board.setDescription(boardDto.getDescription());
         log.info("Descriptiont: {}", boardDto.getDescription());
 
@@ -45,13 +53,23 @@ public class BoardService {
         board.setStudyMethod(boardDto.getStudyMethod());
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
-        board.setUserId(boardDto.getUserId()); // 현재 사용자의 ID 설정
-        board.setProjectId(boardDto.getProjectId()); // 프로젝트 ID 설정
+
+        // 사용자 조회 후 설정
+        User user = userRepository.findById(boardDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+        board.setUser(user); // User 엔티티 설정
 
         // 게시판 저장
         boardRepository.save(board);
         log.info("게시글 저장됨: {}", board);
-        log.info("count: {}",boardDto.getRecruitmentCount());
+
+        // SharePageEntity 생성 및 저장
+        SharePageEntity sharePage = new SharePageEntity();
+        sharePage.setUser(user);  // User 객체 설정
+        sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
+
+        sharePageRepository.save(sharePage);
+        log.info("SharePage 생성됨: {}", sharePage);
 
         return boardDto;
     }
@@ -61,9 +79,11 @@ public class BoardService {
         List<BoardDto> boardDtoList = new ArrayList<>();
 
         for (BoardEntity board : boardList) {
+            Long userId = board.getUser().getUserId();  // UserId는 BoardEntity의 User 객체에서 가져오기
+
             BoardDto boardDto = new BoardDto(
                     board.getProjectId(),
-                    board.getUserId(),
+                    userId,  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
                     board.getStudyType(),
                     board.getUploadTime(),
                     board.getRecruitmentField(),
@@ -99,9 +119,11 @@ public class BoardService {
         BoardEntity board = boardRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
 
+        Long userId = board.getUser().getUserId();  // UserId는 BoardEntity의 User 객체에서 가져오기
+
         return new BoardDto(
                 board.getProjectId(),
-                board.getUserId(),
+                userId,  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
                 board.getStudyType(),
                 board.getUploadTime(),
                 board.getRecruitmentField(),
@@ -117,4 +139,3 @@ public class BoardService {
         );
     }
 }
-

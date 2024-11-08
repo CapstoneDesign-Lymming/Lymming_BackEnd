@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supernova.lymming.jwt.GithubJwtTokenProvider;
+import com.supernova.lymming.jwt.JwtTokenProvider;
 import com.supernova.lymming.kakao.dto.LoginResponse;
 import com.supernova.lymming.kakao.entity.KakaoUser;
 import com.supernova.lymming.kakao.repository.KakaoUserRepository;
@@ -34,7 +34,7 @@ import java.util.HashMap;
 public class KakaoService {
 
     private final KakaoUserRepository kakaoUserRepository;
-    private final GithubJwtTokenProvider githubJwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${kakao.key.client-id}")
     // 클라이언트 id 리다이렉트 uri를 환경변수에서 가져오기
@@ -83,7 +83,7 @@ public class KakaoService {
             kakaoUserRepository.save(kakaoUser);
         }
 
-        String tokens = githubJwtTokenProvider.createAccessToken(userInfo);
+        String tokens = jwtTokenProvider.createAccessToken(userInfo);
         // 정상적으로 id와 nickname을 추출한 후 사용할 수 있습니다.
 
         return new LoginResponse(uid, nickName, tokens);
