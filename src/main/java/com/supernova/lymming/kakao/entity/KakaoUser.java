@@ -17,11 +17,11 @@ import java.util.List;
 @Setter
 @Table(name = "user")
 public class KakaoUser implements UserDetails {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private Long uid;
+    private Long userId;
 
     @Column(name = "server_nickname")
     private String serverNickname;
