@@ -33,7 +33,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         GithubOAuth2UserInfo userInfo = new GithubOAuth2UserInfo(oAuth2User.getAttributes());
         // 깃허브에서 받은 사용자 정보를 GitjubOAuth2UserInfo 객체에 저장
 
-        User user = userRepository.findByGithubId(userInfo.getGithubId())
+        User user = userRepository.findByServerNickname(userInfo.getServerNickname())
         // DB에서 깃허브 ID로 사용자를 조회한다.
                 .orElseGet(() -> createUser(userInfo));
 
@@ -43,7 +43,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
     private User createUser(GithubOAuth2UserInfo userInfo) {
         // GitHub 정보로 사용자 객체 생성
         User user = User.builder()
-                .githubId(userInfo.getGithubId())
+                .serverNickname(userInfo.getServerNickname())
                 .nickname(null) // 초기값 설정 후, 사용자 입력 필요
                 .stack(null) // 초기값 설정 후, 사용자 입력 필요
                 .gender(null) // 초기값 설정 후, 사용자 입력 필요

@@ -69,10 +69,6 @@ public class KakaoUser implements UserDetails {
     @Column(name = "interests")
     private String interests;
 
-    @Column(name = "github_id")
-    private String githubId;
-
-
     @ElementCollection(fetch = FetchType.EAGER) //roles 컬렉션
     private List<String> roles = new ArrayList<>();
 

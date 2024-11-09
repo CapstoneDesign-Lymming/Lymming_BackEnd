@@ -93,6 +93,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             // JWT 생성
             log.info("사용자 {}에 대한 액세스 토큰 생성 중... - 실행 위치: {}", authentication.getName(), getExecutionLocation());
             String accessToken = tokenProvider.createAccessToken(authentication);
+            log.info("accessToken: {}", accessToken);
 
             // 리프레시 토큰 생성
             tokenProvider.createRefreshToken(authentication, response);

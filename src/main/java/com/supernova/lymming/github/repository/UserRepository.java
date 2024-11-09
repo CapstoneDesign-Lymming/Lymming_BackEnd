@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByGithubId(String githubId);
+    Optional<User> findByServerNickname(String serverNickname);
 
     @Modifying
     @Query(value="UPDATE User u SET u.refreshToken=:token WHERE u.userId=:userId")
