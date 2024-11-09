@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chatting") // 프론트엔드 주소 허용
-                .setAllowedOrigins("https://lymming.link","https://lymming-back.link") // 명시적인 출처 설정
+                .setAllowedOrigins("*") // 명시적인 출처 설정
                 .withSockJS();
         // 아래 줄은 필요하지 않으므로 삭제합니다.
         // registry.addEndpoint("/chatting").setAllowedOrigins("*").withSockJS();
