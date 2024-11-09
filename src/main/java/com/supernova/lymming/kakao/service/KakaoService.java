@@ -51,7 +51,8 @@ public class KakaoService {
 
         // 리다이렉트 uri 선택 메소드
         // 근데 테스트 용으로 진행할 것이기 때문에 도메인은 로컬호스트로
-        String redirectUrl = "http://localhost:5173/auth";
+        String redirectUrl = "https://lymming.link/auth";
+
         logger.debug("Redirect URL set to: {}", redirectUrl);
 
         // 인가코드 -> 엑세스 토큰 요청
