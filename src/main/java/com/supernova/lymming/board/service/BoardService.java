@@ -5,8 +5,6 @@ import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
-import com.supernova.lymming.sharepage.Entity.SharePageEntity;
-import com.supernova.lymming.sharepage.Repository.SharePageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +18,11 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository; // UserRepository 추가
-    private final SharePageRepository sharePageRepository; // SharePageRepository 추가
 
     @Autowired
-    public BoardService(BoardRepository boardRepository, UserRepository userRepository, SharePageRepository sharePageRepository) {
+    public BoardService(BoardRepository boardRepository, UserRepository userRepository) {
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
-        this.sharePageRepository = sharePageRepository;
     }
 
     public BoardDto createBoard(BoardDto boardDto) {
@@ -63,13 +59,13 @@ public class BoardService {
         boardRepository.save(board);
         log.info("게시글 저장됨: {}", board);
 
-        // SharePageEntity 생성 및 저장
-        SharePageEntity sharePage = new SharePageEntity();
-        sharePage.setUser(user);  // User 객체 설정
-        sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
-
-        sharePageRepository.save(sharePage);
-        log.info("SharePage 생성됨: {}", sharePage);
+//        // SharePageEntity 생성 및 저장
+//        SharePageEntity sharePage = new SharePageEntity();
+//        sharePage.setUser(user);  // User 객체 설정
+//        sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
+//
+//        sharePageRepository.save(sharePage);
+//        log.info("SharePage 생성됨: {}", sharePage);
 
         return boardDto;
     }
