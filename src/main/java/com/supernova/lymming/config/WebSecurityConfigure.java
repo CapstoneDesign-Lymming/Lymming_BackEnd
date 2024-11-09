@@ -45,7 +45,7 @@ public class WebSecurityConfigure {
                 .and()
                 .httpBasic().disable() // 기본 인증을 비활성화 .
                 .authorizeHttpRequests()
-                .antMatchers("/**","https://lymming.link").permitAll()
+                .antMatchers("/**","https://lymming.link","http:///localhost:8080").permitAll()
                 .and()
                 .csrf().disable() // CSRF 공격 방지를 위한 보호 기능 비활성
                 .formLogin().disable() // 기본 제공되는 폼 로그인 기능을 비활성화
@@ -65,7 +65,6 @@ public class WebSecurityConfigure {
                 // 사용자 인증 요청을 쿠키에 저장하는 구현체
                 // 인증 요청과 관련된 상태 정보를 관리
                 .and()
-
                 .redirectionEndpoint().baseUri("/api/login/oauth2/redirect/github")
                 //OAuth 인증이 완료된 후 사용자가 리다이렉트 될 엔드포인트의 기본 URI
                 // 이 엔드포인트에서 엑세스 토큰 발급

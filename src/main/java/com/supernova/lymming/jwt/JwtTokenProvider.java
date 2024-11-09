@@ -127,8 +127,8 @@ public class JwtTokenProvider {
     private void saveRefreshToken(Authentication authentication, String refreshToken) {
 
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        long id = Long.parseLong(user.getName());
-        userRepository.updateRefreshToken(id, refreshToken);
+        long userId = Long.parseLong(user.getName());
+        userRepository.updateRefreshToken(userId, refreshToken);
     }
 
     public Authentication getAuthentication(String accessToken) {
