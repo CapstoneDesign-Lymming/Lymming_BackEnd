@@ -45,9 +45,10 @@ public class WebSecurityConfigure {
                 .and()
                 .httpBasic().disable() // 기본 인증을 비활성화 .
                 .authorizeHttpRequests()
-                .antMatchers("/**","https://lymming.link","http:///localhost:8080").permitAll()
+                .antMatchers("/api/kakao/login", "/**", "https://lymming.link", "http://localhost:8080").permitAll()
                 .and()
-                .csrf().disable() // CSRF 공격 방지를 위한 보호 기능 비활성
+                .csrf().disable()
+                // CSRF 공격 방지를 위한 보호 기능 비활성
                 .formLogin().disable() // 기본 제공되는 폼 로그인 기능을 비활성화
                 .rememberMe().disable() // 기억하기 기능 비활성화
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션 관리 무상태로 설정해 서버가 클라이언트 세션 유지 하지 않도록 설정
