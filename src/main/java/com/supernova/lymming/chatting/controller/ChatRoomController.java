@@ -17,14 +17,6 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    @RestController
-    @RequestMapping("/chatting")
-    public class InfoController {
-        @GetMapping("/info")
-        public ResponseEntity<String> info() {
-            return ResponseEntity.ok("WebSocket info endpoint");
-        }
-    }
 
 
 
@@ -62,3 +54,4 @@ public class ChatRoomController {
 
 
 }
+
