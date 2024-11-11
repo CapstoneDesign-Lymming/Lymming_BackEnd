@@ -10,9 +10,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@ComponentScan
 public class JwtTokenProvider {
 
     private final Key SECRET_KEY;
@@ -31,20 +34,55 @@ public class JwtTokenProvider {
     private final String AUTHORITIES_KEY = "role";
     private final String EMAIL_KEY = "email";
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    public JwtTokenProvider(@Value("${JWT_SECRET_KEY}")String secretKey, @Value("${REFRESH_COOKIE_KEY}")String cookieKey, UserRepository userRepository) {
+    public JwtTokenProvider(@Value("${custom.jwt.secretKey}")String secretKey, @Value("${app.auth.token.refresh-cookie-key}")String cookieKey, UserRepository userRepository) {
         this.SECRET_KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         this.COOKIE_REFRESH_TOKEN_KEY = cookieKey;
         this.userRepository = userRepository;
+    }
+
+    private CustomUserDetails convertToCustomUserDetails(OAuth2User oAuth2User) {
+        // 'id'와 'nickname' 값을 안전하게 추출하기 전에 null 체크
+        Object idObj = oAuth2User.getAttributes().get("id");
+        Object nicknameObj = oAuth2User.getAttributes().get("nickname");
+
+        // 'id'와 'nickname'이 null이면 예외 처리
+        if (idObj == null || nicknameObj == null) {
+            throw new IllegalArgumentException("Kakao user attributes are missing: id or nickname is null.");
+        }
+
+        // id와 nickname을 안전하게 추출
+        Long userId = Long.valueOf(idObj.toString());
+        String nickname = nicknameObj.toString();
+
+        // 필요한 정보로 CustomUserDetails 객체 생성
+        // List<GrantedAuthority>로 권한을 설정
+        return new CustomUserDetails(
+                userId,
+                nickname, // nickname 추가
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")) // 권한을 List로 감쌈
+        );
     }
 
     public String createAccessToken(Authentication authentication) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_LENGTH);
 
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        // authentication.getPrincipal()을 확인하고 DefaultOAuth2User 또는 CustomUserDetails로 변환
+        Object principal = authentication.getPrincipal();
 
+        CustomUserDetails user = null;
+        if (principal instanceof OAuth2User) {
+            // OAuth2User가 기본적으로 DefaultOAuth2User로 반환됨
+            OAuth2User oAuth2User = (OAuth2User) principal;
+            // 필요한 경우, OAuth2User에서 CustomUserDetails로 변환
+            user = convertToCustomUserDetails(oAuth2User);
+        }
+
+        if (user == null) {
+            throw new IllegalArgumentException("User is not authenticated properly.");
+        }
         String userId = user.getName();
         String email = user.getUsername();
 
@@ -102,7 +140,7 @@ public class JwtTokenProvider {
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-        CustomUserDetails principal = new CustomUserDetails(Long.valueOf(claims.getSubject()), claims.get(EMAIL_KEY, String.class), authorities);
+        CustomUserDetails principal = new CustomUserDetails(Long.valueOf(claims.getSubject()), claims.get(EMAIL_KEY, String.class),authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
