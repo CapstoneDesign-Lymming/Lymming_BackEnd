@@ -66,6 +66,7 @@ public class JwtTokenProvider {
     }
 
     public String createAccessToken(Authentication authentication) {
+        log.info("엑세스 터큰 발급 들어옴");
         Date now = new Date();
         Date validity = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_LENGTH);
 
@@ -74,19 +75,21 @@ public class JwtTokenProvider {
 
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
-        // 로그인 타입이 카카오 OAuth2인 경우에만 처리
-        if (principal instanceof OAuth2User) {
-            OAuth2User oAuth2User = (OAuth2User) principal;
-            // OAuth2 사용자가 카카오 로그인인지 확인 (예: provider 정보를 사용)
-            String provider = (String) oAuth2User.getAttributes().get("provider");
-            if ("kakao".equals(provider)) {
-                // 카카오 로그인일 경우에만 CustomUserDetails로 변환
-                user = convertToCustomUserDetails(oAuth2User);
-            }
-        }
+//        // 로그인 타입이 카카오 OAuth2인 경우에만 처리
+//        if (principal instanceof OAuth2User) {
+//            OAuth2User oAuth2User = (OAuth2User) principal;
+//            // OAuth2 사용자가 카카오 로그인인지 확인 (예: provider 정보를 사용)
+//            String provider = (String) oAuth2User.getAttributes().get("provider");
+//            if ("kakao".equals(provider)) {
+//                // 카카오 로그인일 경우에만 CustomUserDetails로 변환
+//                user = convertToCustomUserDetails(oAuth2User);
+//            }
+//        }
 
         String userId = user.getName();
+        log.info("userID {}", userId);
         String email = user.getUsername();
+        log.info("email {}", email);
 
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -104,6 +107,7 @@ public class JwtTokenProvider {
     }
 
     public void createRefreshToken(Authentication authentication, HttpServletResponse response) {
+        log.info("리프래시 들어옴");
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_LENGTH);
 
