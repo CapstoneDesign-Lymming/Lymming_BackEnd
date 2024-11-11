@@ -105,20 +105,20 @@ public class AuthService {
         return response;
     }
 
-    public Map<String, Object> getUserInfo(String token) {
-        log.info("getUserInfo 메소드 호출, 전달된 토큰: {}", token);
+    public Map<String, Object> getUserInfo(String header) {
+        log.info("getUserInfo 메소드 호출, 전달된 토큰: {}", header);
 
         // GitHub API URL
         String url = "https://api.github.com/user";
         log.info("GitHub API URL: {}", url);
 
         // Authorization 헤더에서 토큰 추출
-        if (token == null || !token.startsWith("Bearer ")) {
+        if (header == null || !header.startsWith("Bearer ")) {
             log.error("Authorization 헤더가 잘못된 형식입니다. Bearer 형식이 아닙니다.");
             throw new IllegalArgumentException("잘못된 토큰 형식입니다.");
         }
 
-        String accessToken = token.substring(7); // "Bearer " 이후의 토큰만 추출
+        String accessToken = header.substring(7); // "Bearer " 이후의 토큰만 추출
         log.info("추출된 토큰: {}", accessToken);
 
         // 헤더에 Authorization 추가
