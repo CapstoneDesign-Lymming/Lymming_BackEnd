@@ -18,13 +18,13 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     // Security에서 OAuth2 사용자 정보를 관리하기 위한 클래스
 
     private Long userId; // DB에 있는 고유한 사용자ID
-    private String githubId; // 깃허브에서 가져온 사용자 ID
+    private String serverNickName; // 깃허브에서 가져온 사용자 ID
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-    public CustomUserDetails(Long userId, String githubId,Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(Long userId, String serverNickName,Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
-        this.githubId = githubId;
+        this.serverNickName = serverNickName;
         this.authorities = authorities;
     }
 
@@ -35,7 +35,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
         return new CustomUserDetails(
                 user.getUserId(),
-                user.getGithubId(),
+                user.getServerNickname(),
                 authorities
         );
     }
@@ -63,7 +63,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return githubId;
+        return serverNickName;
     }
 
     @Override
