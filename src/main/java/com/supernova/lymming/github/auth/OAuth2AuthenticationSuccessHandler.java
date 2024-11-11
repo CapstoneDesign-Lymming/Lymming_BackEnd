@@ -106,7 +106,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("리프래시 토큰 생성 완료: {} - 실행 위치: {}", accessToken, getExecutionLocation());
         // 인증 정보를 바탕으로 리프레시 토큰도 생성해서 응답에 추가한다.
 
-        return "https://lymming.link/paticipate";
+        return "https://lymming.link/participate";
         // 엑세스 토큰을 포함한 최종 리다이렉트 URL을 반환한다.
         // 어디로? 이 메소드를 실행한 곳으로
     }
