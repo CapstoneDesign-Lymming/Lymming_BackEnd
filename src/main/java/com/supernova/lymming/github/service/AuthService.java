@@ -10,6 +10,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class AuthService {
 
     private final RestTemplate restTemplate;
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     @Value("${custom.jwt.secretKey}") // 적절한 비밀 키 사용
     private String secretKey;
@@ -29,49 +32,83 @@ public class AuthService {
     }
 
     public ResponseEntity<?> validateToken(String token) {
+        log.info("validateToken 메소드 호출, 전달된 토큰: {}", token);
+
         String url = "https://api.github.com/user"; // GitHub API 엔드포인트
+        log.info("GitHub API URL: {}", url);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
+        log.info("헤더에 Authorization 추가: Bearer {}", token);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        log.info("HTTP 엔티티 생성 완료");
+
+        ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        log.info("GitHub API 응답: {}", response);
+
+        return response;
     }
 
     public Map<String, Object> getUserInfo(String token) {
+        log.info("getUserInfo 메소드 호출, 전달된 토큰: {}", token);
+
         String url = "https://api.github.com/user"; // GitHub API 엔드포인트
+        log.info("GitHub API URL: {}", url);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
+        log.info("헤더에 Authorization 추가: Bearer {}", token);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
+        log.info("HTTP 엔티티 생성 완료");
+
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+        log.info("GitHub API 응답: {}", response);
 
         // GitHub에서 사용자 정보를 반환
-        return response.getBody();
+        Map<String, Object> userInfo = response.getBody();
+        log.info("사용자 정보: {}", userInfo);
+
+        return userInfo;
     }
 
     public String createJwt(Map<String, Object> userInfo) {
-        String username = (String) userInfo.get("login"); // GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
-        // 추가적인 사용자 정보 처리
+        log.info("createJwt 메소드 호출, 사용자 정보: {}", userInfo);
 
-        return Jwts.builder()
+        String username = (String) userInfo.get("login"); // GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
+        log.info("사용자 이름: {}", username);
+
+        String jwt = Jwts.builder()
                 .setSubject(username) // JWT의 주체 설정
                 .setIssuedAt(new Date()) // 발급 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
                 .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
                 .compact(); // JWT 생성
+        log.info("생성된 JWT: {}", jwt);
+
+        return jwt;
     }
 
     public GithubUser getServerNickName(String accessToken) {
+        log.info("getServerNickName 메소드 호출, 전달된 토큰: {}", accessToken);
+
         String url = "https://api.github.com/user"; // GitHub API 엔드포인트
+        log.info("GitHub API URL: {}", url);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
+        log.info("헤더에 Authorization 추가: Bearer {}", accessToken);
+
         HttpEntity<String> entity = new HttpEntity<>(headers);
+        log.info("HTTP 엔티티 생성 완료");
 
         ResponseEntity<GithubUser> response = restTemplate.exchange(url, HttpMethod.GET, entity, GithubUser.class);
+        log.info("GitHub API 응답: {}", response);
 
-        return response.getBody(); // GithubUser 객체를 반환
+        GithubUser githubUser = response.getBody();
+        log.info("GitHub 사용자 정보: {}", githubUser);
+
+        return githubUser; // GithubUser 객체를 반환
     }
 }
