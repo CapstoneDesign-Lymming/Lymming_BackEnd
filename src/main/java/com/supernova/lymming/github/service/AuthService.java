@@ -19,7 +19,7 @@ public class AuthService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${JWT_SECRET_KEY}") // 적절한 비밀 키 사용
+    @Value("${custom.jwt.secretKey}") // 적절한 비밀 키 사용
     private String secretKey;
 
     private final long EXPIRATION_TIME = 86400000; // JWT 만료 시간 (예: 1일)
