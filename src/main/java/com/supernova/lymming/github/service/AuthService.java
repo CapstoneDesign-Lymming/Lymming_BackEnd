@@ -123,8 +123,10 @@ public class AuthService {
 
         // 헤더에 Authorization 추가
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-        log.info("헤더에 Authorization 추가: Bearer {}", accessToken);
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        log.info("추가된 headers: {}", headers);
 
         // HTTP 엔티티 생성
         HttpEntity<String> entity = new HttpEntity<>(headers);
