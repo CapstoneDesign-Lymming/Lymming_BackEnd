@@ -79,3 +79,7 @@ app:
 logging:
   level:
     com.supernova.lymming: info
+
+---
+server:
+  forward-headers-strategy: native
