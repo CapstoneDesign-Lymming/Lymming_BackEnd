@@ -36,6 +36,7 @@ public class AuthController {
         // Access Token 유효성 검사 및 사용자 정보 가져오기
         try {
             // GitHub API를 통해 Access Token 유효성 검사
+            log.info("Try 문 들어옴");
             ResponseEntity<?> githubResponse = authService.validateToken(accessToken);
             // authService의 validateToken 메소드를 호출해 엑세스 토큰 유효성을 검사한다,
 
@@ -44,12 +45,15 @@ public class AuthController {
             }
 
             Map<String, Object> userInfo = authService.getUserInfo(accessToken);
+            log.info("userInfo: " + userInfo);
             // 엑세스 토큰을 사용해 깃허브에서 사용자 정보를 가져온다.
 
             GithubUser githubUserDto = authService.getServerNickName(accessToken);
+            log.info("githubUserDto: " + githubUserDto);
             // 사용자 정보를 DTO 형태로 변환하고 GithubUser 갹채애 사용자 정보를 담는다.
 
             String jwt = authService.createJwt(userInfo);
+            log.info("jwt: " + jwt);
             // 사용자 정보를 바탕으로 JWT 토큰을 생성한다.
 
             return ResponseEntity.ok(Map.of("jwt", jwt, "user", githubUserDto));
