@@ -112,13 +112,20 @@ public class AuthService {
         String url = "https://api.github.com/user";
         log.info("GitHub API URL: {}", url);
 
-        // "Bearer "를 포함한 토큰을 헤더에 추가
-        String bearerToken = "Bearer " + token;  // "Bearer " 추가
-        log.info("헤더에 Authorization 추가: {}", bearerToken);
+        // Authorization 헤더에서 토큰 추출
+        HttpHeaders headers = new HttpHeaders();
+        if (token == null || !token.startsWith("Bearer ")) {
+            log.error("Authorization 헤더가 잘못된 형식입니다. Bearer 형식이 아닙니다.");
+        } else {
+            String accessToken = token.substring(7); // "Bearer " 이후의 토큰만 추출
+            log.info("추출된 토큰: {}", accessToken);
+
+            // 헤더에 Authorization 추가
+            headers.set("Authorization", "Bearer " + accessToken);
+            log.info("헤더에 Authorization 추가: Bearer {}", accessToken);
+        }
 
         // HTTP 엔티티 생성
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", bearerToken); // "Bearer " 포함된 토큰 사용
         HttpEntity<String> entity = new HttpEntity<>(headers);
         log.info("HTTP 엔티티 생성 완료");
 
@@ -132,6 +139,7 @@ public class AuthService {
 
         return userInfo;
     }
+
 
     public String createJwt(Map<String, Object> userInfo) {
         log.info("createJwt 메소드 호출, 사용자 정보: {}", userInfo);
