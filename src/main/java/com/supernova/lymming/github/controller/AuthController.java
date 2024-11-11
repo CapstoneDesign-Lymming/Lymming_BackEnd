@@ -30,6 +30,7 @@ public class AuthController {
         log.info("GitHub login request received.");
 
         String accessToken = request.get("accessToken");
+        log.info("accessToken: " + accessToken);
         // 요청 본문에서 엑세트 토큰을 추출
 
         // Access Token 유효성 검사 및 사용자 정보 가져오기
