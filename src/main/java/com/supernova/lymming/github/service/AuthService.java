@@ -118,8 +118,7 @@ public class AuthService {
             throw new IllegalArgumentException("잘못된 토큰 형식입니다.");
         }
 
-        // "Bearer " 이후의 토큰만 추출
-        String accessToken = token.substring(7);
+        String accessToken = token.substring(7); // "Bearer " 이후의 토큰만 추출
         log.info("추출된 토큰: {}", accessToken);
 
         // 헤더에 Authorization 추가
@@ -141,7 +140,6 @@ public class AuthService {
 
         return userInfo;
     }
-
 
 
     public String createJwt(Map<String, Object> userInfo) {
