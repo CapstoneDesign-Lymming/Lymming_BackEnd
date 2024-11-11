@@ -23,7 +23,7 @@ public class AuthController {
 
     // GitHub 액세스 토큰을 사용하여 JWT 생성
     @PostMapping("/api/login/code/github")
-    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
+    @CrossOrigin(origins = {"https://lymming.link", "https://lymming-back.link"}, maxAge = 3600)
     public ResponseEntity<?> loginWithGithub(@RequestBody Map<String, String> request) {
         // 경로로 들어오는 POST 요청을 처리하는 메소드로 요청 본문은 Map<String,String> 형태로 받는다
         // 이때 요청 본문에는 엑세스 토큰도 포함된다.
