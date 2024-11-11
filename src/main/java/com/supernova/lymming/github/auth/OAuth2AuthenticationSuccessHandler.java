@@ -37,7 +37,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("인증 성공: 사용자 {} - 실행 위치: {}", authentication.getName(), getExecutionLocation());
 
-        String targetUrl = "https://lymming.link";
+        String targetUrl = "https://lymming.link/api/callback";
         // deterMineTargetUrl 메소드를 호출 해서 사용자가 인증에 성공한 후 사용자가 이동하게 될 최종 URL
         // 이 url은 인증 다음단계로 이동하는데 사용된다.
         // 즉, 인증에 성공했다는 뜻
