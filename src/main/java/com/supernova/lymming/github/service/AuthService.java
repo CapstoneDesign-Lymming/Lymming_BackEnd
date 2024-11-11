@@ -4,16 +4,14 @@ import com.supernova.lymming.github.dto.GithubUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -22,14 +20,47 @@ public class AuthService {
     private final RestTemplate restTemplate;
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
-    @Value("${custom.jwt.secretKey}") // 적절한 비밀 키 사용
+    @Value("${custom.jwt.secretKey}")
     private String secretKey;
+
+    @Value("${spring.security.oauth2.client.registration.github.client-id}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.client.registration.github.client-secret}")
+    private String clientSecret;
 
     private final long EXPIRATION_TIME = 86400000; // JWT 만료 시간 (예: 1일)
 
     public AuthService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
+
+    // 인가 코드를 가지고 GitHub에서 액세스 토큰을 요청
+    public String getAccessToken(String code) {
+        String url = "https://github.com/login/oauth/access_token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        Map<String, String> body = Map.of(
+                "client_id", clientId,
+                "client_secret", clientSecret,
+                "code", code
+        );
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, requestEntity, Map.class);
+
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            String accessToken = (String) response.getBody().get("access_token");
+            return accessToken;
+        }
+
+        return null;
+    }
+
 
     public ResponseEntity<?> validateToken(String token) {
         // 전달된 토큰이 null인 경우 로그 출력
