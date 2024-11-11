@@ -15,7 +15,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "login_type")
@@ -62,12 +62,12 @@ public class User {
     @Column(name = "interests")
     private String interests;
 
-    @Column(name = "github_id")
-    private String githubId;
+    @Column(name = "server_nickname")
+    private String serverNickname;
 
-    public User(Long userId, String githubId, LoginType loginType) {
+    public User(Long userId, String serverNickname, LoginType loginType) {
         this.userId = userId;
-        this.githubId = githubId;
+        this.serverNickname = serverNickname;
         this.loginType = loginType;
 
     }
@@ -81,7 +81,7 @@ public class User {
         return "User{" +
                 "userId=" + userId +
                 ", loginType=" + loginType +
-                ", githubId='" + githubId + '\'' +
+                ", githubId='" + serverNickname + '\'' +
                 '}';
     }
 

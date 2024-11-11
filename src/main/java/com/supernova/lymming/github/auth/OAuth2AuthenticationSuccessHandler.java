@@ -28,7 +28,7 @@ import static com.supernova.lymming.github.repository.CookieAuthorizationRequest
 @Log4j2
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Value("${GITHUB_REDIRECT_URI}")
+    @Value("${spring.security.oauth2.client.registration.github.redirect-uri}")
     private String redirectUri;
     private final JwtTokenProvider tokenProvider;
     private final CookieAuthorizationRequestRepository authorizationRequestRepository;
@@ -37,7 +37,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("인증 성공: 사용자 {} - 실행 위치: {}", authentication.getName(), getExecutionLocation());
 
-        String targetUrl = deterMineTargetUrl(request, response, authentication);
+        String targetUrl = "https://lymming.link";
         // deterMineTargetUrl 메소드를 호출 해서 사용자가 인증에 성공한 후 사용자가 이동하게 될 최종 URL
         // 이 url은 인증 다음단계로 이동하는데 사용된다.
         // 즉, 인증에 성공했다는 뜻

@@ -12,13 +12,13 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByGithubId(String githubId);
+    Optional<User> findByServerNickname(String ServerNickname);
 
     @Modifying
     @Query(value="UPDATE User u SET u.refreshToken=:token WHERE u.userId=:userId")
     @Transactional
     void updateRefreshToken(@Param("userId") Long userId, @Param("token") String refreshToken);
 
-    @Query("Select u.refreshToken FROM User u WHERE u.userId=:id")
-    String getRefreshTokenById(@Param("id") Long id);
+    @Query("Select u.refreshToken FROM User u WHERE u.userId =:userId")
+    String getRefreshTokenById(@Param("userId") Long userId);
 }
