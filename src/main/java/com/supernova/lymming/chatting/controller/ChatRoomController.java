@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
+
+
 
 
     @PostMapping("/chat/room/create")
@@ -52,3 +54,4 @@ public class ChatRoomController {
 
 
 }
+

@@ -1,5 +1,6 @@
 package com.supernova.lymming.chatting.config;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,13 +15,14 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
     /*클라이언트가 웹 소켓 서버에 연결하는데 사용할 웹 소켓 엔드포인트 등록
 	  withSockJS를 통해 웹 소켓을 지원하지 않는 브라우저에 대해 웹 소켓을 대체한다.
 	  +)메소드명에 STOMP가 들어가는 경우 통신 프로토콜인 STOMP구현에서 작동된다. */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chatting") // 프론트엔드 주소 허용
-                .setAllowedOrigins("*") // 명시적인 출처 설정
+                .setAllowedOrigins("https://lymming.link"," http://localhost:5173") // 명시적인 출처 설정
                 .withSockJS();
         // 아래 줄은 필요하지 않으므로 삭제합니다.
         // registry.addEndpoint("/chatting").setAllowedOrigins("*").withSockJS();

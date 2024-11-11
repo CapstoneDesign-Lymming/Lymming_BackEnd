@@ -77,9 +77,13 @@ public class BoardService {
         for (BoardEntity board : boardList) {
             Long userId = board.getUser().getUserId();  // UserId는 BoardEntity의 User 객체에서 가져오기
 
+            System.out.println("유저 아이디: "+ userId);
+            System.out.println("유저 아이디: "+ board.getUser().getNickname());
+
             BoardDto boardDto = new BoardDto(
                     board.getProjectId(),
                     userId,  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
+                    board.getUser().getNickname(),
                     board.getStudyType(),
                     board.getUploadTime(),
                     board.getRecruitmentField(),
@@ -119,10 +123,12 @@ public class BoardService {
 
         return new BoardDto(
                 board.getProjectId(),
-                userId,  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
+                userId,
+                board.getUser().getNickname(),// 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
                 board.getStudyType(),
                 board.getUploadTime(),
                 board.getRecruitmentField(),
+
                 board.getDescription(),
                 board.getWorkType(),
                 board.getTechStack(),
