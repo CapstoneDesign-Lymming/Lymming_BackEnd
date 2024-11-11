@@ -32,7 +32,12 @@ public class AuthService {
     }
 
     public ResponseEntity<?> validateToken(String token) {
-        log.info("validateToken 메소드 호출, 전달된 토큰: {}", token);
+        // 전달된 토큰이 null인 경우 로그 출력
+        if (token == null) {
+            log.error("전달된 토큰이 null입니다.");
+        } else {
+            log.info("전달된 토큰: {}", token);
+        }
 
         String url = "https://api.github.com/user"; // GitHub API 엔드포인트
         log.info("GitHub API URL: {}", url);
@@ -44,6 +49,7 @@ public class AuthService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
         log.info("HTTP 엔티티 생성 완료");
 
+        // GitHub API 호출
         ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         log.info("GitHub API 응답: {}", response);
 
