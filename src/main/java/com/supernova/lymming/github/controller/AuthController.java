@@ -38,6 +38,7 @@ public class AuthController {
             // GitHub API를 통해 Access Token 유효성 검사
             log.info("Try 문 들어옴");
             ResponseEntity<?> githubResponse = authService.validateToken(accessToken);
+            log.info("githubResponse: " + githubResponse);
             // authService의 validateToken 메소드를 호출해 엑세스 토큰 유효성을 검사한다,
 
             if (githubResponse.getStatusCode() != HttpStatus.OK) {
