@@ -1,5 +1,8 @@
 package com.supernova.lymming.github.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supernova.lymming.github.dto.GithubUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -121,7 +125,7 @@ public class AuthService {
         String accessToken = header.substring(7); // "Bearer " 이후의 토큰만 추출
         log.info("추출된 토큰: {}", accessToken);
 
-        // 헤더에 Authorization 추가
+        // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -133,11 +137,35 @@ public class AuthService {
         log.info("HTTP 엔티티 생성 완료");
 
         // GitHub API 호출
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
         log.info("GitHub API 응답: {}", response);
 
         // GitHub에서 사용자 정보 반환
-        Map<String, Object> userInfo = response.getBody();
+        String responseBody = response.getBody();
+        log.info("GitHub API 응답 본문: {}", responseBody);
+
+        // 응답 본문을 JSON으로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = objectMapper.readTree(responseBody);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error parsing the response from GitHub API");
+        }
+
+        // GitHub API에서 사용자 정보 처리
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("id", jsonNode.get("id").asText());
+        userInfo.put("login", jsonNode.get("login").asText());
+        userInfo.put("name", jsonNode.get("name").asText());
+        userInfo.put("email", jsonNode.get("email").asText());
+
         log.info("사용자 정보: {}", userInfo);
 
         return userInfo;
