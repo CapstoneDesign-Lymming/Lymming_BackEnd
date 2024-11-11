@@ -37,7 +37,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("인증 성공: 사용자 {} - 실행 위치: {}", authentication.getName(), getExecutionLocation());
 
-        String targetUrl = deterMineTargetUrl(request, response, authentication);;
+        String targetUrl = deterMineTargetUrl(request, response, authentication);
         // deterMineTargetUrl 메소드를 호출 해서 사용자가 인증에 성공한 후 사용자가 이동하게 될 최종 URL
         // 이 url은 인증 다음단계로 이동하는데 사용된다.
         // 즉, 인증에 성공했다는 뜻
@@ -106,9 +106,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("리프래시 토큰 생성 완료: {} - 실행 위치: {}", accessToken, getExecutionLocation());
         // 인증 정보를 바탕으로 리프레시 토큰도 생성해서 응답에 추가한다.
 
-        return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("accessToken", accessToken)
-                .build().toUriString();
+        return "https://lymming.link/paticipate";
         // 엑세스 토큰을 포함한 최종 리다이렉트 URL을 반환한다.
         // 어디로? 이 메소드를 실행한 곳으로
     }
