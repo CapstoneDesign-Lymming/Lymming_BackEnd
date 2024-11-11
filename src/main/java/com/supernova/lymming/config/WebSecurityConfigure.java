@@ -67,7 +67,7 @@ public class WebSecurityConfigure {
                 // 사용자 인증 요청을 쿠키에 저장하는 구현체
                 // 인증 요청과 관련된 상태 정보를 관리
                 .and()
-                .redirectionEndpoint().baseUri("/api/login/oauth2/redirect/github")
+                .redirectionEndpoint().baseUri("/api/callback")
                 //OAuth 인증이 완료된 후 사용자가 리다이렉트 될 엔드포인트의 기본 URI
                 // 이 엔드포인트에서 엑세스 토큰 발급
                 // 엑세스 토큰을 사용해 사용자 정보 가져올 수 있다.

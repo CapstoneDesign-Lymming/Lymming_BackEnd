@@ -67,25 +67,30 @@ public class JwtTokenProvider {
     }
 
     public String createAccessToken(Authentication authentication) {
+        log.info("엑세스 터큰 발급 들어옴");
         Date now = new Date();
         Date validity = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_LENGTH);
 
         // authentication.getPrincipal()을 확인하고 DefaultOAuth2User 또는 CustomUserDetails로 변환
         Object principal = authentication.getPrincipal();
 
-        CustomUserDetails user = null;
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+
+        // 로그인 타입이 카카오 OAuth2인 경우에만 처리
         if (principal instanceof OAuth2User) {
-            // OAuth2User가 기본적으로 DefaultOAuth2User로 반환됨
             OAuth2User oAuth2User = (OAuth2User) principal;
-            // 필요한 경우, OAuth2User에서 CustomUserDetails로 변환
-            user = convertToCustomUserDetails(oAuth2User);
+            // OAuth2 사용자가 카카오 로그인인지 확인 (예: provider 정보를 사용)
+            String provider = (String) oAuth2User.getAttributes().get("provider");
+            if ("kakao".equals(provider)) {
+                // 카카오 로그인일 경우에만 CustomUserDetails로 변환
+                user = convertToCustomUserDetails(oAuth2User);
+            }
         }
 
-        if (user == null) {
-            throw new IllegalArgumentException("User is not authenticated properly.");
-        }
         String userId = user.getName();
+        log.info("userID {}", userId);
         String email = user.getUsername();
+        log.info("email {}", email);
 
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -103,6 +108,7 @@ public class JwtTokenProvider {
     }
 
     public void createRefreshToken(Authentication authentication, HttpServletResponse response) {
+        log.info("리프래시 들어옴");
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_LENGTH);
 
@@ -127,8 +133,8 @@ public class JwtTokenProvider {
     private void saveRefreshToken(Authentication authentication, String refreshToken) {
 
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        long userId = Long.parseLong(user.getName());
-        userRepository.updateRefreshToken(userId, refreshToken);
+        long id = Long.parseLong(user.getName());
+        userRepository.updateRefreshToken(id, refreshToken);
     }
 
     public Authentication getAuthentication(String accessToken) {

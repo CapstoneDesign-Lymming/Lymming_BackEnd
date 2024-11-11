@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
 
     // GitHub 액세스 토큰을 사용하여 JWT 생성
-    @PostMapping("/login/github")
+    @PostMapping("/api/login/code/github")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<?> loginWithGithub(@RequestBody Map<String, String> request) {
         // 경로로 들어오는 POST 요청을 처리하는 메소드로 요청 본문은 Map<String,String> 형태로 받는다
@@ -45,7 +45,7 @@ public class AuthController {
             Map<String, Object> userInfo = authService.getUserInfo(accessToken);
             // 엑세스 토큰을 사용해 깃허브에서 사용자 정보를 가져온다.
 
-            GithubUser githubUserDto = authService.getGitHubUser(accessToken);
+            GithubUser githubUserDto = authService.getServerNickName(accessToken);
             // 사용자 정보를 DTO 형태로 변환하고 GithubUser 갹채애 사용자 정보를 담는다.
 
             String jwt = authService.createJwt(userInfo);
@@ -59,7 +59,8 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/api/refresh")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     // 토큰 갱신 요청을 처리하는 앤드포인트
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         // HTTP 요청과 응답을 처리하는 메소드

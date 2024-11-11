@@ -9,8 +9,7 @@ public class GithubOAuth2UserInfo {
         this.attributes = attributes;
     }
 
-    public String getServerNickname() {
+    public String getServerNickName() {
         return (String) attributes.get("login");  // GitHub의 로그인 ID를 가져옵니다.
     }
 }
-

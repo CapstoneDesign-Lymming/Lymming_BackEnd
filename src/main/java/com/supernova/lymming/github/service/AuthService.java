@@ -63,7 +63,7 @@ public class AuthService {
                 .compact(); // JWT 생성
     }
 
-    public GithubUser getGitHubUser(String accessToken) {
+    public GithubUser getServerNickName(String accessToken) {
         String url = "https://api.github.com/user"; // GitHub API 엔드포인트
 
         HttpHeaders headers = new HttpHeaders();

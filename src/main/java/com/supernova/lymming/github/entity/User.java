@@ -16,10 +16,8 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id") //이거 테이블 user_id로 바꿔야함
+    @Column(name = "user_id")
     private Long userId;
-
-    private Long uid;
 
     @Column(name = "login_type")
     @Enumerated(EnumType.STRING)
@@ -84,7 +82,7 @@ public class User {
         return "User{" +
                 "userId=" + userId +
                 ", loginType=" + loginType +
-                ", serverNickname='" + serverNickname + '\'' +
+                ", githubId='" + serverNickname + '\'' +
                 '}';
     }
 
