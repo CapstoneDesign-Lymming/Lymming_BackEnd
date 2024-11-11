@@ -37,27 +37,45 @@ public class AuthService {
 
     // 인가 코드를 가지고 GitHub에서 액세스 토큰을 요청
     public String getAccessToken(String code) {
-        String url = "https://github.com/login/oauth/access_token";
+        log.info("getAccessToken 메소드 들어옴");
 
+        // GitHub의 OAuth 액세스 토큰 엔드포인트 URL
+        String url = "https://github.com/login/oauth/access_token";
+        log.info("url: " + url);
+
+        // 요청 헤더 설정: Content-Type 및 Accept 헤더를 JSON으로 지정
         HttpHeaders headers = new HttpHeaders();
+        log.info("headers 생성");
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
+        log.info("설정된 headers:{}", headers);
+
+        // 요청 본문 설정: 클라이언트 ID, 클라이언트 시크릿, 인가 코드 포함
         Map<String, String> body = Map.of(
-                "client_id", clientId,
-                "client_secret", clientSecret,
-                "code", code
+                "client_id", clientId,           // GitHub OAuth 애플리케이션의 클라이언트 ID
+                "client_secret", clientSecret,   // GitHub OAuth 애플리케이션의 클라이언트 시크릿
+                "code", code                     // 클라이언트로부터 전달받은 인가 코드
         );
 
+        // HttpEntity 객체 생성: 요청 헤더와 본문을 포함
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
+        log.info("HttpEntity 객체인 requestEntity:{}", requestEntity);
+
+        // GitHub에 POST 요청 전송, 응답을 ResponseEntity로 받음
         ResponseEntity<Map> response = restTemplate.postForEntity(url, requestEntity, Map.class);
 
+        log.info("response:{}", response);
+
+        // 응답 상태가 200 OK이고, 응답 본문이 비어 있지 않은 경우 액세스 토큰 추출
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            String accessToken = (String) response.getBody().get("access_token");
-            return accessToken;
+            String accessToken = (String) response.getBody().get("access_token"); // 액세스 토큰 추출
+            return accessToken; // 액세스 토큰 반환
         }
 
+        // 액세스 토큰을 받지 못한 경우 null 반환
         return null;
     }
 
