@@ -41,6 +41,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
     }
 
     public User createUser(GithubOAuth2UserInfo userInfo) {
+        log.info("메소드 들어오ㅘㅆ다 정보 저장 시작");
         // GitHub 정보로 사용자 객체 생성
         User user = User.builder()
                 .serverNickname(userInfo.getServerNickName())
@@ -54,6 +55,8 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
                 .devStyle("") // 초기값 설정 후, 사용자 입력 필요
                 .loginType(LoginType.Github)
                 .build();
+        log.info("serverNickname : " + userInfo.getServerNickName());
+        log.info("stack: {}",user.getStack());
         return userRepository.save(user); // 사용자 저장
     }
 
