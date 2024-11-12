@@ -1,6 +1,8 @@
 package com.supernova.lymming.github.controller;
 
+import com.supernova.lymming.github.auth.CustomOAuthUserService;
 import com.supernova.lymming.github.auth.CustomUserDetails;
+import com.supernova.lymming.github.auth.GithubOAuth2UserInfo;
 import com.supernova.lymming.github.dto.SignupDto;
 import com.supernova.lymming.github.entity.Gender;
 import com.supernova.lymming.github.entity.LoginType;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -46,10 +50,9 @@ public class GithubUserController {
 
         System.out.println(refreshToken+"토큰");
 
-        User existingUser = userRepository.findByRefreshToken(refreshToken)
+        User existingUser = userRepository.findByServerNickname(refreshToken)
                 .orElseThrow(()->new IllegalStateException("등록된유저가 아닙니다"));
 
-        // userID를 사용해 DB에서 기존 사용자인지 검사한다,
 
         if (userUpdateDto.getNickname() != null) {
             existingUser.setNickname(userUpdateDto.getNickname());
@@ -59,14 +62,11 @@ public class GithubUserController {
             existingUser.setStack(userUpdateDto.getStack().toString());
             log.info("Stack은: {}", existingUser.getStack().toString());
         }
-//        if (userUpdateDto.getUserImg() != null) {
-//            existingUser.setUserImg(userUpdateDto.getUserImg().toString());
-//            log.info("UserImg은: {}", existingUser.getStack().toString());
-//        }
-//        if (userUpdateDto.getLoginType()!= null) {
-//            existingUser.setLoginType(LoginType.valueOf(userUpdateDto.getLoginType().toString()));
-//            log.info("Login Type 은: {}", existingUser.getLoginType().toString());
-//        }
+        if (userUpdateDto.getUserImg() != null) {
+            existingUser.setUserImg(userUpdateDto.getUserImg().toString());
+            log.info("UserImg은: {}", existingUser.getStack().toString());
+        }
+
         if (userUpdateDto.getGender() != null) {
             existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));
             log.info("Gender은 : {}", existingUser.getGender());
@@ -93,5 +93,7 @@ public class GithubUserController {
         User updatedUser = userRepository.save(existingUser); // 변경사항 저장
 
         return ResponseEntity.ok(updatedUser); // 업데이트된 사용자 정보 반환
+
+
     }
 }
