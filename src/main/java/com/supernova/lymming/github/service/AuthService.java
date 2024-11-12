@@ -99,6 +99,7 @@ public class AuthService {
         headers.add("Authorization", "Bearer " + token); // Bearer 접두사 포함
         log.info("헤더에 Authorization 추가: Bearer {}", token);
 
+
         HttpEntity<String> entity = new HttpEntity<>(headers);
         log.info("HTTP 엔티티 생성 완료");
 
@@ -109,22 +110,22 @@ public class AuthService {
         return response;
     }
 
-    public Map<String, Object> getUserInfo(String header) {
-        log.info("getUserInfo 메소드 호출, 전달된 토큰: {}", header);
+    public Map<String, Object> getUserInfo(String headers) {
+        log.info("getUserInfo 메소드 호출, 전달된 토큰: {}", headers);
 
         // GitHub API URL
         String url = "https://api.github.com/user";
         log.info("GitHub API URL: {}", url);
 
-        log.info("header 확인하기:{}", header);
+        log.info("header 확인하기:{}", headers);
 
         // Authorization 헤더에서 토큰 추출
-        if (header == null || !header.startsWith("Bearer ")) {
+        if (headers == null || !headers.startsWith("Bearer ")) {
             log.error("Authorization 헤더가 잘못된 형식입니다. Bearer 형식이 아닙니다.");
             throw new IllegalArgumentException("잘못된 토큰 형식입니다.");
         }
 
-        String accessToken = header.substring(7); // "Bearer " 이후의 토큰만 추출
+        String accessToken = headers.substring(7); // "Bearer " 이후의 토큰만 추출
         log.info("추출된 토큰: {}", accessToken);
 
         // HTTP Header 생성
