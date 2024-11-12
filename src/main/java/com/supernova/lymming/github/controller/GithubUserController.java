@@ -37,16 +37,11 @@ public class GithubUserController {
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<User> updateUser(@AuthenticationPrincipal CustomUserDetails user,
                                            @RequestBody SignupDto userUpdateDto) {
-        // 현재 인증된 사용자의 정보를 CustomUserDetails 객체로 주입받아 사용자 정보에 접근 가능
 
-//        Long userId = user.getUserId();\
-//        // 현재 인증 된 사용자의 ID를 가져온다.
-//
-//        User existingUser = userRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalStateException("등록된 유저가 아닙니다."));
-
+        log.info("회원가입 메소드 들어옴");
 
         String refreshToken = userUpdateDto.getRefreshToken();
+        log.info("회원가입 사용자의 refreshToken: {}", refreshToken);
 
         System.out.println(refreshToken+"토큰");
 
@@ -55,21 +50,25 @@ public class GithubUserController {
 
         // userID를 사용해 DB에서 기존 사용자인지 검사한다,
 
-        // 필드 업데이트 - null이 아닌 경우에만 업데이트
         if (userUpdateDto.getNickname() == null) {
             existingUser.setNickname(userUpdateDto.getNickname());
+            log.info("NickName은: {}", existingUser.getNickname());
         }
         if (userUpdateDto.getStack() == null) {
             existingUser.setStack(userUpdateDto.getStack().toString());
+            log.info("Stack은: {}", existingUser.getStack().toString());
         }
         if (userUpdateDto.getGender() == null) {
             existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));
+            log.info("Gender은 : {}", existingUser.getGender());
         }
         if (userUpdateDto.getJob() == null) {
             existingUser.setJob(userUpdateDto.getJob());
+            log.info("직업은 : {}", existingUser.getJob());
         }
         if (userUpdateDto.getBio() == null) {
             existingUser.setBio(userUpdateDto.getBio());
+            log.info("한줄소개는 : {}", existingUser.getBio());
         }
         if (userUpdateDto.getFavorites() == null) {
             existingUser.setFavorites(userUpdateDto.getFavorites());
@@ -79,6 +78,7 @@ public class GithubUserController {
         }
         if (userUpdateDto.getDevStyle() == null) {
             existingUser.setDevStyle(userUpdateDto.getDevStyle());
+            log.info("개발 스타일은 : {}", existingUser.getDevStyle());
         }
 
         User updatedUser = userRepository.save(existingUser); // 변경사항 저장
