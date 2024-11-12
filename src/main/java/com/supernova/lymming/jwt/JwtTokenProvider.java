@@ -95,7 +95,7 @@ public class JwtTokenProvider {
             } else {
                 user = (CustomUserDetails) principal;
             }
-            if (user != null) {
+            if (user == null) {
                 throw new IllegalArgumentException("로그인 된 사용자를 찾을 수 없습니다");
             }
         }
