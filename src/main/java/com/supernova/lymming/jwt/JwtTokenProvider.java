@@ -78,12 +78,18 @@ public class JwtTokenProvider {
 
         // 로그인 타입이 카카오 OAuth2인 경우에만 처리
         if (principal instanceof OAuth2User) {
+            log.info("카카오 로그인 타입 확인하는 조건문 들어옴");
             OAuth2User oAuth2User = (OAuth2User) principal;
+            log.info("카카오 로그인 타입 확인하는 oAuth2User:{}", oAuth2User);
+
             // OAuth2 사용자가 카카오 로그인인지 확인 (예: provider 정보를 사용)
             String provider = (String) oAuth2User.getAttributes().get("provider");
-            if ("kakao".equals(provider)) {
+            log.info("카카오 로그인 타입 확인하는  provider:{}", provider);
+            if ("Kakao".equals(provider)) {
+                log.info("Kakao 와 provider가 같다");
                 // 카카오 로그인일 경우에만 CustomUserDetails로 변환
                 user = convertToCustomUserDetails(oAuth2User);
+                log.info("user:{}", user);
             }
         }
 
