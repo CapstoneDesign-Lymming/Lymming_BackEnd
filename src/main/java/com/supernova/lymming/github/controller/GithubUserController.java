@@ -50,33 +50,33 @@ public class GithubUserController {
 
         // userID를 사용해 DB에서 기존 사용자인지 검사한다,
 
-        if (userUpdateDto.getNickname() == null) {
+        if (userUpdateDto.getNickname() != null) {
             existingUser.setNickname(userUpdateDto.getNickname());
             log.info("NickName은: {}", existingUser.getNickname());
         }
-        if (userUpdateDto.getStack() == null) {
+        if (userUpdateDto.getStack() != null) {
             existingUser.setStack(userUpdateDto.getStack().toString());
             log.info("Stack은: {}", existingUser.getStack().toString());
         }
-        if (userUpdateDto.getGender() == null) {
+        if (userUpdateDto.getGender() != null) {
             existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));
             log.info("Gender은 : {}", existingUser.getGender());
         }
-        if (userUpdateDto.getJob() == null) {
+        if (userUpdateDto.getJob() != null) {
             existingUser.setJob(userUpdateDto.getJob());
             log.info("직업은 : {}", existingUser.getJob());
         }
-        if (userUpdateDto.getBio() == null) {
+        if (userUpdateDto.getBio() != null) {
             existingUser.setBio(userUpdateDto.getBio());
             log.info("한줄소개는 : {}", existingUser.getBio());
         }
-        if (userUpdateDto.getFavorites() == null) {
+        if (userUpdateDto.getFavorites() != null) {
             existingUser.setFavorites(userUpdateDto.getFavorites());
         }
-        if (userUpdateDto.getInterests() == null) {
+        if (userUpdateDto.getInterests() != null) {
             existingUser.setInterests(userUpdateDto.getInterests().toString());
         }
-        if (userUpdateDto.getDevStyle() == null) {
+        if (userUpdateDto.getDevStyle() != null) {
             existingUser.setDevStyle(userUpdateDto.getDevStyle());
             log.info("개발 스타일은 : {}", existingUser.getDevStyle());
         }
