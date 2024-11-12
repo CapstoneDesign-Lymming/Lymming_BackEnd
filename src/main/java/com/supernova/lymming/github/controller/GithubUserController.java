@@ -23,6 +23,7 @@ import java.util.Map;
 public class GithubUserController {
 
     private final UserRepository userRepository;
+    private final CustomOAuthUserService customOAuthUserService;
 
     @GetMapping("/api/auth/current-user")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
@@ -52,7 +53,6 @@ public class GithubUserController {
 
         User existingUser = userRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(()->new IllegalStateException("등록된유저가 아닙니다"));
-
 
         if (userUpdateDto.getNickname() != null) {
             existingUser.setNickname(userUpdateDto.getNickname());

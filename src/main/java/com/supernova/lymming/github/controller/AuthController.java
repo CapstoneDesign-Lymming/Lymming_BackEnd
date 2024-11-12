@@ -67,9 +67,6 @@ public class AuthController {
             GithubUser githubUserDto = authService.getServerNickName(accessToken);
             log.info("GithubUser DTO 생성 완료: {}", githubUserDto);
 
-//            customOAuthUserService.createUser(new GithubOAuth2UserInfo(userInfo)); // 사용자 정보 저장
-//            log.info("사용자 정보 저장 완료");
-
             log.info("JWT 토큰 생성 시작");
 
             String jwt = authService.createJwt(userInfo);

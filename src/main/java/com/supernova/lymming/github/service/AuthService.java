@@ -17,10 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AuthService {
@@ -188,32 +185,41 @@ public class AuthService {
     public String createJwt(Map<String, Object> userInfo) {
         log.info("createJwt 메소드 호출, 사용자 정보: {}", userInfo);
 
-        String username = (String) userInfo.get("login"); // GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
+        String username = (String) userInfo.get("login");// GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
+        String serverNickname = (String) userInfo.get("serverNickname");
+
         log.info("사용자 이름: {}", username);
 
         String jwt = Jwts.builder()
                 .setSubject(username) // JWT의 주체 설정
                 .setIssuedAt(new Date()) // 발급 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
-                .signWith(SignatureAlgorithm.HS256, secretKey)// 서명 알고리즘 및 비밀 키 설정
+                .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
                 .compact(); // JWT 생성
+
         log.info("생성된 JWT: {}", jwt);
+        log.info("가져온 serverNickname은 : {}", serverNickname);
 
         // refreshToken을 DB에 저장
-        saveRefreshTokenToDatabase(jwt);
+        saveRefreshTokenToDatabase(jwt,serverNickname);
 
         return jwt;
     }
 
-    public void saveRefreshTokenToDatabase(String refreshToken) {
-        // DB에 저장하는 로직
-        User token = new User();
-        token.setRefreshToken(refreshToken);
+    public void saveRefreshTokenToDatabase(String refreshToken, String serverNickname) {
+        // 새로운 사용자 객체 생성 또는 기존 사용자 업데이트
+        Optional<User> optionalUser = userRepository.findByServerNickname(serverNickname);
+        User user = optionalUser.orElse(new User());
+
+        user.setRefreshToken(refreshToken);
+        user.setServerNickname(serverNickname);
+        user.setLoginType(LoginType.Github); // loginType을 항상 GITHUB으로 설정
 
         // DB에 저장
-        userRepository.save(token);
-        log.info("RefreshToken 저장 완료: {}", refreshToken);
+        userRepository.save(user);
+        log.info("RefreshToken과 추가 정보 저장 완료: {} for user: {}", refreshToken, serverNickname);
     }
+
 
     public GithubUser getServerNickName(String accessToken) {
         log.info("getServerNickName 메소드 호출, 전달된 토큰: {}", accessToken);
