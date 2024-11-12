@@ -71,10 +71,13 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_LENGTH);
 
+        String userId = null;
+        String email = null;
+
         // authentication.getPrincipal()을 확인하고 DefaultOAuth2User 또는 CustomUserDetails로 변환
         Object principal = authentication.getPrincipal();
 
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails user = null;
 
         // 로그인 타입이 카카오 OAuth2인 경우에만 처리
         if (principal instanceof OAuth2User) {
@@ -90,13 +93,18 @@ public class JwtTokenProvider {
                 // 카카오 로그인일 경우에만 CustomUserDetails로 변환
                 user = convertToCustomUserDetails(oAuth2User);
                 log.info("user:{}", user);
+            } else {
+                user = (CustomUserDetails) principal;
+            }
+            if (user != null) {
+                throw new IllegalArgumentException("로그인 된 사용자를 찾을 수 없습니다");
             }
         }
 
-        String userId = user.getName();
-        log.info("userID {}", userId);
-        String email = user.getUsername();
-        log.info("email {}", email);
+        userId = user.getName();
+        email = user.getUsername();
+        log.info("userId:{}", userId);
+        log.info("email:{}", email);
 
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
