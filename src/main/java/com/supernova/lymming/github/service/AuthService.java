@@ -186,7 +186,7 @@ public class AuthService {
         log.info("createJwt 메소드 호출, 사용자 정보: {}", userInfo);
 
         String username = (String) userInfo.get("login");// GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
-        String serverNickname = (String) userInfo.get("serverNickname");
+        String serverNickname = (String) userInfo.get("username");
 
         log.info("사용자 이름: {}", username);
 
@@ -198,7 +198,7 @@ public class AuthService {
                 .compact(); // JWT 생성
 
         log.info("생성된 JWT: {}", jwt);
-        log.info("가져온 serverNickname은 : {}", serverNickname);
+        log.info("생성된 ServerNickane은 : {}", serverNickname);
 
         // refreshToken을 DB에 저장
         saveRefreshTokenToDatabase(jwt,serverNickname);
