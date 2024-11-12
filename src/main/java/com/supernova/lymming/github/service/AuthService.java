@@ -132,8 +132,8 @@ public class AuthService {
         // Authorization 헤더에서 토큰 추출
         if (headers == null ){
             log.info("headers가 null 입니다.");
-        } else if (!headers.getFirst("Authorization").equals("Bearer ")) {
-            log.info("Get 한 Authoriztion :{}", headers.getFirst("Authorization"));
+        } else if (headers.get("Authorization").equals("Bearer ")) {
+            log.info("Get 한 Authoriztion :{}", headers.get("Authorization"));
             log.error("Authorization 헤더가 잘못된 형식입니다. Bearer 형식이 아닙니다.");
             throw new IllegalArgumentException("잘못된 토큰 형식입니다.");
         }
