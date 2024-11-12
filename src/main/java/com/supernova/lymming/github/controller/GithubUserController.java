@@ -50,7 +50,7 @@ public class GithubUserController {
 
         System.out.println(refreshToken+"토큰");
 
-        User existingUser = userRepository.findByServerNickname(refreshToken)
+        User existingUser = userRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(()->new IllegalStateException("등록된유저가 아닙니다"));
 
 
