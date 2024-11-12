@@ -2,15 +2,14 @@ package com.supernova.lymming.board.controller;
 
 import com.supernova.lymming.board.dto.BoardDto;
 import com.supernova.lymming.board.service.BoardService;
+import io.swagger.annotations.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-//@RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardService boardService;
