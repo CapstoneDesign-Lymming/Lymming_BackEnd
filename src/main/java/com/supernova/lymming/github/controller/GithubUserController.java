@@ -57,28 +57,28 @@ public class GithubUserController {
         // userID를 사용해 DB에서 기존 사용자인지 검사한다,
 
         // 필드 업데이트 - null이 아닌 경우에만 업데이트
-        if (userUpdateDto.getNickname() != null) {
+        if (userUpdateDto.getNickname() == null) {
             existingUser.setNickname(userUpdateDto.getNickname());
         }
-        if (userUpdateDto.getStack() != null) {
+        if (userUpdateDto.getStack() == null) {
             existingUser.setStack(userUpdateDto.getStack().toString());
         }
-        if (userUpdateDto.getGender() != null) {
+        if (userUpdateDto.getGender() == null) {
             existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));
         }
-        if (userUpdateDto.getJob() != null) {
+        if (userUpdateDto.getJob() == null) {
             existingUser.setJob(userUpdateDto.getJob());
         }
-        if (userUpdateDto.getBio() != null) {
+        if (userUpdateDto.getBio() == null) {
             existingUser.setBio(userUpdateDto.getBio());
         }
-        if (userUpdateDto.getFavorites() != null) {
+        if (userUpdateDto.getFavorites() == null) {
             existingUser.setFavorites(userUpdateDto.getFavorites());
         }
-        if (userUpdateDto.getInterests() != null) {
+        if (userUpdateDto.getInterests() == null) {
             existingUser.setInterests(userUpdateDto.getInterests().toString());
         }
-        if (userUpdateDto.getDevStyle() != null) {
+        if (userUpdateDto.getDevStyle() == null) {
             existingUser.setDevStyle(userUpdateDto.getDevStyle());
         }
 

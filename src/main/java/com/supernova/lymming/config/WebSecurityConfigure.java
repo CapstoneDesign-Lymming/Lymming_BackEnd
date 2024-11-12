@@ -46,7 +46,7 @@ public class WebSecurityConfigure {
                 .httpBasic().disable() // 기본 인증을 비활성화 .
                 .authorizeHttpRequests()
                 .antMatchers("/api/kakao/login", "/**", "https://lymming.link", "http://localhost:8080").permitAll()
-                .antMatchers("/chatting/**","/sub/**", "/pub/**").permitAll()
+                .antMatchers("/chatting/**","/sub/**", "/pub/**","/api/auth/sign-up").permitAll()
                 .and()
                 .csrf().disable()
                 // CSRF 공격 방지를 위한 보호 기능 비활성
