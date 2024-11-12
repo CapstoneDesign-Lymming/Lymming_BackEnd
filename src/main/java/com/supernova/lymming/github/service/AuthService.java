@@ -112,30 +112,31 @@ public class AuthService {
         return response;
     }
 
-    public Map<String, Object> getUserInfo(String header) {
-        log.info("getUserInfo 메소드 호출, 전달된 토큰: {}", header);
+    public Map<String, Object> getUserInfo(String token) {
+        log.info("getUserInfo 메소드 호출, 전달된 토큰: {}", token);
 
         // GitHub API URL
         String url = "https://api.github.com/user";
         log.info("GitHub API URL: {}", url);
 
-        log.info("header 확인하기:{}", header);
-
-        // Authorization 헤더에서 토큰 추출
-        if (header == null ){
-            log.info("headr가 null 입니다.");
-        } else if (!header.startsWith("Bearer ")){
-            log.error("Authorization 헤더가 잘못된 형식입니다. Bearer 형식이 아닙니다.");
-            throw new IllegalArgumentException("잘못된 토큰 형식입니다.");
-        }
-
-        String accessToken = header.substring(7); // "Bearer " 이후의 토큰만 추출
+        String accessToken = token;
         log.info("추출된 토큰: {}", accessToken);
 
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        log.info("header 확인하기:{}", headers);
+
+        // Authorization 헤더에서 토큰 추출
+        if (headers == null ){
+            log.info("headers가 null 입니다.");
+        } else if (!headers.getFirst("Authorization").equals("Bearer ")) {
+            log.info("Get 한 Authoriztion :{}", headers.getFirst("Authorization"));
+            log.error("Authorization 헤더가 잘못된 형식입니다. Bearer 형식이 아닙니다.");
+            throw new IllegalArgumentException("잘못된 토큰 형식입니다.");
+        }
 
         log.info("추가된 headers: {}", headers);
 
