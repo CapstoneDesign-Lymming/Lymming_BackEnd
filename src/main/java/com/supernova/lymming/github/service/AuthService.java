@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supernova.lymming.github.dto.GithubUser;
+import com.supernova.lymming.github.entity.User;
+import com.supernova.lymming.github.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,7 @@ public class AuthService {
 
     private final RestTemplate restTemplate;
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+    private final UserRepository userRepository;
 
     @Value("${custom.jwt.secretKey}")
     private String secretKey;
@@ -35,8 +38,9 @@ public class AuthService {
 
     private final long EXPIRATION_TIME = 86400000; // JWT 만료 시간 (예: 1일)
 
-    public AuthService(RestTemplate restTemplate) {
+    public AuthService(RestTemplate restTemplate, UserRepository userRepository) {
         this.restTemplate = restTemplate;
+        this.userRepository = userRepository;
     }
 
     // 인가 코드를 가지고 GitHub에서 액세스 토큰을 요청
@@ -189,11 +193,24 @@ public class AuthService {
                 .setSubject(username) // JWT의 주체 설정
                 .setIssuedAt(new Date()) // 발급 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
-                .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
+                .signWith(SignatureAlgorithm.HS256, secretKey)// 서명 알고리즘 및 비밀 키 설정
                 .compact(); // JWT 생성
         log.info("생성된 JWT: {}", jwt);
 
+        // refreshToken을 DB에 저장
+        saveRefreshTokenToDatabase(jwt);
+
         return jwt;
+    }
+
+    public void saveRefreshTokenToDatabase(String refreshToken) {
+        // DB에 저장하는 로직
+        User token = new User();
+        token.setRefreshToken(refreshToken);
+
+        // DB에 저장
+        userRepository.save(token);
+        log.info("RefreshToken 저장 완료: {}", refreshToken);
     }
 
     public GithubUser getServerNickName(String accessToken) {
