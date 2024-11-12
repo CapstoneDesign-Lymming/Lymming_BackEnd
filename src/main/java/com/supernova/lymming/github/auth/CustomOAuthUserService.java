@@ -44,14 +44,14 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         // GitHub 정보로 사용자 객체 생성
         User user = User.builder()
                 .serverNickname(userInfo.getServerNickName())
-                .nickname(null) // 초기값 설정 후, 사용자 입력 필요
-                .stack(null) // 초기값 설정 후, 사용자 입력 필요
-                .gender(null) // 초기값 설정 후, 사용자 입력 필요
-                .job(null) // 초기값 설정 후, 사용자 입력 필요
-                .bio(null) // 초기값 설정 후, 사용자 입력 필요
+                .nickname("") // 초기값 설정 후, 사용자 입력 필요
+                .stack("") // 초기값 설정 후, 사용자 입력 필요
+                .gender(Gender.valueOf("")) // 초기값 설정 후, 사용자 입력 필요
+                .job("") // 초기값 설정 후, 사용자 입력 필요
+                .bio("") // 초기값 설정 후, 사용자 입력 필요
                 .favorites(0) // 초기값 설정 후, 사용자 입력 필요
-                .interests(null) // 초기값 설정 후, 사용자 입력 필요
-                .devStyle(null) // 초기값 설정 후, 사용자 입력 필요
+                .interests("") // 초기값 설정 후, 사용자 입력 필요
+                .devStyle("") // 초기값 설정 후, 사용자 입력 필요
                 .loginType(LoginType.Github)
                 .build();
         return userRepository.save(user); // 사용자 저장
