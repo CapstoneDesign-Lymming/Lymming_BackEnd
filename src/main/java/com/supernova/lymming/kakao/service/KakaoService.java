@@ -112,7 +112,7 @@ public class KakaoService {
                 .favorites(kakaoUser.getFavorites())
                 .temperature(kakaoUser.getTemperature())
                 .interests(kakaoUser.getInterests())
-                .refresh_token(kakaoUser.getRefreshToken())
+                .refreshToken(kakaoUser.getRefreshToken())
                 .build();
         logger.debug("LoginResponse created: {}", loginResponse);
         return loginResponse;

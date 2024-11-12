@@ -3,6 +3,7 @@ package com.supernova.lymming.github.controller;
 import com.supernova.lymming.github.auth.CustomUserDetails;
 import com.supernova.lymming.github.dto.SignupDto;
 import com.supernova.lymming.github.entity.Gender;
+import com.supernova.lymming.github.entity.LoginType;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,14 @@ public class GithubUserController {
         if (userUpdateDto.getStack() != null) {
             existingUser.setStack(userUpdateDto.getStack().toString());
             log.info("Stack은: {}", existingUser.getStack().toString());
+        }
+        if (userUpdateDto.getUserImg() != null) {
+            existingUser.setUserImg(userUpdateDto.getUserImg().toString());
+            log.info("UserImg은: {}", existingUser.getStack().toString());
+        }
+        if (userUpdateDto.getLoginType()!= null) {
+            existingUser.setLoginType(LoginType.valueOf(userUpdateDto.getLoginType().toString()));
+            log.info("Login Type 은: {}", existingUser.getLoginType().toString());
         }
         if (userUpdateDto.getGender() != null) {
             existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));

@@ -20,5 +20,5 @@ public class LoginResponse {
     private Integer favorites;
     private Float temperature;
     private String interests;
-    private String refresh_token;
+    private String refreshToken;
 }
