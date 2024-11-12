@@ -116,6 +116,8 @@ public class AuthService {
         String url = "https://api.github.com/user";
         log.info("GitHub API URL: {}", url);
 
+        log.info("header 확인하기:{}", header);
+
         // Authorization 헤더에서 토큰 추출
         if (header == null || !header.startsWith("Bearer ")) {
             log.error("Authorization 헤더가 잘못된 형식입니다. Bearer 형식이 아닙니다.");
