@@ -186,7 +186,7 @@ public class AuthService {
         log.info("createJwt 메소드 호출, 사용자 정보: {}", userInfo);
 
         String username = (String) userInfo.get("login");// GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
-        String serverNickname = (String) userInfo.get("username");
+        String serverNickname = (String) userInfo.get("name");
 
         log.info("사용자 이름: {}", username);
 
