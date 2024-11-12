@@ -20,7 +20,6 @@ public class GithubUserController {
     private final UserRepository userRepository;
 
     @GetMapping("/api/auth/current-user")
-    @PreAuthorize("hasRole('USER')")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     // 메소드 진입을 위해 USER 역할 필요
     public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
@@ -35,7 +34,7 @@ public class GithubUserController {
     }
 
     @PutMapping("/api/auth/sign-up")
-    @PreAuthorize("hasRole('USER')")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<User> updateUser(@AuthenticationPrincipal CustomUserDetails user,
                                            @RequestBody SignupDto userUpdateDto) {
         // 현재 인증된 사용자의 정보를 CustomUserDetails 객체로 주입받아 사용자 정보에 접근 가능
