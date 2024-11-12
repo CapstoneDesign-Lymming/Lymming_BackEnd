@@ -29,7 +29,6 @@ public class SignupDto {
     // 여러개일수도 있어서 리스트 형식으로 수정했습니다
     private List<String> interests;
     private String refreshToken;
-    private LoginType loginType;
 }
 
 

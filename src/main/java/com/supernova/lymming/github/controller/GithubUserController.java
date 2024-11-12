@@ -59,14 +59,14 @@ public class GithubUserController {
             existingUser.setStack(userUpdateDto.getStack().toString());
             log.info("Stack은: {}", existingUser.getStack().toString());
         }
-        if (userUpdateDto.getUserImg() != null) {
-            existingUser.setUserImg(userUpdateDto.getUserImg().toString());
-            log.info("UserImg은: {}", existingUser.getStack().toString());
-        }
-        if (userUpdateDto.getLoginType()!= null) {
-            existingUser.setLoginType(LoginType.valueOf(userUpdateDto.getLoginType().toString()));
-            log.info("Login Type 은: {}", existingUser.getLoginType().toString());
-        }
+//        if (userUpdateDto.getUserImg() != null) {
+//            existingUser.setUserImg(userUpdateDto.getUserImg().toString());
+//            log.info("UserImg은: {}", existingUser.getStack().toString());
+//        }
+//        if (userUpdateDto.getLoginType()!= null) {
+//            existingUser.setLoginType(LoginType.valueOf(userUpdateDto.getLoginType().toString()));
+//            log.info("Login Type 은: {}", existingUser.getLoginType().toString());
+//        }
         if (userUpdateDto.getGender() != null) {
             existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));
             log.info("Gender은 : {}", existingUser.getGender());
