@@ -185,13 +185,12 @@ public class AuthService {
     public String createJwt(Map<String, Object> userInfo) {
         log.info("createJwt 메소드 호출, 사용자 정보: {}", userInfo);
 
-        String username = (String) userInfo.get("login");// GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
-        String serverNickname = (String) userInfo.get("name");
+        String serverNickname = (String) userInfo.get("login");// GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
 
-        log.info("사용자 이름: {}", username);
+        log.info("사용자 이름: {}", serverNickname);
 
         String jwt = Jwts.builder()
-                .setSubject(username) // JWT의 주체 설정
+                .setSubject(serverNickname) // JWT의 주체 설정
                 .setIssuedAt(new Date()) // 발급 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
                 .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
