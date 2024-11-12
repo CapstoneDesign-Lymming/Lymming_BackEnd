@@ -40,14 +40,6 @@ public class BoardController {
         return ResponseEntity.ok().body(detailBoard);
     }
 
-//    @PutMapping("/projectId")
-//    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
-//    public ResponseEntity<BoardDto> updateBoard(@PathVariable Long projectId, @RequestBody BoardDto boardDto) {
-//        BoardDto updateBorad = boardService.update(Math.toIntExact(projectId),boardDto);
-//        return ResponseEntity.ok().body(updateBorad);
-//    }
-
-
 
 }
 
