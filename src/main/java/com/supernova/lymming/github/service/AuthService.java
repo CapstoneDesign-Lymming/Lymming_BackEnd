@@ -97,7 +97,7 @@ public class AuthService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token); // Bearer 접두사 포함
-        log.info("헤더에 Authorization 추가: Bearer {}", token);
+        log.info("헤더에 Authorization 추가: {}", token);
 
         log.info("haders는 : {}", headers);
 
@@ -122,7 +122,9 @@ public class AuthService {
         log.info("header 확인하기:{}", header);
 
         // Authorization 헤더에서 토큰 추출
-        if (header == null || !header.startsWith("Bearer ")) {
+        if (header == null ){
+            log.info("headr가 null 입니다.");
+        } else if (!header.startsWith("Bearer ")){
             log.error("Authorization 헤더가 잘못된 형식입니다. Bearer 형식이 아닙니다.");
             throw new IllegalArgumentException("잘못된 토큰 형식입니다.");
         }
