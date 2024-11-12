@@ -40,7 +40,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         return (OAuth2User) CustomUserDetails.create(user, oAuth2User.getAttributes());
     }
 
-    private User createUser(GithubOAuth2UserInfo userInfo) {
+    public User createUser(GithubOAuth2UserInfo userInfo) {
         // GitHub 정보로 사용자 객체 생성
         User user = User.builder()
                 .serverNickname(userInfo.getServerNickName())

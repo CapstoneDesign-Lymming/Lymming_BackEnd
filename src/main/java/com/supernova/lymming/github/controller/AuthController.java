@@ -1,5 +1,7 @@
 package com.supernova.lymming.github.controller;
 
+import com.supernova.lymming.github.auth.CustomOAuthUserService;
+import com.supernova.lymming.github.auth.GithubOAuth2UserInfo;
 import com.supernova.lymming.github.dto.GithubUser;
 import com.supernova.lymming.github.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final CustomOAuthUserService customOAuthUserService;
 
     @PostMapping("/api/login/code/github")
     @CrossOrigin(origins = {"https://lymming.link", "https://lymming-back.link"}, maxAge = 3600)
@@ -63,6 +66,9 @@ public class AuthController {
 
             GithubUser githubUserDto = authService.getServerNickName(accessToken);
             log.info("GithubUser DTO 생성 완료: {}", githubUserDto);
+
+            customOAuthUserService.createUser(new GithubOAuth2UserInfo(userInfo)); // 사용자 정보 저장
+            log.info("사용자 정보 저장 완료");
 
             log.info("JWT 토큰 생성 시작");
 
