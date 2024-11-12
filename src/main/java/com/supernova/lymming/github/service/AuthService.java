@@ -96,7 +96,7 @@ public class AuthService {
         log.info("GitHub API URL: {}", url);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token); // Bearer 접두사 포함
+        headers.add("Authorization", "Bearer " + token); // Bearer 접두사 포함
         log.info("헤더에 Authorization 추가: Bearer {}", token);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
