@@ -185,38 +185,24 @@ public class AuthService {
     public String createJwt(Map<String, Object> userInfo) {
         log.info("createJwt 메소드 호출, 사용자 정보: {}", userInfo);
 
-        String serverNickname = (String) userInfo.get("login"); // GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
+        String serverNickname = (String) userInfo.get("login");// GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
+
         log.info("사용자 이름: {}", serverNickname);
 
-        // 1. 기존 refreshToken이 존재하는지 확인
-        Optional<User> optionalUser = userRepository.findByServerNickname(serverNickname);
+        String jwt = Jwts.builder()
+                .setSubject(serverNickname) // JWT의 주체 설정
+                .setIssuedAt(new Date()) // 발급 시간 설정
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
+                .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
+                .compact(); // JWT 생성
 
-        if (optionalUser.isPresent()) {
-            // 사용자가 이미 존재하는 경우: 로그인 처리
-            User existingUser = optionalUser.get();
-            log.info("기존 사용자 존재, 로그인 처리: {}", existingUser);
+        log.info("생성된 JWT: {}", jwt);
+        log.info("생성된 ServerNickane은 : {}", serverNickname);
 
-            // 기존 refreshToken을 사용하여 JWT 생성
-            String refreshToken = existingUser.getRefreshToken();
-            log.info("기존 RefreshToken 사용: {}", refreshToken);
+        // refreshToken을 DB에 저장
+        saveRefreshTokenToDatabase(jwt,serverNickname);
 
-            return refreshToken; // 기존 JWT 반환
-        } else {
-            // 사용자가 존재하지 않는 경우: 회원가입 및 JWT 생성
-            String jwt = Jwts.builder()
-                    .setSubject(serverNickname) // JWT의 주체 설정
-                    .setIssuedAt(new Date()) // 발급 시간 설정
-                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
-                    .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
-                    .compact(); // JWT 생성
-
-            log.info("새로 생성된 JWT: {}", jwt);
-
-            // 생성된 JWT를 DB에 저장 (새로운 사용자로 저장)
-            saveRefreshTokenToDatabase(jwt, serverNickname);
-
-            return jwt;
-        }
+        return jwt;
     }
 
     public void saveRefreshTokenToDatabase(String refreshToken, String serverNickname) {
@@ -255,6 +241,4 @@ public class AuthService {
 
         return githubUser; // GithubUser 객체를 반환
     }
-
-
 }
