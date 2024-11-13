@@ -1,5 +1,6 @@
 package com.supernova.lymming.board.service;
 
+
 import com.supernova.lymming.board.dto.BoardDto;
 import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
@@ -34,6 +35,18 @@ public class BoardService {
         BoardEntity board = new BoardEntity();
         log.info("게시글 작성 요청이 들어옴");
 
+        // 사용자 조회 후 설정
+        User user = userRepository.findById(boardDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+        board.setUser(user); // User 엔티티 설정
+
+        // User 객체 설정
+        board.setUser(user);
+
+        // nickname을 BoardEntity에 설정
+        board.setNickname(user.getNickname());
+        log.info("board.setNickname : {}",board.getNickname());
+
         // 필드 값 설정
         board.setProjectName(boardDto.getProjectName());
         log.info("projectName: {}", boardDto.getProjectName());
@@ -53,11 +66,6 @@ public class BoardService {
         board.setStudyMethod(boardDto.getStudyMethod());
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
-
-        // 사용자 조회 후 설정
-        User user = userRepository.findById(boardDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-        board.setUser(user); // User 엔티티 설정
 
         // 게시판 저장
         boardRepository.save(board);
@@ -96,7 +104,7 @@ public class BoardService {
                     board.getRecruitmentCount(),
                     board.getStudyMethod(),
                     board.getProjectDuration(),
-                    board.getUser().getNickname(),
+                    board.getNickname(),
                     board.getProjectName()
             );
             boardDtoList.add(boardDto);
@@ -137,7 +145,7 @@ public class BoardService {
                 board.getRecruitmentCount(),
                 board.getStudyMethod(),
                 board.getProjectDuration(),
-                board.getUser().getNickname(),
+                board.getNickname(),
                 board.getProjectName()
         );
     }

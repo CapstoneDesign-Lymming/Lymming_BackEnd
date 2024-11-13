@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
 
    Optional<BoardEntity> findByProjectId(Long projectId);
+
+
 }
 
