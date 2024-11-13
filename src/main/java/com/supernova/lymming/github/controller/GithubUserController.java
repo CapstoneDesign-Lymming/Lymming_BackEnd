@@ -53,11 +53,8 @@ public class GithubUserController {
 
         System.out.println(refreshToken + "토큰");
 
-        Map<String, Object> userInfo = authService.getUserInfo(refreshToken);
-        log.info("userInfo는 : {}", userInfo);
-
-        String serverNickname = (String) userInfo.get("login");
-        log.info("UserInfo에서 할당된 serverNickname: {}", serverNickname);
+        String serverNickname = userUpdateDto.getServerNickname();
+        log.info("사용자의 serverNickName 은 : {}", serverNickname);
 
         // 기존 사용자의 serverNickname만 조회
         Optional<User> existingUserOptional = userRepository.findByServerNickname(serverNickname);
