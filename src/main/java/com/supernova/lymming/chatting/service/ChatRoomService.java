@@ -23,7 +23,8 @@ public class ChatRoomService {
 
 
     public List<ChatRoomDto> getChatroomsByUserId(String userId1) {
-        List<UserChatRooms> chatRooms = chatRoomRepository.findByUserId1(userId1);
+
+        List<UserChatRooms> chatRooms = chatRoomRepository.findChatroomsByUserId1(userId1);
 
 
         return chatRooms.stream()
