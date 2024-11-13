@@ -185,25 +185,38 @@ public class AuthService {
     public String createJwt(Map<String, Object> userInfo) {
         log.info("createJwt 메소드 호출, 사용자 정보: {}", userInfo);
 
-        String serverNickname = (String) userInfo.get("login");// GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
-
+        String serverNickname = (String) userInfo.get("login"); // GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
         log.info("사용자 이름: {}", serverNickname);
 
-        String jwt = Jwts.builder()
-                .setSubject(serverNickname) // JWT의 주체 설정
-                .setIssuedAt(new Date()) // 발급 시간 설정
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
-                .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
-                .compact(); // JWT 생성
+        // 1. 기존 refreshToken이 존재하는지 확인
+        Optional<User> optionalUser = userRepository.findByServerNickname(serverNickname);
 
-        log.info("생성된 JWT: {}", jwt);
-        log.info("생성된 ServerNickane은 : {}", serverNickname);
+        String refreshToken;
+        if (optionalUser.isPresent() && optionalUser.get().getRefreshToken() != null) {
+            // 기존 refreshToken이 있을 경우, 해당 토큰을 사용
+            refreshToken = optionalUser.get().getRefreshToken();
+            log.info("기존 RefreshToken 사용: {}", refreshToken);
+        } else {
+            // 새로 JWT 생성
+            String jwt = Jwts.builder()
+                    .setSubject(serverNickname) // JWT의 주체 설정
+                    .setIssuedAt(new Date()) // 발급 시간 설정
+                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
+                    .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
+                    .compact(); // JWT 생성
 
-        // refreshToken을 DB에 저장
-        saveRefreshTokenToDatabase(jwt,serverNickname);
+            log.info("생성된 JWT: {}", jwt);
+            log.info("생성된 ServerNickname: {}", serverNickname);
 
-        return jwt;
+            // refreshToken을 DB에 저장
+            saveRefreshTokenToDatabase(jwt, serverNickname);
+
+            return jwt;
+        }
+
+        return refreshToken;
     }
+
 
     public void saveRefreshTokenToDatabase(String refreshToken, String serverNickname) {
         // 새로운 사용자 객체 생성 또는 기존 사용자 업데이트

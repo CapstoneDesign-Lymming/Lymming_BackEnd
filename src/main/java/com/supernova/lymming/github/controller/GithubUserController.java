@@ -93,7 +93,5 @@ public class GithubUserController {
         User updatedUser = userRepository.save(existingUser); // 변경사항 저장
 
         return ResponseEntity.ok(updatedUser); // 업데이트된 사용자 정보 반환
-
-
     }
 }
