@@ -51,71 +51,51 @@ public class GithubUserController {
         String refreshToken = userUpdateDto.getRefreshToken();
         log.info("회원가입 사용자의 refreshToken: {}", refreshToken);
 
-        System.out.println(refreshToken + "토큰");
+        System.out.println(refreshToken+"토큰");
 
-        String serverNickname = userUpdateDto.getServerNickname();
-        log.info("사용자의 serverNickName 은 : {}", serverNickname);
+        User existingUser = userRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(()->new IllegalStateException("등록된유저가 아닙니다"));
 
-        // 기존 사용자의 serverNickname만 조회
-        Optional<User> existingUserOptional = userRepository.findByServerNickname(serverNickname);
-        log.info("기존 사용자의 닉네임 조회 : {}", existingUserOptional);
-
-        if (existingUserOptional.isPresent()) {
-            log.info("사용자가 이미 존재하는 메소드 들어옴");
-            // 기존 사용자라면 로그인 처리만 하고 정보 업데이트는 하지 않음
-            User existingUser = existingUserOptional.get();
-            log.info("이미 회원가입된 사용자: {}", existingUser);
-
-            // 기존 사용자라면 그냥 로그인 처리 (정보 업데이트는 생략)
-            return ResponseEntity.ok(existingUser); // 기존 사용자의 정보를 반환
-
-            //return (ResponseEntity<User>) ResponseEntity.ok(); //사용자 정보를 반환하지 않고 HTTP 상태 코드만 반환
-        } else {
-            // 기존 사용자가 아니라면 신규 사용자로 간주하여 정보 업데이트
-            User existingUser = userRepository.findByRefreshToken(refreshToken)
-                    .orElseThrow(() -> new IllegalStateException("등록된 유저가 아닙니다"));
-
-            // 신규 사용자의 정보 업데이트
-            if (userUpdateDto.getNickname() != null) {
-                existingUser.setNickname(userUpdateDto.getNickname());
-                log.info("NickName은: {}", existingUser.getNickname());
-            }
-            if (userUpdateDto.getStack() != null) {
-                existingUser.setStack(userUpdateDto.getStack().toString());
-                log.info("Stack은: {}", existingUser.getStack().toString());
-            }
-            if (userUpdateDto.getUserImg() != null) {
-                existingUser.setUserImg(userUpdateDto.getUserImg().toString());
-                log.info("UserImg은: {}", existingUser.getUserImg());
-            }
-
-            if (userUpdateDto.getGender() != null) {
-                existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));
-                log.info("Gender은: {}", existingUser.getGender());
-            }
-            if (userUpdateDto.getJob() != null) {
-                existingUser.setJob(userUpdateDto.getJob());
-                log.info("직업은: {}", existingUser.getJob());
-            }
-            if (userUpdateDto.getBio() != null) {
-                existingUser.setBio(userUpdateDto.getBio());
-                log.info("한줄소개는: {}", existingUser.getBio());
-            }
-            if (userUpdateDto.getFavorites() != null) {
-                existingUser.setFavorites(userUpdateDto.getFavorites());
-            }
-            if (userUpdateDto.getInterests() != null) {
-                existingUser.setInterests(userUpdateDto.getInterests().toString());
-            }
-            if (userUpdateDto.getDevStyle() != null) {
-                existingUser.setDevStyle(userUpdateDto.getDevStyle());
-                log.info("개발 스타일은: {}", existingUser.getDevStyle());
-            }
-
-            // 신규 사용자 정보를 업데이트하여 저장
-            User updatedUser = userRepository.save(existingUser);
-
-            return ResponseEntity.ok(updatedUser); // 업데이트된 사용자 정보 반환
+        if (userUpdateDto.getNickname() != null) {
+            existingUser.setNickname(userUpdateDto.getNickname());
+            log.info("NickName은: {}", existingUser.getNickname());
         }
+        if (userUpdateDto.getStack() != null) {
+            existingUser.setStack(userUpdateDto.getStack().toString());
+            log.info("Stack은: {}", existingUser.getStack().toString());
+        }
+        if (userUpdateDto.getUserImg() != null) {
+            existingUser.setUserImg(userUpdateDto.getUserImg().toString());
+            log.info("UserImg은: {}", existingUser.getStack().toString());
+        }
+
+        if (userUpdateDto.getGender() != null) {
+            existingUser.setGender(Gender.valueOf(String.valueOf(userUpdateDto.getGender())));
+            log.info("Gender은 : {}", existingUser.getGender());
+        }
+        if (userUpdateDto.getJob() != null) {
+            existingUser.setJob(userUpdateDto.getJob());
+            log.info("직업은 : {}", existingUser.getJob());
+        }
+        if (userUpdateDto.getBio() != null) {
+            existingUser.setBio(userUpdateDto.getBio());
+            log.info("한줄소개는 : {}", existingUser.getBio());
+        }
+        if (userUpdateDto.getFavorites() != null) {
+            existingUser.setFavorites(userUpdateDto.getFavorites());
+        }
+        if (userUpdateDto.getInterests() != null) {
+            existingUser.setInterests(userUpdateDto.getInterests().toString());
+        }
+        if (userUpdateDto.getDevStyle() != null) {
+            existingUser.setDevStyle(userUpdateDto.getDevStyle());
+            log.info("개발 스타일은 : {}", existingUser.getDevStyle());
+        }
+
+        User updatedUser = userRepository.save(existingUser); // 변경사항 저장
+
+        return ResponseEntity.ok(updatedUser); // 업데이트된 사용자 정보 반환
+
+
     }
 }

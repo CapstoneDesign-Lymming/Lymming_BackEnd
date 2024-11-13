@@ -3,6 +3,9 @@ package com.supernova.lymming.github.controller;
 import com.supernova.lymming.github.auth.CustomOAuthUserService;
 import com.supernova.lymming.github.auth.GithubOAuth2UserInfo;
 import com.supernova.lymming.github.dto.GithubUser;
+import com.supernova.lymming.github.dto.SignupDto;
+import com.supernova.lymming.github.entity.User;
+import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.github.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -23,6 +27,7 @@ import java.util.Map;
 public class AuthController {
     private final AuthService authService;
     private final CustomOAuthUserService customOAuthUserService;
+    private final UserRepository userRepository;
 
     @PostMapping("/api/login/code/github")
     @CrossOrigin(origins = {"https://lymming.link", "https://lymming-back.link"}, maxAge = 3600)
@@ -62,18 +67,25 @@ public class AuthController {
             Map<String, Object> userInfo = authService.getUserInfo(accessToken);
             log.info("사용자 정보 획득 성공: {}", userInfo);
 
-            log.info("GithubUser DTO 변환 시작");
+            String githubId = userInfo.get("login").toString(); // GitHub의 login 정보 (githubId와 같은 역할)
+            log.info("GitHub에서 가져온 githubId: {}", githubId);
 
-            GithubUser githubUserDto = authService.getServerNickName(accessToken);
-            log.info("GithubUser DTO 생성 완료: {}", githubUserDto);
+            // DB에서 serverNickname으로 사용자 조회
+            Optional<User> optionalUser = userRepository.findByServerNickname(githubId);
 
-            log.info("JWT 토큰 생성 시작");
+            if (optionalUser.isPresent()) {
+                log.info("기존 사용자 로그인 성공: {}", optionalUser.get().getServerNickname());
 
-            String jwt = authService.createJwt(userInfo);
-            log.info("JWT 토큰 생성 완료: {}", jwt);
+                // JWT 토큰 생성
+                String jwt = authService.createJwt(userInfo);
+                log.info("JWT 토큰 생성 완료: {}", jwt);
 
-            log.info("로그인 응답 반환");
-            return ResponseEntity.ok(Map.of("jwt", jwt, "user", githubUserDto));
+                return ResponseEntity.ok(Map.of("jwt", jwt, "user", optionalUser.get()));
+            } else {
+                log.warn("존재하지 않는 사용자입니다. 로그인 실패.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("등록된 사용자 정보가 없습니다.");
+            }
+
         } catch (Exception e) {
             log.error("GitHub 로그인 과정에서 오류 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그인 중 오류가 발생했습니다.");
