@@ -106,8 +106,8 @@ public class BoardService {
                     board.getRecruitmentCount(),
                     board.getStudyMethod(),
                     board.getProjectDuration(),
-                    board.getNickname(),
-                    board.getProjectName()
+                    board.getProjectName(),
+                    board.getNickname()
             );
             log.info("Get board.getNickname : {}",board.getNickname());
             boardDtoList.add(boardDto);
