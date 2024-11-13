@@ -61,7 +61,7 @@ public class BoardService {
 
         // 게시판 저장
         boardRepository.save(board);
-        log.info("게시글 저장됨!: {}", board);
+        log.info("게시글 저장됨: {}", board);
 
         // SharePageEntity 생성 및 저장
         SharePageEntity sharePage = new SharePageEntity();
