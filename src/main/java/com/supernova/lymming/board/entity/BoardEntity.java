@@ -72,4 +72,8 @@ public class BoardEntity {
     @Column(name = "project_duration", nullable = false)
     private String projectDuration;
 
+    @ManyToOne
+    @JoinColumn(name = "nickname", referencedColumnName = "nickname", nullable = false)
+    private User nickname;
+
 }
