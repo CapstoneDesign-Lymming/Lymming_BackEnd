@@ -13,8 +13,8 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<UserChatRooms, Long> {
     Optional<UserChatRooms> findByRoomId(String roomId);
 
-    List<UserChatRooms> findByUserId1( String userId1);
-
+    @Query("SELECT c FROM UserChatRooms c WHERE c.userId1 = :userId1 OR c.userId2 = :userId1")
+    List<UserChatRooms> findChatroomsByUserId1(@Param("userId1") String userId1);
 
 
 }
