@@ -23,5 +23,6 @@ public class BoardDto {
     private String studyMethod;
     private String projectDuration;
     private String projectName;
-    private String nickName;
+    private String nickname;
+
 }

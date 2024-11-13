@@ -80,6 +80,8 @@ public class BoardService {
         sharePageRepository.save(sharePage);
         log.info("SharePage 생성됨: {}", sharePage);
 
+        log.info("boardDto : {}", boardDto);
+
         return boardDto;
     }
 
@@ -107,6 +109,7 @@ public class BoardService {
                     board.getNickname(),
                     board.getProjectName()
             );
+            log.info("Get board.getNickname : {}",board.getNickname());
             boardDtoList.add(boardDto);
         }
 
@@ -129,7 +132,8 @@ public class BoardService {
         BoardEntity board = boardRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
 
-        Long userId = board.getUser().getUserId();  // UserId는 BoardEntity의 User 객체에서 가져오기
+        // BoardEntity의 값을 확인하는 로그 추가
+        log.info("BoardEntity projectName: {}, nickname: {}", board.getProjectName(), board.getNickname());
 
         return new BoardDto(
                 board.getProjectId(),
@@ -145,8 +149,8 @@ public class BoardService {
                 board.getRecruitmentCount(),
                 board.getStudyMethod(),
                 board.getProjectDuration(),
-                board.getNickname(),
-                board.getProjectName()
+                board.getProjectName(),
+                board.getNickname()
         );
     }
 }

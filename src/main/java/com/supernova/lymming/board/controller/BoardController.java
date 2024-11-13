@@ -33,7 +33,7 @@ public class BoardController {
         return ResponseEntity.ok().body(boards);
     }
 
-    @GetMapping("/participate/{projectId}")
+    @GetMapping("/participate/detail/{projectId}")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<BoardDto> getBoard(@PathVariable Long projectId) {
         BoardDto detailBoard = boardService.getBoardById(projectId);
