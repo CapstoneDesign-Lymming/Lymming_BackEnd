@@ -191,13 +191,18 @@ public class AuthService {
         // 1. 기존 refreshToken이 존재하는지 확인
         Optional<User> optionalUser = userRepository.findByServerNickname(serverNickname);
 
-        String refreshToken;
-        if (optionalUser.isPresent() && optionalUser.get().getRefreshToken() != null) {
-            // 기존 refreshToken이 있을 경우, 해당 토큰을 사용
-            refreshToken = optionalUser.get().getRefreshToken();
+        if (optionalUser.isPresent()) {
+            // 사용자가 이미 존재하는 경우: 로그인 처리
+            User existingUser = optionalUser.get();
+            log.info("기존 사용자 존재, 로그인 처리: {}", existingUser);
+
+            // 기존 refreshToken을 사용하여 JWT 생성
+            String refreshToken = existingUser.getRefreshToken();
             log.info("기존 RefreshToken 사용: {}", refreshToken);
+
+            return refreshToken; // 기존 JWT 반환
         } else {
-            // 새로 JWT 생성
+            // 사용자가 존재하지 않는 경우: 회원가입 및 JWT 생성
             String jwt = Jwts.builder()
                     .setSubject(serverNickname) // JWT의 주체 설정
                     .setIssuedAt(new Date()) // 발급 시간 설정
@@ -205,18 +210,14 @@ public class AuthService {
                     .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
                     .compact(); // JWT 생성
 
-            log.info("생성된 JWT: {}", jwt);
-            log.info("생성된 ServerNickname: {}", serverNickname);
+            log.info("새로 생성된 JWT: {}", jwt);
 
-            // refreshToken을 DB에 저장
+            // 생성된 JWT를 DB에 저장 (새로운 사용자로 저장)
             saveRefreshTokenToDatabase(jwt, serverNickname);
 
             return jwt;
         }
-
-        return refreshToken;
     }
-
 
     public void saveRefreshTokenToDatabase(String refreshToken, String serverNickname) {
         // 새로운 사용자 객체 생성 또는 기존 사용자 업데이트
