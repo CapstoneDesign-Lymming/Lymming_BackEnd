@@ -5,6 +5,8 @@ import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
+import com.supernova.lymming.sharepage.entity.SharePageEntity;
+import com.supernova.lymming.sharepage.repository.SharePageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,13 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository; // UserRepository 추가
+    private final SharePageRepository sharePageRepository; // SharePageRepository 추가
 
     @Autowired
-    public BoardService(BoardRepository boardRepository, UserRepository userRepository) {
+    public BoardService(BoardRepository boardRepository, UserRepository userRepository, SharePageRepository sharePageRepository) {
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
+        this.sharePageRepository = sharePageRepository;
     }
 
     public BoardDto createBoard(BoardDto boardDto) {
@@ -59,13 +63,14 @@ public class BoardService {
         boardRepository.save(board);
         log.info("게시글 저장됨: {}", board);
 
-//        // SharePageEntity 생성 및 저장
-//        SharePageEntity sharePage = new SharePageEntity();
-//        sharePage.setUser(user);  // User 객체 설정
-//        sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
-//
-//        sharePageRepository.save(sharePage);
-//        log.info("SharePage 생성됨: {}", sharePage);
+        // SharePageEntity 생성 및 저장
+        SharePageEntity sharePage = new SharePageEntity();
+        sharePage.setUser(user);  // User 객체 설정
+        sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
+        sharePage.setLeader(board.getUser().getNickname());
+
+        sharePageRepository.save(sharePage);
+        log.info("SharePage 생성됨: {}", sharePage);
 
         return boardDto;
     }
@@ -77,13 +82,9 @@ public class BoardService {
         for (BoardEntity board : boardList) {
             Long userId = board.getUser().getUserId();  // UserId는 BoardEntity의 User 객체에서 가져오기
 
-            System.out.println("유저 아이디: "+ userId);
-            System.out.println("유저 아이디: "+ board.getUser().getNickname());
-
             BoardDto boardDto = new BoardDto(
                     board.getProjectId(),
-                    userId,  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
-                    board.getUser().getNickname(),
+                    board.getUser().getUserId(),  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
                     board.getStudyType(),
                     board.getUploadTime(),
                     board.getRecruitmentField(),
@@ -123,12 +124,10 @@ public class BoardService {
 
         return new BoardDto(
                 board.getProjectId(),
-                userId,
-                board.getUser().getNickname(),// 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
+                board.getUser().getUserId(),  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
                 board.getStudyType(),
                 board.getUploadTime(),
                 board.getRecruitmentField(),
-
                 board.getDescription(),
                 board.getWorkType(),
                 board.getTechStack(),

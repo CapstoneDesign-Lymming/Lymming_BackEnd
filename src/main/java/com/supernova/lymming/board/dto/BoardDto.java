@@ -5,14 +5,12 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-
 @Data
 @AllArgsConstructor
 public class BoardDto {
 
     private Long projectId;
     private Long userId;
-    private String nickname;
     private String studyType;
     private LocalDate uploadTime;
     private String recruitmentField;
