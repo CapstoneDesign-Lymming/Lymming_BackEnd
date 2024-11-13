@@ -8,6 +8,7 @@ import com.supernova.lymming.github.entity.Gender;
 import com.supernova.lymming.github.entity.LoginType;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
+import com.supernova.lymming.github.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class GithubUserController {
 
     private final UserRepository userRepository;
+    private final AuthService authService;
 
     @GetMapping("/api/auth/current-user")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
@@ -51,18 +53,26 @@ public class GithubUserController {
 
         System.out.println(refreshToken + "토큰");
 
-        String serverNickname = user.getName(); // 로그인한 사용자에서 serverNickname 가져오기
+        Map<String, Object> userInfo = authService.getUserInfo(refreshToken);
+        log.info("userInfo는 : {}", userInfo);
+
+        String serverNickname = (String) userInfo.get("login");
+        log.info("UserInfo에서 할당된 serverNickname: {}", serverNickname);
 
         // 기존 사용자의 serverNickname만 조회
         Optional<User> existingUserOptional = userRepository.findByServerNickname(serverNickname);
+        log.info("기존 사용자의 닉네임 조회 : {}", existingUserOptional);
 
         if (existingUserOptional.isPresent()) {
+            log.info("사용자가 이미 존재하는 메소드 들어옴");
             // 기존 사용자라면 로그인 처리만 하고 정보 업데이트는 하지 않음
             User existingUser = existingUserOptional.get();
             log.info("이미 회원가입된 사용자: {}", existingUser);
 
             // 기존 사용자라면 그냥 로그인 처리 (정보 업데이트는 생략)
             return ResponseEntity.ok(existingUser); // 기존 사용자의 정보를 반환
+
+            //return (ResponseEntity<User>) ResponseEntity.ok(); //사용자 정보를 반환하지 않고 HTTP 상태 코드만 반환
         } else {
             // 기존 사용자가 아니라면 신규 사용자로 간주하여 정보 업데이트
             User existingUser = userRepository.findByRefreshToken(refreshToken)
