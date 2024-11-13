@@ -51,7 +51,10 @@ public class GithubUserController {
 
         System.out.println(refreshToken+"토큰");
 
-        User existingUser = userRepository.findByRefreshToken(refreshToken)
+        String serverNickname = userUpdateDto.getServerNickname();
+        log.info("깃허브 로그인 사용자의 서버 닉네임은 : {}", serverNickname);
+
+        User existingUser = userRepository.findByServerNickname(serverNickname)
                 .orElseThrow(()->new IllegalStateException("등록된유저가 아닙니다"));
 
         if (userUpdateDto.getNickname() != null) {
