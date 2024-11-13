@@ -45,4 +45,7 @@ public class SharePageEntity {
     @Column(name = "share_page_url")
     private String sharePageUrl;
 
+    @Column(name = "leader")
+    private String leader;
+
 }

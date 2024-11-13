@@ -20,5 +20,6 @@ public class SharePageDto {
     private String sharePageUrl;
     private String teamName;
     private End end;
+    private String leader;
 
 }

@@ -67,6 +67,7 @@ public class BoardService {
         SharePageEntity sharePage = new SharePageEntity();
         sharePage.setUser(user);  // User 객체 설정
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
+        sharePage.setLeader(board.getUser().getNickname());
 
         sharePageRepository.save(sharePage);
         log.info("SharePage 생성됨: {}", sharePage);

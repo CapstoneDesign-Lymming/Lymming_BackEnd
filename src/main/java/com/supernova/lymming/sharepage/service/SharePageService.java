@@ -60,7 +60,8 @@ public class SharePageService {
                     sharePage.getProjectLink(),
                     sharePage.getBoard().getProjectImg(),
                     sharePage.getTeamName(),
-                    sharePage.getEnd()
+                    sharePage.getEnd(),
+                    sharePage.getLeader()
             );
             SharePageDtoList.add(sharePageDto);
         }
@@ -103,7 +104,8 @@ public class SharePageService {
                 sharePage.getProjectLink(),
                 sharePage.getBoard().getProjectImg(),
                 sharePage.getTeamName(),
-                sharePage.getEnd()  // 변경된 'end' 값 리턴
+                sharePage.getEnd(), // 변경된 'end' 값 리턴
+                sharePage.getLeader()
         );
     }
 
