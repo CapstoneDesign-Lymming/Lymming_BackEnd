@@ -46,9 +46,7 @@ public class BoardService {
         // User 객체 설정
         board.setUser(user);
 
-        // nickname을 BoardEntity에 설정
-        board.setNickname(user.getNickname());
-        log.info("board.setNickname : {}",board.getNickname());
+
 
         // 필드 값 설정
         board.setProjectName(boardDto.getProjectName());
@@ -69,6 +67,10 @@ public class BoardService {
         board.setStudyMethod(boardDto.getStudyMethod());
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
+
+        // nickname을 BoardEntity에 설정
+        board.setNickname(user.getNickname());
+        log.info("board.setNickname : {}",board.getNickname());
 
         // 게시판 저장
         boardRepository.save(board);
