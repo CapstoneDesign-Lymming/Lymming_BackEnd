@@ -34,7 +34,7 @@ public class HeartController {
     }
 
     // 사용자가 좋아요한 게시물 목록 조회
-    @GetMapping("/{userId}/likes/projects")
+    @GetMapping("/favorites/list")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<List<BoardEntity>> getLikedProjects(@PathVariable Long userId) {
         List<BoardEntity> likedProjects = heartService.getLikeProjects(userId);
