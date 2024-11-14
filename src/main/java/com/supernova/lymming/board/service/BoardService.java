@@ -24,7 +24,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository; // UserRepository 추가
-    private final SharePageRepository sharePageRepository;
+    private final SharePageRepository sharePageRepository; // SharePageRepository 추가
 
     @Autowired
     public BoardService(BoardRepository boardRepository, UserRepository userRepository, SharePageRepository sharePageRepository) {
@@ -37,6 +37,18 @@ public class BoardService {
         // 새로운 게시판 생성
         BoardEntity board = new BoardEntity();
         log.info("게시글 작성 요청이 들어옴");
+
+        // 사용자 조회 후 설정
+        User user = userRepository.findById(boardDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+        board.setUser(user); // User 엔티티 설정
+
+        // User 객체 설정
+        board.setUser(user);
+
+        // nickname을 BoardEntity에 설정
+        board.setNickname(user.getNickname());
+        log.info("board.setNickname : {}",board.getNickname());
 
         // 필드 값 설정
         board.setProjectName(boardDto.getProjectName());
@@ -58,11 +70,6 @@ public class BoardService {
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
 
-        // 사용자 조회 후 설정
-        User user = userRepository.findById(boardDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-        board.setUser(user); // User 엔티티 설정
-
         // 게시판 저장
         boardRepository.save(board);
         log.info("게시글 저장됨: {}", board);
@@ -71,13 +78,17 @@ public class BoardService {
         SharePageEntity sharePage = new SharePageEntity();
         sharePage.setUser(user);  // User 객체 설정
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
+        sharePage.setLeader(board.getUser().getNickname());
 
         sharePageRepository.save(sharePage);
         log.info("SharePage 생성됨: {}", sharePage);
 
+        log.info("boardDto : {}", boardDto);
+
         return boardDto;
     }
 
+    @Transactional
     public List<BoardDto> getBoardList() {
         List<BoardEntity> boardList = boardRepository.findAll();
         List<BoardDto> boardDtoList = new ArrayList<>();
@@ -85,12 +96,9 @@ public class BoardService {
         for (BoardEntity board : boardList) {
             Long userId = board.getUser().getUserId();  // UserId는 BoardEntity의 User 객체에서 가져오기
 
-            System.out.println("유저 아이디: "+ userId);
-            System.out.println("유저 아이디: "+ board.getUser().getNickname());
-
             BoardDto boardDto = new BoardDto(
                     board.getProjectId(),
-                    userId,
+                    board.getUser().getUserId(),  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
                     board.getStudyType(),
                     board.getUploadTime(),
                     board.getRecruitmentField(),
@@ -106,6 +114,8 @@ public class BoardService {
                     board.getNickname(),
                     board.getViewCount()
             );
+            log.info("Get board.getNickname : {}",board.getNickname());
+            log.info("Board List에서의 조회수 : {}", board.getViewCount());
             boardDtoList.add(boardDto);
         }
 
@@ -125,12 +135,16 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardDto getBoardById(Long projectId,HttpServletRequest request, HttpServletResponse response) {
+    public BoardDto getBoardById(Long projectId , HttpServletRequest request, HttpServletResponse response) {
 
-        BoardEntity board = detail(projectId,request, response);
+        BoardEntity board = detail(projectId, request, response);
+
+        // BoardEntity의 값을 확인하는 로그 추가
+        log.info("BoardEntity projectName: {}, nickname: {}", board.getProjectName(), board.getNickname());
+
         return new BoardDto(
                 board.getProjectId(),
-                board.getUser().getUserId(),
+                board.getUser().getUserId(),  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
                 board.getStudyType(),
                 board.getUploadTime(),
                 board.getRecruitmentField(),
