@@ -19,6 +19,7 @@ public class HeartController {
 
     // 좋아요 누르기
     @PostMapping("/{userId}/likes/{projectId}")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<String> likeProject(@PathVariable Long userId, @PathVariable Long projectId) {
         heartService.likeProject(userId, projectId);
         return ResponseEntity.ok("Project liked successfully");
@@ -26,6 +27,7 @@ public class HeartController {
 
     // 좋아요 취소
     @DeleteMapping("/{userId}/likes/{projectId}")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<String> unlikeProject(@PathVariable Long userId, @PathVariable Long projectId) {
         heartService.unlikeProject(userId, projectId);
         return ResponseEntity.ok("Project unliked successfully");
@@ -33,6 +35,7 @@ public class HeartController {
 
     // 사용자가 좋아요한 게시물 목록 조회
     @GetMapping("/{userId}/likes/projects")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<List<BoardEntity>> getLikedProjects(@PathVariable Long userId) {
         List<BoardEntity> likedProjects = heartService.getLikeProjects(userId);
         return ResponseEntity.ok(likedProjects);
