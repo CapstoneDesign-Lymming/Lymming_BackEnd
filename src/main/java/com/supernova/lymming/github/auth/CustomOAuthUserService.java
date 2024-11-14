@@ -34,26 +34,29 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         // 깃허브에서 받은 사용자 정보를 GitjubOAuth2UserInfo 객체에 저장
 
         User user = userRepository.findByServerNickname(userInfo.getServerNickName())
-        // DB에서 깃허브 ID로 사용자를 조회한다.
+                // DB에서 깃허브 ID로 사용자를 조회한다.
                 .orElseGet(() -> createUser(userInfo));
 
         return (OAuth2User) CustomUserDetails.create(user, oAuth2User.getAttributes());
     }
 
-    private User createUser(GithubOAuth2UserInfo userInfo) {
+    public User createUser(GithubOAuth2UserInfo userInfo) {
+        log.info("메소드 들어오ㅘㅆ다 정보 저장 시작");
         // GitHub 정보로 사용자 객체 생성
         User user = User.builder()
                 .serverNickname(userInfo.getServerNickName())
-                .nickname(null) // 초기값 설정 후, 사용자 입력 필요
-                .stack(null) // 초기값 설정 후, 사용자 입력 필요
-                .gender(null) // 초기값 설정 후, 사용자 입력 필요
-                .job(null) // 초기값 설정 후, 사용자 입력 필요
-                .bio(null) // 초기값 설정 후, 사용자 입력 필요
+                .nickname("") // 초기값 설정 후, 사용자 입력 필요
+                .stack("") // 초기값 설정 후, 사용자 입력 필요
+                .gender(Gender.UNKNOWN) // 초기값 설정 후, 사용자 입력 필요
+                .job("") // 초기값 설정 후, 사용자 입력 필요
+                .bio("") // 초기값 설정 후, 사용자 입력 필요
                 .favorites(0) // 초기값 설정 후, 사용자 입력 필요
-                .interests(null) // 초기값 설정 후, 사용자 입력 필요
-                .devStyle(null) // 초기값 설정 후, 사용자 입력 필요
+                .interests("") // 초기값 설정 후, 사용자 입력 필요
+                .devStyle("") // 초기값 설정 후, 사용자 입력 필요
                 .loginType(LoginType.Github)
                 .build();
+        log.info("serverNickname : " + userInfo.getServerNickName());
+        log.info("stack: {}",user.getStack());
         return userRepository.save(user); // 사용자 저장
     }
 

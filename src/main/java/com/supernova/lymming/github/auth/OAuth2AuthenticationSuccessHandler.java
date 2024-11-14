@@ -1,10 +1,10 @@
 package com.supernova.lymming.github.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supernova.lymming.github.jwt.JwtTokenProvider;
 import com.supernova.lymming.github.repository.CookieAuthorizationRequestRepository;
 import com.supernova.lymming.github.util.CookieUtil;
 import com.supernova.lymming.github.util.ErrorResponse;
+import com.supernova.lymming.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;

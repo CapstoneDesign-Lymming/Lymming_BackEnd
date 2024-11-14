@@ -1,6 +1,11 @@
 package com.supernova.lymming.github.controller;
 
+import com.supernova.lymming.github.auth.CustomOAuthUserService;
+import com.supernova.lymming.github.auth.GithubOAuth2UserInfo;
 import com.supernova.lymming.github.dto.GithubUser;
+import com.supernova.lymming.github.dto.SignupDto;
+import com.supernova.lymming.github.entity.User;
+import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.github.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,47 +19,75 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final CustomOAuthUserService customOAuthUserService;
+    private final UserRepository userRepository;
 
-    // GitHub 액세스 토큰을 사용하여 JWT 생성
     @PostMapping("/api/login/code/github")
-    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
+    @CrossOrigin(origins = {"https://lymming.link", "https://lymming-back.link"}, maxAge = 3600)
     public ResponseEntity<?> loginWithGithub(@RequestBody Map<String, String> request) {
-        // 경로로 들어오는 POST 요청을 처리하는 메소드로 요청 본문은 Map<String,String> 형태로 받는다
-        // 이때 요청 본문에는 엑세스 토큰도 포함된다.
-        log.info("GitHub login request received.");
+        log.info("GitHub 로그인 요청 수신");
 
-        String accessToken = request.get("accessToken");
-        // 요청 본문에서 엑세트 토큰을 추출
+        String code = request.get("code");
+        log.info("인가 코드 수신: {}", code);
+        // 요청 본문에서 인가 코드를 추출합니다.
+
+        // GitHub에 인가 코드를 사용해 액세스 토큰 요청
+        String accessToken;
+        try {
+            log.info("인가 코드를 사용하여 GitHub에서 액세스 토큰 요청 시작");
+            accessToken = authService.getAccessToken(code); // 인가 코드를 사용해 액세스 토큰을 요청
+
+            log.info("액세스 토큰 획득 성공: {}", accessToken);
+
+        } catch (Exception e) {
+            log.error("액세스 토큰 요청 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access token 요청에 실패했습니다.");
+        }
 
         // Access Token 유효성 검사 및 사용자 정보 가져오기
         try {
-            // GitHub API를 통해 Access Token 유효성 검사
+            log.info("액세스 토큰 유효성 검사 시작");
             ResponseEntity<?> githubResponse = authService.validateToken(accessToken);
-            // authService의 validateToken 메소드를 호출해 엑세스 토큰 유효성을 검사한다,
+            log.info("액세스 토큰 유효성 검사 결과 상태 코드: {}", githubResponse.getStatusCode());
 
             if (githubResponse.getStatusCode() != HttpStatus.OK) {
+                log.warn("유효하지 않은 액세스 토큰입니다");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access token이 유효하지 않습니다.");
             }
 
+            log.info("액세스 토큰 유효성 검사 성공, 사용자 정보 요청 시작");
+
             Map<String, Object> userInfo = authService.getUserInfo(accessToken);
-            // 엑세스 토큰을 사용해 깃허브에서 사용자 정보를 가져온다.
+            log.info("사용자 정보 획득 성공: {}", userInfo);
 
-            GithubUser githubUserDto = authService.getServerNickName(accessToken);
-            // 사용자 정보를 DTO 형태로 변환하고 GithubUser 갹채애 사용자 정보를 담는다.
+            String githubId = userInfo.get("login").toString(); // GitHub의 login 정보 (githubId와 같은 역할)
+            log.info("GitHub에서 가져온 githubId: {}", githubId);
 
+            // JWT 토큰 생성
             String jwt = authService.createJwt(userInfo);
-            // 사용자 정보를 바탕으로 JWT 토큰을 생성한다.
+            log.info("JWT 토큰 생성 완료: {}", jwt);
 
-            return ResponseEntity.ok(Map.of("jwt", jwt, "user", githubUserDto));
-            // 생성된 JWT를 응답으로 반환한다.
+            // DB에서 serverNickname으로 사용자 조회
+            Optional<User> optionalUser = userRepository.findByServerNickname(githubId);
+
+            if (optionalUser.isPresent()) {
+                log.info("기존 사용자 로그인 성공: {}", optionalUser.get().getServerNickname());
+
+                return ResponseEntity.ok(Map.of("jwt", jwt, "user", optionalUser.get()));
+            } else {
+                log.warn("존재하지 않는 사용자입니다. 로그인 실패.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("등록된 사용자 정보가 없습니다.");
+            }
+
         } catch (Exception e) {
-            log.error("Error during GitHub login: {}", e.getMessage());
+            log.error("GitHub 로그인 과정에서 오류 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그인 중 오류가 발생했습니다.");
         }
     }

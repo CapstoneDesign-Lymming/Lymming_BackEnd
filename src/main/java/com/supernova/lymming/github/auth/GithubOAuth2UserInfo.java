@@ -13,4 +13,3 @@ public class GithubOAuth2UserInfo {
         return (String) attributes.get("login");  // GitHub의 로그인 ID를 가져옵니다.
     }
 }
-
