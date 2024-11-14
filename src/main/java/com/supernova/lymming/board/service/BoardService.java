@@ -46,8 +46,6 @@ public class BoardService {
         // User 객체 설정
         board.setUser(user);
 
-
-
         // 필드 값 설정
         board.setProjectName(boardDto.getProjectName());
         log.info("projectName: {}", boardDto.getProjectName());

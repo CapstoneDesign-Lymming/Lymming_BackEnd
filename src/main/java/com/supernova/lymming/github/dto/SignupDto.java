@@ -30,6 +30,7 @@ public class SignupDto {
     private List<String> interests;
     private String refreshToken;
     private String serverNickname;
+    private Long userId;
 }
 
 
