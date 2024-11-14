@@ -26,5 +26,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 토큰으로 사용자 찾기
     Optional<User> findByRefreshToken(String refreshToken);
 
-    User findByNickname(String nickname);
+    Optional<User> findByUserId(Long userId);
 }
