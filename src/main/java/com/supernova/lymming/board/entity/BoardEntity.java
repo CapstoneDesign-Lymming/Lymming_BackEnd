@@ -56,8 +56,7 @@ public class BoardEntity {
     @JsonFormat(pattern = "yyyy MM dd")
     private LocalDate deadline;
 
-    //조회수
-    @Column(name = "project_url",nullable = false)
+    @Column(name = "project_url")
     private String projectImg;
 
     //모집 인원
@@ -74,4 +73,7 @@ public class BoardEntity {
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
+
+    @Column(name = "view_count")
+    private int viewCount;
 }

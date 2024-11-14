@@ -1,6 +1,5 @@
 package com.supernova.lymming.board.service;
 
-
 import com.supernova.lymming.board.dto.BoardDto;
 import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
@@ -12,6 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +24,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository; // UserRepository 추가
-    private final SharePageRepository sharePageRepository; // SharePageRepository 추가
+    private final SharePageRepository sharePageRepository;
 
     @Autowired
     public BoardService(BoardRepository boardRepository, UserRepository userRepository, SharePageRepository sharePageRepository) {
@@ -34,21 +37,6 @@ public class BoardService {
         // 새로운 게시판 생성
         BoardEntity board = new BoardEntity();
         log.info("게시글 작성 요청이 들어옴");
-
-        log.info("User : " + userRepository.findByUserId(boardDto.getUserId()));
-
-        // 사용자 조회 후 설정
-        User user = userRepository.findByUserId(boardDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-
-        board.setUser(user); // User 엔티티 설정
-
-        // User 객체 설정
-        board.setUser(user);
-
-        // nickname을 BoardEntity에 설정
-        board.setNickname(user.getNickname());
-        log.info("board.setNickname : {}",board.getNickname());
 
         // 필드 값 설정
         board.setProjectName(boardDto.getProjectName());
@@ -70,6 +58,11 @@ public class BoardService {
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
 
+        // 사용자 조회 후 설정
+        User user = userRepository.findById(boardDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+        board.setUser(user); // User 엔티티 설정
+
         // 게시판 저장
         boardRepository.save(board);
         log.info("게시글 저장됨: {}", board);
@@ -78,12 +71,9 @@ public class BoardService {
         SharePageEntity sharePage = new SharePageEntity();
         sharePage.setUser(user);  // User 객체 설정
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
-        sharePage.setLeader(board.getUser().getNickname());
 
         sharePageRepository.save(sharePage);
         log.info("SharePage 생성됨: {}", sharePage);
-
-        log.info("boardDto : {}", boardDto);
 
         return boardDto;
     }
@@ -95,9 +85,12 @@ public class BoardService {
         for (BoardEntity board : boardList) {
             Long userId = board.getUser().getUserId();  // UserId는 BoardEntity의 User 객체에서 가져오기
 
+            System.out.println("유저 아이디: "+ userId);
+            System.out.println("유저 아이디: "+ board.getUser().getNickname());
+
             BoardDto boardDto = new BoardDto(
                     board.getProjectId(),
-                    board.getUser().getUserId(),  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
+                    userId,
                     board.getStudyType(),
                     board.getUploadTime(),
                     board.getRecruitmentField(),
@@ -110,9 +103,9 @@ public class BoardService {
                     board.getStudyMethod(),
                     board.getProjectDuration(),
                     board.getProjectName(),
-                    board.getNickname()
+                    board.getNickname(),
+                    board.getViewCount()
             );
-            log.info("Get board.getNickname : {}",board.getNickname());
             boardDtoList.add(boardDto);
         }
 
@@ -131,16 +124,13 @@ public class BoardService {
         return boardDto;
     }
 
-    public BoardDto getBoardById(Long projectId) {
-        BoardEntity board = boardRepository.findByProjectId(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+    @Transactional
+    public BoardDto getBoardById(Long projectId,HttpServletRequest request, HttpServletResponse response) {
 
-        // BoardEntity의 값을 확인하는 로그 추가
-        log.info("BoardEntity projectName: {}, nickname: {}", board.getProjectName(), board.getNickname());
-
+        BoardEntity board = detail(projectId,request, response);
         return new BoardDto(
                 board.getProjectId(),
-                board.getUser().getUserId(),  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
+                board.getUser().getUserId(),
                 board.getStudyType(),
                 board.getUploadTime(),
                 board.getRecruitmentField(),
@@ -153,7 +143,44 @@ public class BoardService {
                 board.getStudyMethod(),
                 board.getProjectDuration(),
                 board.getProjectName(),
-                board.getNickname()
+                board.getNickname(),
+                board.getViewCount()
         );
+    }
+
+    @Transactional
+    public BoardEntity detail(Long projectId, HttpServletRequest request, HttpServletResponse response){
+        Cookie oldCookie = null;
+
+        Cookie [] cookies = request.getCookies();
+
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("boardView")) {
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        if(oldCookie != null) {
+            if(!oldCookie.getValue().contains("["+projectId.toString()+"]")) {
+                boardRepository.updateCount(projectId);
+                oldCookie.setValue(oldCookie.getValue()+"_["+projectId+"]");
+                oldCookie.setPath("/");
+                oldCookie.setMaxAge(60 * 60 * 24);
+                response.addCookie(oldCookie);
+            }
+        }
+        else{
+            boardRepository.updateCount(projectId);
+            Cookie newCookie = new Cookie("boardView", "[" + projectId + "]");
+            newCookie.setMaxAge(60 * 60 * 24);
+            newCookie.setPath("/");
+            response.addCookie(newCookie);
+        }
+
+        return boardRepository.findByProjectId(projectId).orElseThrow(() -> {
+            return new IllegalArgumentException("글 상세보기 실패 : 아이디를 찾을 수 없습니다.");
+        });
     }
 }

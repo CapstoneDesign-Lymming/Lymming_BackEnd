@@ -24,5 +24,6 @@ public class BoardDto {
     private String projectDuration;
     private String projectName;
     private String nickname;
+    private int viewCount;
 
 }
