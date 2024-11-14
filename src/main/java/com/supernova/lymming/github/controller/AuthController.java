@@ -70,15 +70,15 @@ public class AuthController {
             String githubId = userInfo.get("login").toString(); // GitHub의 login 정보 (githubId와 같은 역할)
             log.info("GitHub에서 가져온 githubId: {}", githubId);
 
+            // JWT 토큰 생성
+            String jwt = authService.createJwt(userInfo);
+            log.info("JWT 토큰 생성 완료: {}", jwt);
+
             // DB에서 serverNickname으로 사용자 조회
             Optional<User> optionalUser = userRepository.findByServerNickname(githubId);
 
             if (optionalUser.isPresent()) {
                 log.info("기존 사용자 로그인 성공: {}", optionalUser.get().getServerNickname());
-
-                // JWT 토큰 생성
-                String jwt = authService.createJwt(userInfo);
-                log.info("JWT 토큰 생성 완료: {}", jwt);
 
                 return ResponseEntity.ok(Map.of("jwt", jwt, "user", optionalUser.get()));
             } else {
