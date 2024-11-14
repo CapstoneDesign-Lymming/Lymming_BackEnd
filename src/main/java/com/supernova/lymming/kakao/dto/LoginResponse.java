@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class LoginResponse {
+    private Long userId;
     private String nickname;
     private String userImg;
     private String position;

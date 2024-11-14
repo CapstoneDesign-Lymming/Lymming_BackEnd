@@ -100,6 +100,7 @@ public class KakaoService {
 
         // LoginResponse 객체 생성
         LoginResponse loginResponse = LoginResponse.builder()
+                .userId(kakaoUser.getUserId())
                 .nickname(kakaoUser.getNickname())
                 .userImg(kakaoUser.getUserImg())
                 .position(kakaoUser.getPosition())
