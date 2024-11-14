@@ -32,7 +32,8 @@ spring:
 
 custom:
   jwt:
-    secretKey: ${JWT_SECRET_KEY}
+    secretKey : ${JWT_SECRET_KEY}
+
 ---
 
 springdoc:
@@ -59,6 +60,10 @@ spring:
           github:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
+            redirect-uri: ${GITHUB_REDIRECT_URI}
+            scope:
+              - user:email
+              - read:user
 kakao:
   key:
     client-id: ${KAKAO_REST_API}
@@ -69,3 +74,14 @@ app:
   auth:
     token:
       refresh-cookie-key: ${REFRESH_COOKIE_KEY}
+
+---
+
+logging:
+  level:
+    com.supernova.lymming: info
+
+---
+spring:
+  main:
+    allow-bean-definition-overriding: true
