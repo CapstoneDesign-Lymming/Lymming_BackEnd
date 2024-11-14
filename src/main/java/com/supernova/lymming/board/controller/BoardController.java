@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -33,8 +35,8 @@ public class BoardController {
     }
 
     @GetMapping("/participate/{projectId}")
-    public ResponseEntity<BoardDto> getBoard(@PathVariable Long projectId) {
-        BoardDto detailBoard = boardService.getBoardById(projectId);
+    public ResponseEntity<BoardDto> getBoard(@PathVariable Long projectId, HttpServletRequest request, HttpServletResponse response) {
+        BoardDto detailBoard = boardService.getBoardById(projectId,request,response);
         return ResponseEntity.ok().body(detailBoard);
     }
 

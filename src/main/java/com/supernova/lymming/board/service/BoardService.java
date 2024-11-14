@@ -7,6 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,10 +99,10 @@ public class BoardService {
         return boardDto;
     }
 
-    public BoardDto getBoardById(Long projectId) {
-        BoardEntity board = boardRepository.findByProjectId(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+    @Transactional
+    public BoardDto getBoardById(Long projectId,HttpServletRequest request, HttpServletResponse response) {
 
+        BoardEntity board = detail(projectId,request, response);
         return new BoardDto(
                 board.getProjectId(),
                 board.getUserId(),
@@ -115,6 +119,42 @@ public class BoardService {
                 board.getProjectDuration(),
                 board.getProjectName()
         );
+    }
+
+    @Transactional
+    public BoardEntity detail(Long projectId, HttpServletRequest request, HttpServletResponse response){
+        Cookie oldCookie = null;
+
+        Cookie [] cookies = request.getCookies();
+
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("boardView")) {
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        if(oldCookie != null) {
+            if(!oldCookie.getValue().contains("["+projectId.toString()+"]")) {
+                boardRepository.updateCount(projectId);
+                oldCookie.setValue(oldCookie.getValue()+"_["+projectId+"]");
+                oldCookie.setPath("/");
+                oldCookie.setMaxAge(60 * 60 * 24);
+                response.addCookie(oldCookie);
+            }
+        }
+        else{
+            boardRepository.updateCount(projectId);
+            Cookie newCookie = new Cookie("boardView", "[" + projectId + "]");
+            newCookie.setMaxAge(60 * 60 * 24);
+            newCookie.setPath("/");
+            response.addCookie(newCookie);
+        }
+
+        return boardRepository.findByProjectId(projectId).orElseThrow(() -> {
+            return new IllegalArgumentException("글 상세보기 실패 : 아이디를 찾을 수 없습니다.");
+        });
     }
 }
 
