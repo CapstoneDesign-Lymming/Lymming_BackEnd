@@ -59,6 +59,8 @@ public class BoardService {
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
 
+        log.info("boardDto : {}", boardDto);
+
         // nickname을 BoardEntity에 설정
         board.setNickname(user.getNickname());
         log.info("board.setNickname : {}",board.getNickname());
