@@ -35,10 +35,12 @@ public class BoardService {
         BoardEntity board = new BoardEntity();
         log.info("게시글 작성 요청이 들어옴");
 
+        log.info("User : " + userRepository.findByUserId(boardDto.getUserId()));
+
         // 사용자 조회 후 설정
         User user = userRepository.findByUserId(boardDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-        log.info("User : " + user.getUserId());
+
         board.setUser(user); // User 엔티티 설정
 
         // User 객체 설정
