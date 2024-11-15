@@ -6,19 +6,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-import com.supernova.lymming.github.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
-import javax.transaction.Transactional;
-import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByServerNickname(String serverNickname);
@@ -30,7 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("Select u.refreshToken FROM User u WHERE u.userId=:id")
     String getRefreshTokenById(@Param("id") Long id);
-
 
     // 토큰으로 사용자 찾기
     Optional<User> findByRefreshToken(String refreshToken);

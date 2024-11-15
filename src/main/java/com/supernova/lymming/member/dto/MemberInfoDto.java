@@ -19,4 +19,18 @@ public class MemberInfoDto {
     private Long projectId;
     private String projectName;
     private LocalDate deadline;
+
+    public void setMemberInfo(MemberInfoDto memberInfoDto) {
+        this.userId = memberInfoDto.getUserId();
+        this.nickname = memberInfoDto.getNickname();
+        this.userImg = memberInfoDto.getUserImg();
+        this.stack = memberInfoDto.getStack();
+        this.job = memberInfoDto.getJob();
+        this.position = memberInfoDto.getPosition();
+        this.devStyle = memberInfoDto.getDevStyle();
+        this.temperature = memberInfoDto.getTemperature();
+        this.projectId = memberInfoDto.getProjectId();
+        this.projectName = memberInfoDto.getProjectName();
+        this.deadline = memberInfoDto.getDeadline();
+    }
 }

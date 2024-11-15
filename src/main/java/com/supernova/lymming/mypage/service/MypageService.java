@@ -67,7 +67,6 @@ public class MypageService {
 
         // 사용자 정보 저장
         userRepository.save(user);
-
         return mypageDto;
     }
 }
