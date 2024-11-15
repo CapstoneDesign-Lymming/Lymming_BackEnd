@@ -17,7 +17,7 @@ public class SignupDto {
     private String nickname;
     private String userImg;
     private String position;
-    private String devStyle;
+    private List<String> devStyle;
     // 여러개일수도 있어서 리스트 형식으로 수정했습니다
     private List<String> stack;
     private Gender gender;

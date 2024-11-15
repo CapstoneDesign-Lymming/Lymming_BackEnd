@@ -121,8 +121,8 @@ public class BoardService {
         return boardDtoList;
     }
 
-    public BoardDto update(Integer id, BoardDto boardDto) {
-        BoardEntity board = boardRepository.findById(id)
+    public BoardDto update(Long projectId, BoardDto boardDto) {
+        BoardEntity board = boardRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("게시물이 없습니다."));
 
         // 게시글 업데이트

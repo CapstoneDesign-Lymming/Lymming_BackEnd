@@ -88,7 +88,7 @@ public class GithubUserController {
             existingUser.setInterests(userUpdateDto.getInterests().toString());
         }
         if (userUpdateDto.getDevStyle() != null) {
-            existingUser.setDevStyle(userUpdateDto.getDevStyle());
+            existingUser.setDevStyle(userUpdateDto.getDevStyle().toString());
             log.info("개발 스타일은 : {}", existingUser.getDevStyle());
         }
 

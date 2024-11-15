@@ -16,18 +16,9 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    //개발자 리스트
+//    @GetMapping()
 
-    @GetMapping("/user")
-    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
-    public ResponseEntity<User> user(@RequestParam String nickname) {
+    //개발자 모달 및 명함
 
-        try {
-            User user = memberService.getMemberByNickname(nickname);
-
-            return ResponseEntity.ok(user);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
 }

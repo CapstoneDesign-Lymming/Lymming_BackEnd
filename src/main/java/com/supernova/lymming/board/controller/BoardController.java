@@ -42,7 +42,7 @@ public class BoardController {
 
     @PutMapping("/projectId")
     public ResponseEntity<BoardDto> updateBoard(@PathVariable Long projectId, @RequestBody BoardDto boardDto) {
-        BoardDto updateBorad = boardService.update(Math.toIntExact(projectId),boardDto);
+        BoardDto updateBorad = boardService.update(projectId,boardDto);
         return ResponseEntity.ok().body(updateBorad);
     }
 
