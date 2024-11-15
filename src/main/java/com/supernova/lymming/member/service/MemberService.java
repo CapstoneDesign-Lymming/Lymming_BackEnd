@@ -5,13 +5,8 @@ import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.member.dto.MemberInfoDto;
-import com.supernova.lymming.member.entity.MemberInfo;
-import com.supernova.lymming.member.repository.MemberRepository;
-import com.supernova.lymming.mypage.dto.MypageDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

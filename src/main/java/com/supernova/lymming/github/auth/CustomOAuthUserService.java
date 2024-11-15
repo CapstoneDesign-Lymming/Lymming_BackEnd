@@ -51,7 +51,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
                 .job("") // 초기값 설정 후, 사용자 입력 필요
                 .bio("") // 초기값 설정 후, 사용자 입력 필요
                 .favorites(0) // 초기값 설정 후, 사용자 입력 필요
-                .interests("") // 초기값 설정 후, 사용자 입력 필요
+                .position("") // 초기값 설정 후, 사용자 입력 필요
                 .devStyle("") // 초기값 설정 후, 사용자 입력 필요
                 .loginType(LoginType.Github)
                 .build();

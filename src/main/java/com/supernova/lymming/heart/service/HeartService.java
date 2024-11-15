@@ -4,7 +4,6 @@ import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
-import com.supernova.lymming.heart.dto.HeartDto;
 import com.supernova.lymming.heart.entity.HeartEntity;
 import com.supernova.lymming.heart.repository.HeartRepository;
 import org.springframework.beans.factory.annotation.Autowired;

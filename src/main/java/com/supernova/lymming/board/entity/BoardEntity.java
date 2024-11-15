@@ -3,10 +3,8 @@ package com.supernova.lymming.board.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.supernova.lymming.github.entity.User;
 import lombok.*;
-
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name="project")

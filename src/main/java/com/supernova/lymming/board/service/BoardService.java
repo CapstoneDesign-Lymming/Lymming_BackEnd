@@ -5,12 +5,12 @@ import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
+import com.supernova.lymming.heart.repository.HeartRepository;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import com.supernova.lymming.sharepage.repository.SharePageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,12 +25,15 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository; // UserRepository 추가
     private final SharePageRepository sharePageRepository; // SharePageRepository 추가
+    private final HeartRepository heartRepository;
 
     @Autowired
-    public BoardService(BoardRepository boardRepository, UserRepository userRepository, SharePageRepository sharePageRepository) {
+    public BoardService(BoardRepository boardRepository, UserRepository userRepository, SharePageRepository sharePageRepository,
+                        HeartRepository heartRepository) {
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
         this.sharePageRepository = sharePageRepository;
+        this.heartRepository = heartRepository;
     }
 
     public BoardDto createBoard(BoardDto boardDto) {
@@ -95,34 +98,38 @@ public class BoardService {
         for (BoardEntity board : boardList) {
             Long userId = board.getUser().getUserId();  // UserId는 BoardEntity의 User 객체에서 가져오기
 
-            BoardDto boardDto = new BoardDto(
-                    board.getProjectId(),
-                    board.getUser().getUserId(),  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
-                    board.getStudyType(),
-                    board.getUploadTime(),
-                    board.getRecruitmentField(),
-                    board.getDescription(),
-                    board.getWorkType(),
-                    board.getTechStack(),
-                    board.getDeadline(),
-                    board.getProjectImg(),
-                    board.getRecruitmentCount(),
-                    board.getStudyMethod(),
-                    board.getProjectDuration(),
-                    board.getProjectName(),
-                    board.getNickname(),
-                    board.getViewCount()
-            );
-            log.info("Get board.getNickname : {}",board.getNickname());
+            // BoardDto 빌더를 사용하여 isHearted를 제외한 필드만 설정
+            BoardDto boardDto = BoardDto.builder()
+                    .projectId(board.getProjectId())
+                    .userId(board.getUser().getUserId())  // UserId를 board.getUser().getUserId()로 가져옴
+                    .studyType(board.getStudyType())
+                    .uploadTime(board.getUploadTime())
+                    .recruitmentField(board.getRecruitmentField())
+                    .description(board.getDescription())
+                    .workType(board.getWorkType())
+                    .techStack(board.getTechStack())
+                    .deadline(board.getDeadline())
+                    .projectImg(board.getProjectImg())
+                    .recruitmentCount(board.getRecruitmentCount())
+                    .studyMethod(board.getStudyMethod())
+                    .projectDuration(board.getProjectDuration())
+                    .projectName(board.getProjectName())
+                    .nickname(board.getNickname())
+                    .viewCount(board.getViewCount()) // isHearted는 제외
+                    .build();
+
+            log.info("Get board.getNickname : {}", board.getNickname());
             log.info("Board List에서의 조회수 : {}", board.getViewCount());
+
             boardDtoList.add(boardDto);
         }
 
         return boardDtoList;
     }
 
+
     public BoardDto update(Long projectId, BoardDto boardDto) {
-        BoardEntity board = boardRepository.findById(projectId)
+        BoardEntity board = boardRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("게시물이 없습니다."));
 
         // 게시글 업데이트
@@ -141,24 +148,24 @@ public class BoardService {
         // BoardEntity의 값을 확인하는 로그 추가
         log.info("BoardEntity projectName: {}, nickname: {}", board.getProjectName(), board.getNickname());
 
-        return new BoardDto(
-                board.getProjectId(),
-                board.getUser().getUserId(),  // 수정된 부분: board.getUser().getUserId()로 UserId를 가져옴
-                board.getStudyType(),
-                board.getUploadTime(),
-                board.getRecruitmentField(),
-                board.getDescription(),
-                board.getWorkType(),
-                board.getTechStack(),
-                board.getDeadline(),
-                board.getProjectImg(),
-                board.getRecruitmentCount(),
-                board.getStudyMethod(),
-                board.getProjectDuration(),
-                board.getProjectName(),
-                board.getNickname(),
-                board.getViewCount()
-        );
+        return BoardDto.builder()
+                .projectId(board.getProjectId())
+                .userId(board.getUser().getUserId())  // UserId를 board.getUser().getUserId()로 가져옴
+                .studyType(board.getStudyType())
+                .uploadTime(board.getUploadTime())
+                .recruitmentField(board.getRecruitmentField())
+                .description(board.getDescription())
+                .workType(board.getWorkType())
+                .techStack(board.getTechStack())
+                .deadline(board.getDeadline())
+                .projectImg(board.getProjectImg())
+                .recruitmentCount(board.getRecruitmentCount())
+                .studyMethod(board.getStudyMethod())
+                .projectDuration(board.getProjectDuration())
+                .projectName(board.getProjectName())
+                .nickname(board.getNickname())
+                .viewCount(board.getViewCount())
+                .build();  // isHearted 필드는 제외
     }
 
     @Transactional
@@ -196,4 +203,48 @@ public class BoardService {
             return new IllegalArgumentException("글 상세보기 실패 : 아이디를 찾을 수 없습니다.");
         });
     }
+
+    @Transactional
+    public List<BoardDto> getBoardsWithHearts(Long userId) {
+        log.info("getBoardsWithHearts 메소드 들어옴");
+
+        log.info("userId: {}", userId);
+        // 사용자 정보 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
+        // 모든 게시글 조회
+        List<BoardEntity> boardList = boardRepository.findAll();
+        List<BoardDto> boardDtoList = new ArrayList<>();
+
+        for (BoardEntity board : boardList) {
+            // 해당 게시글을 사용자가 찜했는지 확인
+            boolean isHearted = heartRepository.existsByUserIdAndProjectId(user, board);
+
+            BoardDto boardDto = new BoardDto(
+                    board.getProjectId(),
+                    board.getUser().getUserId(),
+                    board.getStudyType(),
+                    board.getUploadTime(),
+                    board.getRecruitmentField(),
+                    board.getDescription(),
+                    board.getWorkType(),
+                    board.getTechStack(),
+                    board.getDeadline(),
+                    board.getProjectImg(),
+                    board.getRecruitmentCount(),
+                    board.getStudyMethod(),
+                    board.getProjectDuration(),
+                    board.getProjectName(),
+                    board.getNickname(),
+                    board.getViewCount(),
+                    isHearted // 찜 여부 추가
+            );
+
+            boardDtoList.add(boardDto);
+        }
+
+        return boardDtoList;
+    }
+
 }

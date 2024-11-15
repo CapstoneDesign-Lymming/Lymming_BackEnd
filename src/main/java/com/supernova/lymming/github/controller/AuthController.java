@@ -1,9 +1,6 @@
 package com.supernova.lymming.github.controller;
 
 import com.supernova.lymming.github.auth.CustomOAuthUserService;
-import com.supernova.lymming.github.auth.GithubOAuth2UserInfo;
-import com.supernova.lymming.github.dto.GithubUser;
-import com.supernova.lymming.github.dto.SignupDto;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.github.service.AuthService;

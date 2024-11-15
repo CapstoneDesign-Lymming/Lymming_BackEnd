@@ -1,7 +1,5 @@
 package com.supernova.lymming.sharepage.service;
 
-import com.supernova.lymming.board.dto.BoardDto;
-import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.sharepage.dto.SharePageDto;
 import com.supernova.lymming.sharepage.entity.End;

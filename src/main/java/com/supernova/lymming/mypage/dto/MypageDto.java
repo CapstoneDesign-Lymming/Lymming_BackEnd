@@ -1,8 +1,6 @@
 package com.supernova.lymming.mypage.dto;
 
-import com.supernova.lymming.member.dto.MemberInfoDto;
 import lombok.Data;
-
 import java.util.List;
 
 @Data

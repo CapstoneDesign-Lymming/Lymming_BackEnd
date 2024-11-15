@@ -1,8 +1,6 @@
 package com.supernova.lymming.mypage.controller;
 
-import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
-import com.supernova.lymming.member.dto.MemberInfoDto;
 import com.supernova.lymming.mypage.dto.MypageDto;
 import com.supernova.lymming.mypage.service.MypageService;
 import lombok.extern.log4j.Log4j2;

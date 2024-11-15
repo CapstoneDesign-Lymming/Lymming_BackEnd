@@ -23,10 +23,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("필터 들어옴");
         String token = parseBearerToken(request);
 
-        log.info("token: {}", token);
 
         //Access Token 검증
         if (token != null) {
@@ -41,7 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String parseBearerToken(HttpServletRequest request) {
-        log.info("메소드 들어옴");
         String bearerToken = request.getHeader("Authorization");
 
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

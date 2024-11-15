@@ -60,9 +60,6 @@ public class User {
     @Column(name = "temperature")
     private Float temperature;
 
-    @Column(name = "interests")
-    private String interests;
-
     @Column(name = "server_nickname")
     private String serverNickname;
 

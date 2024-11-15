@@ -3,8 +3,6 @@ package com.supernova.lymming.sharepage.dto;
 import com.supernova.lymming.sharepage.entity.End;
 import lombok.*;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @Getter

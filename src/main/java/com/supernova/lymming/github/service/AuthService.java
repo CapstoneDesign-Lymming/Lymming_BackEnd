@@ -3,13 +3,10 @@ package com.supernova.lymming.github.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supernova.lymming.github.auth.GithubOAuth2UserInfo;
 import com.supernova.lymming.github.dto.GithubUser;
-import com.supernova.lymming.github.dto.SignupDto;
 import com.supernova.lymming.github.entity.LoginType;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
-import com.supernova.lymming.kakao.dto.LoginResponse;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,7 +95,6 @@ public class AuthService {
         }
 
         String url = "https://api.github.com/user"; // GitHub API 엔드포인트
-        log.info("GitHub API URL: {}", url);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token); // Bearer 접두사 포함
@@ -112,7 +108,6 @@ public class AuthService {
 
         // GitHub API 호출
         ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        log.info("GitHub API 응답: {}", response);
 
         return response;
     }
@@ -122,7 +117,6 @@ public class AuthService {
 
         // GitHub API URL
         String url = "https://api.github.com/user";
-        log.info("GitHub API URL: {}", url);
 
         String accessToken = token;
         log.info("추출된 토큰: {}", accessToken);
@@ -156,8 +150,6 @@ public class AuthService {
                 entity,
                 String.class
         );
-        log.info("GitHub API 응답: {}", response);
-
         // GitHub에서 사용자 정보 반환
         String responseBody = response.getBody();
         log.info("GitHub API 응답 본문: {}", responseBody);
@@ -226,7 +218,6 @@ public class AuthService {
         log.info("getServerNickName 메소드 호출, 전달된 토큰: {}", accessToken);
 
         String url = "https://api.github.com/user"; // GitHub API 엔드포인트
-        log.info("GitHub API URL: {}", url);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
@@ -236,7 +227,6 @@ public class AuthService {
         log.info("HTTP 엔티티 생성 완료");
 
         ResponseEntity<GithubUser> response = restTemplate.exchange(url, HttpMethod.GET, entity, GithubUser.class);
-        log.info("GitHub API 응답: {}", response);
 
         GithubUser githubUser = response.getBody();
         log.info("GitHub 사용자 정보: {}", githubUser);
