@@ -29,5 +29,5 @@ public class BoardDto {
     private String projectName;
     private String nickname;
     private int viewCount;
-    private boolean isLike;
+    private boolean like;
 }
