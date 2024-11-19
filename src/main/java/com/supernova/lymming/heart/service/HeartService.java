@@ -1,5 +1,6 @@
 package com.supernova.lymming.heart.service;
 
+import com.supernova.lymming.board.dto.BoardDto;
 import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
@@ -37,6 +38,13 @@ public class HeartService {
         heart.setUserId(user);
         heart.setProjectId(project);
         heartRepository.save(heart);
+
+        // BoardDto 기존 객체에서 isLike만 true로 설정
+        BoardDto boardDto = new BoardDto();
+
+        // 기존 BoardDto에 있는 값들을 유지하고 isLike만 true로 설정
+        boardDto.setProjectId(project.getProjectId());  // 필요한 값만 설정
+        boardDto.setLike(true);  // 좋아요 상태를 true로 설정
     }
 
     public void unlikeProject(Long userId, Long projectId) {
