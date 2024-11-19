@@ -41,12 +41,16 @@ public class HeartService {
         heart.setProjectId(project);
         heartRepository.save(heart);
 
-        // 좋아요가 등록된 후 BoardDto의 isHearted를 true로 설정 (다시 조회)
+        // BoardDto 생성 후 좋아요 상태 설정
         BoardDto boardDto = new BoardDto();
         boardDto.setProjectId(project.getProjectId());
-        boardDto.setLike(true);// 이 부분이 좋아요 여부를 true로 설정하는 부분
 
-        log.info("setLike: {}", boardDto.isLike());
+        // 좋아요가 눌린 프로젝트라면 like를 true로 설정
+        // heartRepository에서 해당 프로젝트에 좋아요가 눌렸는지 확인 후 처리
+        boolean isLiked = heartRepository.existsByUserIdAndProjectId(user, project);
+        boardDto.setLike(isLiked);  // isLiked가 true이면 좋아요 누른 상태
+
+        log.info("Project ID: {}, isLike: {}", boardDto.getProjectId(), boardDto.isLike());
     }
 
     public void unlikeProject(Long userId, Long projectId) {
