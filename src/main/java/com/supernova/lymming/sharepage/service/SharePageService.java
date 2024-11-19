@@ -26,6 +26,7 @@ public class SharePageService {
     }
 
     public SharePageDto checkSharePage(SharePageDto sharePageDto) {
+        log.info("권한체크 시작");
         Long shareId = sharePageDto.getSharePageId();
         Long currentUserId = sharePageDto.getUserId();
 

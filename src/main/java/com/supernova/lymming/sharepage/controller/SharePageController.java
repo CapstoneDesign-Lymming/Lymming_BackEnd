@@ -2,12 +2,14 @@ package com.supernova.lymming.sharepage.controller;
 
 import com.supernova.lymming.sharepage.dto.SharePageDto;
 import com.supernova.lymming.sharepage.service.SharePageService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Log4j2
 public class SharePageController {
 
     private final SharePageService sharePageService;
@@ -37,7 +39,9 @@ public class SharePageController {
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<SharePageDto> leaderSharePage(@PathVariable Long sharePageId, @RequestBody SharePageDto sharePageDto) {
         // 권한 체크 및 게시물 업데이트
-        SharePageDto updatedSharePage = sharePageService.checkSharePage(sharePageDto);  // 권한 확인 후 업데이트
+        log.info("메소드 들어옴");
+        SharePageDto updatedSharePage = sharePageService.checkSharePage(sharePageDto);// 권한 확인 후 업데이트
+        log.info("updateSharePage:{}", updatedSharePage);
         return ResponseEntity.ok().body(updatedSharePage);  // SharePageDto를 리턴
     }
 }
