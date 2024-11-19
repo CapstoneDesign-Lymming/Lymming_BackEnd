@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 @Log4j2
 @RestController
@@ -75,8 +78,13 @@ public class GithubUserController {
             existingUser.setPosition(userUpdateDto.getPosition().toString());
         }
         if (userUpdateDto.getDevStyle() != null) {
-            existingUser.setDevStyle(userUpdateDto.getDevStyle().toString());
+            List<String> devStyleList = Arrays.asList(userUpdateDto.getDevStyle().split(", "));
+            String devStyleString = String.join(", ", devStyleList); // 콤마로 구분된 문자열
+            existingUser.setDevStyle(devStyleString);
         }
+
+        log.info("devStyle : {}", existingUser.getDevStyle());
+
 
         User updatedUser = userRepository.save(existingUser); // 변경사항 저장
 
