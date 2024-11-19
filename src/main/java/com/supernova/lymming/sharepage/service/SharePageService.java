@@ -28,7 +28,9 @@ public class SharePageService {
     public SharePageDto checkSharePage(SharePageDto sharePageDto) {
         log.info("권한체크 시작");
         Long shareId = sharePageDto.getSharePageId();
+        log.info("shareId : {}", shareId);
         Long currentUserId = sharePageDto.getUserId();
+        log.info("currentUserId : {}", currentUserId);
 
         SharePageEntity sharePage = sharePageRepository.findBySharePageId(shareId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 SharePage가 존재하지 않습니다."));
