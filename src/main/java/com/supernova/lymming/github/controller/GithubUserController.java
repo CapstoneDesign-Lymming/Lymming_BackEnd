@@ -74,8 +74,10 @@ public class GithubUserController {
         if (userUpdateDto.getPosition() != null) {
             existingUser.setPosition(userUpdateDto.getPosition().toString());
         }
+        //list 역직렬화
         if (userUpdateDto.getDevStyle() != null) {
-            existingUser.setDevStyle(userUpdateDto.getDevStyle().toString());
+            String devStyleString = String.join(", ", userUpdateDto.getDevStyle());
+            existingUser.setDevStyle(devStyleString);
         }
 
         User updatedUser = userRepository.save(existingUser); // 변경사항 저장
