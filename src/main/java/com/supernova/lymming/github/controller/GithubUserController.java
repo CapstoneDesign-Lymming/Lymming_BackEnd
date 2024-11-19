@@ -77,7 +77,7 @@ public class GithubUserController {
             existingUser.setDevStyle(userUpdateDto.getDevStyle().toString());
         }
 
-        existingUser.setDeveloperType(userUpdateDto.getDeveloperType());
+//        existingUser.setDeveloperType(userUpdateDto.getDeveloperType());
 
         User updatedUser = userRepository.save(existingUser); // 변경사항 저장
 

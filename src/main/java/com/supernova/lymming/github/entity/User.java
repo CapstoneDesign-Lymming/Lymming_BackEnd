@@ -63,8 +63,8 @@ public class User {
     @Column(name = "server_nickname")
     private String serverNickname;
 
-    @Column(name = "developer_type")
-    private int developerType;
+//    @Column(name = "developer_type")
+//    private int developerType;
 
     public User(Long userId, String serverNickname, LoginType loginType) {
         this.userId = userId;

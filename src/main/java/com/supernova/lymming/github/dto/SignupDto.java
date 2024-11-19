@@ -29,7 +29,7 @@ public class SignupDto {
     private String refreshToken;
     private String serverNickname;
     private Long userId;
-    private int developerType;
+//    private int developerType;
 }
 
 
