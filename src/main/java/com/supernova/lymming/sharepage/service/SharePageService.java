@@ -27,24 +27,34 @@ public class SharePageService {
 
     public SharePageDto checkSharePage(SharePageDto sharePageDto) {
         log.info("권한체크 시작");
-        Long shareId = sharePageDto.getSharePageId();
-        log.info("shareId : {}", shareId);
-        Long currentUserId = sharePageDto.getUserId();
+
+        Long currentUserId = sharePageDto.getUserId();  // 현재 사용자 ID
         log.info("currentUserId : {}", currentUserId);
 
-        SharePageEntity sharePage = sharePageRepository.findBySharePageId(shareId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 SharePage가 존재하지 않습니다."));
+        // 사용자 ID에 맞는 SharePage 조회
+        SharePageEntity sharePage = sharePageRepository.findByUser_UserId(currentUserId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자에 대한 SharePage가 존재하지 않습니다."));
 
+        // 해당 SharePage ID를 가져옴
+        Long shareId = sharePage.getSharePageId();
+        log.info("userId에 해당하는 SharePage ID: {}", shareId);
+
+        // 프로젝트의 소유자 확인
         Long projectOwner = sharePage.getBoard().getUser().getUserId();
+        log.info("게시글 작성자 ID: {}", projectOwner);
 
+        // 권한 확인
         if (currentUserId.equals(projectOwner)) {
-            log.info("권한이 확인. 수정 가능합니다.");
+            log.info("권한 확인 완료. 수정 가능합니다.");
+
+            // 권한이 있으면 업데이트 메서드 호출
             return update(shareId, sharePageDto);
         } else {
-            log.info("권한이 없습니다");
-            throw new SecurityException("수정 권한이 없습니다");
+            log.warn("권한 없음. 요청 거부됨.");
+            throw new SecurityException("수정 권한이 없습니다.");
         }
     }
+
 
     public List<SharePageDto> getSharePageList() {
         List<SharePageEntity> shasrePageList = sharePageRepository.findAll();
