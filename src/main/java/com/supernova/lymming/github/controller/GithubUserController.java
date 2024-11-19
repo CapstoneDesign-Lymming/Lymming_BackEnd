@@ -57,7 +57,9 @@ public class GithubUserController {
             existingUser.setNickname(userUpdateDto.getNickname());
         }
         if (userUpdateDto.getStack() != null) {
-            existingUser.setStack(userUpdateDto.getStack().toString());
+            List<String> stackList = Arrays.asList(userUpdateDto.getStack().split(", "));
+            String stack = String.join(", ", stackList); // 콤마로 구분된 문자열
+            existingUser.setStack(stack);
         }
         if (userUpdateDto.getUserImg() != null) {
             existingUser.setUserImg(userUpdateDto.getUserImg().toString());
