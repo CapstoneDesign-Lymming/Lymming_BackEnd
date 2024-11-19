@@ -43,7 +43,6 @@ public class GithubUserController {
         log.info("회원가입 메소드 들어옴");
 
         String refreshToken = userUpdateDto.getRefreshToken();
-        log.info("회원가입 사용자의 refreshToken: {}", refreshToken);
 
         System.out.println(refreshToken+"토큰");
 
@@ -77,6 +76,8 @@ public class GithubUserController {
         if (userUpdateDto.getDevStyle() != null) {
             existingUser.setDevStyle(userUpdateDto.getDevStyle().toString());
         }
+
+        existingUser.setDeveloperType(userUpdateDto.getDeveloperType());
 
         User updatedUser = userRepository.save(existingUser); // 변경사항 저장
 
