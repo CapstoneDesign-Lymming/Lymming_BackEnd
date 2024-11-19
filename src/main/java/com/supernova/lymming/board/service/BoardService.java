@@ -208,7 +208,6 @@ public class BoardService {
     public List<BoardDto> getBoardsWithHearts(Long userId) {
         log.info("getBoardsWithHearts 메소드 들어옴");
 
-        log.info("userId: {}", userId);
         // 사용자 정보 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
@@ -221,6 +220,7 @@ public class BoardService {
             // 해당 게시글을 사용자가 찜했는지 확인
             boolean isHearted = heartRepository.existsByUserIdAndProjectId(user, board);
 
+            // BoardDto 생성
             BoardDto boardDto = new BoardDto(
                     board.getProjectId(),
                     board.getUser().getUserId(),
