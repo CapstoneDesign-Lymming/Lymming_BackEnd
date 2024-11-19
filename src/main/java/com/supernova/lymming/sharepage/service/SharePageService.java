@@ -30,7 +30,7 @@ public class SharePageService {
         Long shareId = sharePageDto.getSharePageId();
         Long currentUserId = sharePageDto.getUserId();
 
-        SharePageEntity sharePage = sharePageRepository.findById(shareId)
+        SharePageEntity sharePage = sharePageRepository.findBySharePageId(shareId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 SharePage가 존재하지 않습니다."));
 
         Long projectOwner = sharePage.getBoard().getUser().getUserId();
