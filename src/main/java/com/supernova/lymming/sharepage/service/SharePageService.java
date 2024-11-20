@@ -61,7 +61,7 @@ public class SharePageService {
                     sharePage.getTeamMember(),
                     sharePage.getSharePageName(),
                     sharePage.getProjectLink(),
-                    sharePage.getBoard().getProjectImg(),
+                    sharePage.getSharePageUrl(),
                     sharePage.getTeamName(),
                     sharePage.getEnd(),
                     sharePage.getLeader()

@@ -83,10 +83,6 @@ public class BoardService {
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
         sharePage.setLeader(board.getUser().getNickname());
 
-//        SharePageDto sharePageDto = new SharePageDto();
-//        sharePageDto.setSharePageId(sharePage.getSharePageId());
-//        log.info("Board 메소드에서의 sharePageDto : {}", sharePageDto);
-
         sharePageRepository.save(sharePage);
         log.info("SharePage 생성됨: {}", sharePage);
 
