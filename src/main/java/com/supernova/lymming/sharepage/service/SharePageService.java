@@ -91,6 +91,7 @@ public class SharePageService {
         sharePage.setProjectLink(sharePageDto.getProjectLink());
         sharePage.setTeamMember(sharePageDto.getTeamMember());
         sharePage.setSharePageUrl(sharePageDto.getSharePageUrl());
+        log.info("새롭게 추가된 공유페이지 사진 : {}", sharePage.getSharePageUrl());
         sharePage.setTeamName(sharePageDto.getTeamName());
 
         // SharePageEntity를 저장
@@ -105,13 +106,12 @@ public class SharePageService {
                 sharePage.getTeamMember(),
                 sharePage.getSharePageName(),
                 sharePage.getProjectLink(),
-                sharePage.getBoard().getProjectImg(),
+                sharePage.getSharePageUrl(),
                 sharePage.getTeamName(),
                 sharePage.getEnd(), // 변경된 'end' 값 리턴
                 sharePage.getLeader()
         );
     }
-
 
 
 }

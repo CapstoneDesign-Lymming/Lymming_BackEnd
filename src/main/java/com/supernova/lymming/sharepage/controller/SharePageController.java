@@ -31,6 +31,7 @@ public class SharePageController {
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<List<SharePageDto>> mySharePage() {
         List<SharePageDto> sharePageDto = sharePageService.getSharePageList();
+        log.info("리턴된 sharPage dto는 :{} ", sharePageDto);
         return ResponseEntity.ok().body(sharePageDto);
     }
 
