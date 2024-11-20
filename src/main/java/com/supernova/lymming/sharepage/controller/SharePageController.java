@@ -8,9 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 @RestController
+@Log4j2
 public class SharePageController {
 
     private final SharePageService sharePageService;
@@ -59,8 +62,11 @@ public class SharePageController {
 
     @GetMapping("/share/find/{nickname}")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
-    public ResponseEntity<String> findUser(@PathVariable String nickname) {
-        String userNickname = sharePageService.getUserNickname(nickname);
+    public ResponseEntity<String> findUser(@PathVariable String nickname) throws UnsupportedEncodingException {
+
+        String decodedNickname = URLDecoder.decode(nickname, "UTF-8");
+        log.info("Decoded nickname: {}", decodedNickname);  // 디코딩된 값 확인
+        String userNickname = sharePageService.getUserNickname(decodedNickname);
         return ResponseEntity.ok().body(userNickname);
     }
 }

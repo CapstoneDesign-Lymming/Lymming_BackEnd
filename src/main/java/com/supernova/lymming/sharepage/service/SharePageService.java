@@ -1,25 +1,31 @@
 package com.supernova.lymming.sharepage.service;
 
 import com.supernova.lymming.board.repository.BoardRepository;
+import com.supernova.lymming.github.entity.User;
+import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.sharepage.dto.SharePageDto;
 import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import com.supernova.lymming.sharepage.repository.SharePageRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Log4j2
 public class SharePageService {
 
     private final SharePageRepository sharePageRepository;
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public SharePageService(SharePageRepository sharePageRepository, BoardRepository boardRepository) {
+    public SharePageService(SharePageRepository sharePageRepository, BoardRepository boardRepository, UserRepository userRepository) {
         this.sharePageRepository = sharePageRepository;
         this.boardRepository = boardRepository;
+        this.userRepository = userRepository;
     }
 
     public SharePageDto checkSharePage(Long sharePageId ,SharePageDto sharePageDto) {
@@ -128,10 +134,13 @@ public class SharePageService {
     }
 
     public String getUserNickname(String nickname) {
-        // Repository에서 닉네임 검색
-        SharePageEntity sharePageEntity = sharePageRepository.findByUser_Nickname(nickname)
-                .orElseThrow(() -> new NoSuchElementException("닉네임을 찾을 수 없습니다." + nickname));
+        log.info("getUserNickname에서 닉네임은 : {}", nickname);
+
+        // UserRepository에서 닉네임 검색
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new NoSuchElementException("닉네임을 찾을 수 없습니다: " + nickname));
+
         // 검색된 닉네임 반환
-        return sharePageEntity.getUser().getNickname();
+        return user.getNickname();
     }
 }

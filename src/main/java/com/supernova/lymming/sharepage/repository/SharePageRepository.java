@@ -9,6 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface SharePageRepository extends JpaRepository <SharePageEntity,Long> {
-    Optional<SharePageEntity> findByUser_Nickname(String nickname);
     Optional<SharePageEntity> findBySharePageId(Long sharePageId);
 }
