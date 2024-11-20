@@ -82,7 +82,7 @@ public class BoardService {
         sharePage.setUser(user);  // User 객체 설정
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
         sharePage.setLeader(board.getUser().getNickname());
-        sharePage.getBoard().setProjectImg(board.getProjectImg());
+        sharePage.setSharePageUrl(board.getProjectImg());
         log.info("프로젝트 사진이 공유페이지에 들어감 : {}", sharePage);
 
         sharePageRepository.save(sharePage);
