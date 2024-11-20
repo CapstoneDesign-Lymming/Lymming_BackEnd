@@ -4,6 +4,7 @@ import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.sharepage.dto.SharePageDto;
+import com.supernova.lymming.sharepage.dto.ShareUserInfoDto;
 import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import com.supernova.lymming.sharepage.repository.SharePageRepository;
@@ -133,14 +134,17 @@ public class SharePageService {
         );
     }
 
-    public String getUserNickname(String nickname) {
+    public ShareUserInfoDto getUserNickname(String nickname, Long sharePageId) {
         log.info("getUserNickname에서 닉네임은 : {}", nickname);
 
         // UserRepository에서 닉네임 검색
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new NoSuchElementException("닉네임을 찾을 수 없습니다: " + nickname));
 
-        // 검색된 닉네임 반환
-        return user.getNickname();
+        log.info("SharePageID는 : {}", sharePageId);
+
+        // 검색된 닉네임과 sharePageId를 ShareUserInfoDto로 반환
+        return new ShareUserInfoDto(sharePageId, user.getNickname());
     }
+
 }

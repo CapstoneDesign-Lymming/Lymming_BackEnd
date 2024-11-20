@@ -1,6 +1,7 @@
 package com.supernova.lymming.sharepage.controller;
 
 import com.supernova.lymming.sharepage.dto.SharePageDto;
+import com.supernova.lymming.sharepage.dto.ShareUserInfoDto;
 import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.service.SharePageService;
 import lombok.extern.log4j.Log4j2;
@@ -60,13 +61,18 @@ public class SharePageController {
         return ResponseEntity.ok().body(updatedSharePage);
     }
 
-    @GetMapping("/share/find/{nickname}")
+    @GetMapping("/share/find/{nickname}/{sharePageId}")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
-    public ResponseEntity<String> findUser(@PathVariable String nickname) throws UnsupportedEncodingException {
-
+    public ResponseEntity<ShareUserInfoDto> findUser(@PathVariable String nickname, @PathVariable Long sharePageId) throws UnsupportedEncodingException {
+        // URL 디코딩
         String decodedNickname = URLDecoder.decode(nickname, "UTF-8");
         log.info("Decoded nickname: {}", decodedNickname);  // 디코딩된 값 확인
-        String userNickname = sharePageService.getUserNickname(decodedNickname);
-        return ResponseEntity.ok().body(userNickname);
+
+        // 서비스 레벨에서 해당 닉네임과 sharePageId를 처리
+        ShareUserInfoDto shareUserInfoDto = sharePageService.getUserNickname(decodedNickname, sharePageId);
+
+        // ResponseEntity로 ShareUserInfoDto 반환
+        return ResponseEntity.ok().body(shareUserInfoDto);
     }
+
 }
