@@ -72,6 +72,9 @@ public class BoardService {
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
         sharePage.setLeader(board.getUser().getNickname());
         sharePage.setSharePageUrl(board.getProjectImg());
+        sharePage.setMemberUrlBundle(user.getUserImg());
+        sharePage.setPositionBundle(user.getPosition());
+        sharePage.setTeamMember(user.getNickname());
 
         sharePageRepository.save(sharePage);
 

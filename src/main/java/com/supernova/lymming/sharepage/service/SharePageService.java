@@ -4,6 +4,7 @@ import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.sharepage.dto.SharePageDto;
+import com.supernova.lymming.sharepage.dto.ShareTeamAddDto;
 import com.supernova.lymming.sharepage.dto.ShareUserInfoDto;
 import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
@@ -145,6 +146,55 @@ public class SharePageService {
 
         // 검색된 닉네임과 sharePageId를 ShareUserInfoDto로 반환
         return new ShareUserInfoDto(sharePageId, user.getNickname());
+    }
+
+
+    public ShareTeamAddDto addTeamMember (Long sharePageId, String nickname) {
+        log.info("addTeamMember 메소드 들어옴");
+        SharePageEntity sharePage = sharePageRepository.findBySharePageId(sharePageId).orElseThrow(() -> new RuntimeException("공유페이지를 찾을 수 없습니다"));
+
+        List<String> teamMember = new ArrayList<>(Arrays.asList(sharePage.getTeamMember().split(",")));
+        teamMember.add(nickname);
+        sharePage.setTeamMember(String.join(",", teamMember));
+
+        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+        List<String> memberUrls = new ArrayList<>();
+        List<String> positions = new ArrayList<>();
+
+// 사용자 정보를 먼저 추가
+        memberUrls.add(user.getUserImg());
+        positions.add(user.getPosition());
+
+        // 기존 sharePage의 데이터를 추가
+        if (sharePage.getMemberUrlBundle() != null && !sharePage.getMemberUrlBundle().isEmpty()) {
+            memberUrls.addAll(Arrays.asList(sharePage.getMemberUrlBundle().split(",")));
+            log.info("기존 memberUrls 추가: {}", memberUrls);
+        }
+
+        if (sharePage.getPositionBundle() != null && !sharePage.getPositionBundle().isEmpty()) {
+            positions.addAll(Arrays.asList(sharePage.getPositionBundle().split(",")));
+            log.info("기존 positions 추가: {}", positions);
+        }
+
+        // 업데이트된 리스트를 SharePageEntity에 저장
+        sharePage.setMemberUrlBundle(String.join(",", memberUrls));
+        log.info("저장된 memberUrlBundle: {}", sharePage.getMemberUrlBundle());
+        sharePage.setPositionBundle(String.join(",", positions));
+        log.info("저장된 positionBundle: {}", sharePage.getPositionBundle());
+
+        sharePageRepository.save(sharePage);
+
+        log.info("저장됨 :{}",sharePage);
+
+        log.info("리턴 전 확인:{}",sharePage,nickname,teamMember,memberUrls,positions,positions);
+
+        return new ShareTeamAddDto(
+                sharePageId,
+                nickname,
+                String.join(",",teamMember),
+                String.join(",",memberUrls),
+                String.join(",",positions)
+        );
     }
 
 }

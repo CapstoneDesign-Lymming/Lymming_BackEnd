@@ -1,6 +1,7 @@
 package com.supernova.lymming.sharepage.controller;
 
 import com.supernova.lymming.sharepage.dto.SharePageDto;
+import com.supernova.lymming.sharepage.dto.ShareTeamAddDto;
 import com.supernova.lymming.sharepage.dto.ShareUserInfoDto;
 import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.service.SharePageService;
@@ -75,4 +76,14 @@ public class SharePageController {
         return ResponseEntity.ok().body(shareUserInfoDto);
     }
 
+    @PostMapping("/share/add/team/member")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
+    public ResponseEntity<ShareTeamAddDto> addTeamMember(@RequestBody ShareTeamAddDto shareTeamAddDto) {
+        try{
+            ShareTeamAddDto updateDto = sharePageService.addTeamMember(shareTeamAddDto.getSharePageId(),shareTeamAddDto.getNickname());
+            return ResponseEntity.ok().body(updateDto);
+        }catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 }

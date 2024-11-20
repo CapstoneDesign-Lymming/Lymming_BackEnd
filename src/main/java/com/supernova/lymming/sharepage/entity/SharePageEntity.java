@@ -48,4 +48,10 @@ public class SharePageEntity {
     @Column(name = "leader")
     private String leader;
 
+    @Column(name = "member_url_bundle")
+    private String memberUrlBundle;
+
+    @Column(name = "position_bundle")
+    private String positionBundle;
+
 }
