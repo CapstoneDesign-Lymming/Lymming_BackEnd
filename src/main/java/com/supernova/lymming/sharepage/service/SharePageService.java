@@ -82,8 +82,6 @@ public class SharePageService {
         // 기본적으로 끝났는지 여부는 FALSE로 설정
         if (sharePageDto.getEnd() == null) {
             sharePage.setEnd(End.FALSE);  // 기본값 설정
-        } else {
-            sharePage.setEnd(sharePageDto.getEnd());  // 사용자가 종료 버튼을 눌렀을 때 TRUE로 설정
         }
 
         // 게시글 업데이트
@@ -110,6 +108,33 @@ public class SharePageService {
                 sharePage.getSharePageUrl(),
                 sharePage.getTeamName(),
                 sharePage.getEnd(), // 변경된 'end' 값 리턴
+                sharePage.getLeader()
+        );
+    }
+
+    public SharePageDto end(Long sharePageId) {
+        // 게시물 찾기
+        SharePageEntity sharePage = sharePageRepository.findBySharePageId(sharePageId)
+                .orElseThrow(() -> new IllegalArgumentException("게시물이 없습니다."));
+
+        // 종료 상태를 TRUE로 설정
+        sharePage.setEnd(End.TRUE);
+
+        // 업데이트된 엔티티 저장
+        sharePageRepository.save(sharePage);
+
+        // DTO 반환
+        return new SharePageDto(
+                sharePage.getSharePageId(),
+                sharePage.getUser().getUserId(),
+                sharePage.getBoard().getProjectId(),
+                sharePage.getSharePageDescription(),
+                sharePage.getTeamMember(),
+                sharePage.getSharePageName(),
+                sharePage.getProjectLink(),
+                sharePage.getSharePageUrl(),
+                sharePage.getTeamName(),
+                sharePage.getEnd(),
                 sharePage.getLeader()
         );
     }

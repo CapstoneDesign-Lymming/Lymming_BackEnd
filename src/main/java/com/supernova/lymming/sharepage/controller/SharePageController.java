@@ -1,6 +1,7 @@
 package com.supernova.lymming.sharepage.controller;
 
 import com.supernova.lymming.sharepage.dto.SharePageDto;
+import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.service.SharePageService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -45,4 +46,21 @@ public class SharePageController {
         log.info("updateSharePage:{}", updatedSharePage);
         return ResponseEntity.ok().body(updatedSharePage);  // SharePageDto를 리턴
     }
+
+    @PutMapping("share/details/{sharePageId}/end")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
+    public ResponseEntity<SharePageDto> endSharePage(@PathVariable Long sharePageId) {
+        // 종료 상태로 업데이트할 SharePageDto 생성
+        SharePageDto sharePageDto = new SharePageDto();
+        sharePageDto.setEnd(End.TRUE);  // 종료 상태로 설정
+
+        log.info("종료된 sharePageId: {}", sharePageId);
+
+        // 권한 확인 및 업데이트
+        SharePageDto updatedSharePage = sharePageService.end(sharePageId);
+        log.info("updatedSharePage: {}", updatedSharePage);
+
+        return ResponseEntity.ok().body(updatedSharePage);
+    }
+
 }
