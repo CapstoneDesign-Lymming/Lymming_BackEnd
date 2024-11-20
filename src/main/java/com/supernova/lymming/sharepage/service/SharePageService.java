@@ -26,9 +26,6 @@ public class SharePageService {
         this.boardRepository = boardRepository;
     }
 
-    @Autowired
-    private EntityManager entityManager;
-
     public SharePageDto checkSharePage(Long sharePageId ,SharePageDto sharePageDto) {
         log.info("권한체크 시작");
         log.info("sharePageId : {}", sharePageId);
@@ -100,8 +97,6 @@ public class SharePageService {
 
         // SharePageEntity를 저장
         sharePageRepository.save(sharePage);
-
-        entityManager.refresh(sharePage);
 
         // SharePageDto 리턴
         return new SharePageDto(
