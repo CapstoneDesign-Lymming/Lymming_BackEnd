@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class KakaoUserController {
 
     private final KakaoService kakaoService;
@@ -28,15 +27,11 @@ public class KakaoUserController {
     public ResponseEntity<LoginResponse> kakaoLogin(@RequestBody Map<String, String> requestBody, HttpServletRequest request){
         String code = requestBody.get("code");  // 클라이언트에서 보낸 "code" 값 추출
         System.out.println("Received code: " + code);
-        log.info("Received code: {}", code);
         try {
             // 현재 도메인 확인
             String currentDomain = request.getServerName();
-            log.info("Current domain: {}", currentDomain);
-
             return ResponseEntity.ok(kakaoService.kakaoLogin(code,currentDomain));
         }catch (NoSuchElementException e){
-            log.error("Item not found: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"item not found");
         }
     }

@@ -7,16 +7,12 @@ import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.github.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 import java.util.List;
 
-
-@Log4j2
 @RestController
 @RequiredArgsConstructor
 public class GithubUserController {
@@ -43,10 +39,7 @@ public class GithubUserController {
     public ResponseEntity<User> updateUser(@AuthenticationPrincipal CustomUserDetails user,
                                            @RequestBody SignupDto userUpdateDto) {
 
-        log.info("회원가입 메소드 들어옴");
-
         String refreshToken = userUpdateDto.getRefreshToken();
-        log.info("회원가입 사용자의 refreshToken: {}", refreshToken);
 
         System.out.println(refreshToken+"토큰");
 
@@ -84,10 +77,6 @@ public class GithubUserController {
             String devStyleString = String.join(", ", devStyleList); // 콤마로 구분된 문자열
             existingUser.setDevStyle(devStyleString);
         }
-
-        log.info("devStyle : {}", existingUser.getDevStyle());
-
-
         User updatedUser = userRepository.save(existingUser); // 변경사항 저장
 
         return ResponseEntity.ok(updatedUser); // 업데이트된 사용자 정보 반환

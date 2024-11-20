@@ -8,8 +8,6 @@ import com.supernova.lymming.sharepage.repository.SharePageRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +25,6 @@ public class SharePageService {
     }
 
     public SharePageDto checkSharePage(Long sharePageId ,SharePageDto sharePageDto) {
-        log.info("권한체크 시작");
         log.info("sharePageId : {}", sharePageId);
 
         Long currentUserId = sharePageDto.getUserId();
@@ -36,7 +33,6 @@ public class SharePageService {
         SharePageEntity sharePage = sharePageRepository.findBySharePageId(sharePageId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 SharePage가 존재하지 않습니다."));
 
-        log.info("sharePageId : {}", sharePage.getSharePageId());
 
         Long projectOwner = sharePage.getBoard().getUser().getUserId();
 
@@ -90,7 +86,6 @@ public class SharePageService {
         sharePage.setProjectLink(sharePageDto.getProjectLink());
         sharePage.setTeamMember(sharePageDto.getTeamMember());
         sharePage.setSharePageUrl(sharePageDto.getSharePageUrl());
-        log.info("새롭게 추가된 공유페이지 사진 : {}", sharePage.getSharePageUrl());
         sharePage.setTeamName(sharePageDto.getTeamName());
 
         // SharePageEntity를 저장

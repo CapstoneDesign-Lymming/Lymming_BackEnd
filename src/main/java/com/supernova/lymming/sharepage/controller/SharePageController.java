@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Log4j2
 public class SharePageController {
 
     private final SharePageService sharePageService;
@@ -32,7 +31,6 @@ public class SharePageController {
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<List<SharePageDto>> mySharePage() {
         List<SharePageDto> sharePageDto = sharePageService.getSharePageList();
-        log.info("리턴된 sharPage dto는 :{} ", sharePageDto);
         return ResponseEntity.ok().body(sharePageDto);
     }
 
@@ -41,9 +39,7 @@ public class SharePageController {
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<SharePageDto> leaderSharePage(@PathVariable Long sharePageId, @RequestBody SharePageDto sharePageDto) {
         // 권한 체크 및 게시물 업데이트
-        log.info("sharePAgeId:{}", sharePageId);
         SharePageDto updatedSharePage = sharePageService.checkSharePage(sharePageId,sharePageDto);// 권한 확인 후 업데이트
-        log.info("updateSharePage:{}", updatedSharePage);
         return ResponseEntity.ok().body(updatedSharePage);  // SharePageDto를 리턴
     }
 
@@ -54,11 +50,8 @@ public class SharePageController {
         SharePageDto sharePageDto = new SharePageDto();
         sharePageDto.setEnd(End.TRUE);  // 종료 상태로 설정
 
-        log.info("종료된 sharePageId: {}", sharePageId);
-
         // 권한 확인 및 업데이트
         SharePageDto updatedSharePage = sharePageService.end(sharePageId);
-        log.info("updatedSharePage: {}", updatedSharePage);
 
         return ResponseEntity.ok().body(updatedSharePage);
     }

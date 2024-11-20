@@ -9,7 +9,7 @@ import java.util.*;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseCookie;
@@ -24,8 +24,8 @@ import java.security.Key;
 import java.util.stream.Collectors;
 
 @Component
-@Slf4j
 @ComponentScan
+@Log4j2
 public class JwtTokenProvider {
 
     private final Key SECRET_KEY;
@@ -67,7 +67,6 @@ public class JwtTokenProvider {
     }
 
     public String createAccessToken(Authentication authentication) {
-        log.info("엑세스 터큰 발급 들어옴");
         Date now = new Date();
         Date validity = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_LENGTH);
 
@@ -81,17 +80,12 @@ public class JwtTokenProvider {
 
         // 로그인 타입이 카카오 OAuth2인 경우에만 처리
         if (principal instanceof OAuth2User) {
-            log.info("카카오 로그인 타입 확인하는 조건문 들어옴");
             OAuth2User oAuth2User = (OAuth2User) principal;
-            log.info("카카오 로그인 타입 확인하는 oAuth2User:{}", oAuth2User);
 
             // OAuth2 사용자가 카카오 로그인인지 확인 (예: provider 정보를 사용)
-            log.info("카카오 로그인 타입 확인하기");
             if (principal instanceof OAuth2User) {
-                log.info("Kakao 와 provider가 같다");
                 // 카카오 로그인일 경우에만 CustomUserDetails로 변환
                 user = convertToCustomUserDetails(oAuth2User);
-                log.info("user:{}", user);
             } else {
                 user = (CustomUserDetails) principal;
             }
@@ -102,8 +96,6 @@ public class JwtTokenProvider {
 
         userId = user.getName();
         email = user.getUsername();
-        log.info("userId:{}", userId);
-        log.info("email:{}", email);
 
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -121,7 +113,6 @@ public class JwtTokenProvider {
     }
 
     public void createRefreshToken(Authentication authentication, HttpServletResponse response) {
-        log.info("리프래시 들어옴");
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_LENGTH);
 
@@ -151,10 +142,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
-        log.info("getAuthentication에서의 accessToken1:{}", accessToken);
         Claims claims = parseClaims(accessToken);
-        log.info("getAuthentication에서의 accessToken2:{}", accessToken);
-        log.info("getAuthentication에서의 claims:{}", claims);
 
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
@@ -182,20 +170,13 @@ public class JwtTokenProvider {
     // Access Token 만료시 갱신 때 사용할 정보를 얻기 위해 Claim 리턴
     // Access Token 만료 시 갱신 때 사용할 정보를 얻기 위해 Claim 리턴
     private Claims parseClaims(String accessToken) {
-        log.info("메소드 들어옴");
-        log.info("parseClaims의 accessToken: {}", accessToken);
         try {
-            log.info("try문 진입");
-
             // JWT 파싱 및 클레임 추출
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(accessToken)
                     .getBody();
-
-            // 클레임 로깅
-            log.info("Parsed Claims: {}", claims);
 
             return claims; // 클레임 반환
         } catch (ExpiredJwtException e) {

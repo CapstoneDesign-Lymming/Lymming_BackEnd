@@ -6,10 +6,9 @@ import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.heart.repository.HeartRepository;
-import com.supernova.lymming.sharepage.dto.SharePageDto;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import com.supernova.lymming.sharepage.repository.SharePageRepository;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
@@ -19,8 +18,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Service
+@Log4j2
 public class BoardService {
 
     private final BoardRepository boardRepository;
@@ -40,8 +39,6 @@ public class BoardService {
     public BoardDto createBoard(BoardDto boardDto) {
         // 새로운 게시판 생성
         BoardEntity board = new BoardEntity();
-        log.info("게시글 작성 요청이 들어옴");
-
         // 사용자 조회 후 설정
         User user = userRepository.findById(boardDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
@@ -63,19 +60,11 @@ public class BoardService {
         board.setProjectDuration(boardDto.getProjectDuration());
         board.setProjectName(boardDto.getProjectName());
 
-        log.info("boardDto : {}", boardDto);
-
         // nickname을 BoardEntity에 설정
         board.setNickname(user.getNickname());
-        log.info("board.setNickname : {}",board.getNickname());
-        log.info("board.projectName : {}",board.getProjectName());
-        log.info("board.deadline : {}",board.getDeadline());
-        log.info("board.Description : {}",board.getDescription());
-
 
         // 게시판 저장
         boardRepository.save(board);
-        log.info("게시글 저장됨: {}", board);
 
         // SharePageEntity 생성 및 저장
         SharePageEntity sharePage = new SharePageEntity();
@@ -83,12 +72,8 @@ public class BoardService {
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
         sharePage.setLeader(board.getUser().getNickname());
         sharePage.setSharePageUrl(board.getProjectImg());
-        log.info("프로젝트 사진이 공유페이지에 들어감 : {}", sharePage);
 
         sharePageRepository.save(sharePage);
-        log.info("SharePage 생성됨: {}", sharePage);
-
-        log.info("boardDto : {}", boardDto);
 
         return boardDto;
     }
@@ -121,9 +106,6 @@ public class BoardService {
                     .viewCount(board.getViewCount()) // isHearted는 제외
                     .build();
 
-            log.info("Get board.getNickname : {}", board.getNickname());
-            log.info("Board List에서의 조회수 : {}", board.getViewCount());
-
             boardDtoList.add(boardDto);
         }
 
@@ -147,9 +129,6 @@ public class BoardService {
     public BoardDto getBoardById(Long projectId , HttpServletRequest request, HttpServletResponse response) {
 
         BoardEntity board = detail(projectId, request, response);
-
-        // BoardEntity의 값을 확인하는 로그 추가
-        log.info("BoardEntity projectName: {}, nickname: {}", board.getProjectName(), board.getNickname());
 
         return BoardDto.builder()
                 .projectId(board.getProjectId())

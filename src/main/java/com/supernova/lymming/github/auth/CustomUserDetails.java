@@ -1,6 +1,5 @@
 package com.supernova.lymming.github.auth;
 
-import com.supernova.lymming.github.entity.LoginType;
 import com.supernova.lymming.github.entity.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

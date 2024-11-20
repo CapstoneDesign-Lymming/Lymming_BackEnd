@@ -7,7 +7,6 @@ import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.heart.entity.HeartEntity;
 import com.supernova.lymming.heart.repository.HeartRepository;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Log4j2
 public class HeartService {
     private final HeartRepository heartRepository;
     private final UserRepository userRepository;
@@ -49,8 +47,6 @@ public class HeartService {
         // heartRepository에서 해당 프로젝트에 좋아요가 눌렸는지 확인 후 처리
         boolean like = heartRepository.existsByUserIdAndProjectId(user, project);
         boardDto.setLike(like);  // like가 true이면 좋아요 누른 상태
-
-        log.info("Project ID: {}, like: {}", boardDto.getProjectId(), boardDto.isLike());
     }
 
     public void unlikeProject(Long userId, Long projectId) {

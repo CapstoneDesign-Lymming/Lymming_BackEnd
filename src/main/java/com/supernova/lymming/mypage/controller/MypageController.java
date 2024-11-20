@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Log4j2
 public class MypageController {
     private final MypageService mypageService;
     private final UserRepository userRepository;
@@ -21,7 +20,6 @@ public class MypageController {
     @GetMapping("/api/mypage/{userId}")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<MypageDto> showMypage(@PathVariable Long userId) {
-        log.info("마이페이지 GET 요청 - userId: {}", userId);
         MypageDto mypageDto = mypageService.findUser(userId);
         return ResponseEntity.ok(mypageDto);
     }
@@ -31,8 +29,6 @@ public class MypageController {
     public ResponseEntity<MypageDto> updateMypage(
             @PathVariable Long userId,
             @RequestBody MypageDto mypageDto) {
-        log.info("마이페이지 PUT 요청 - userId: {}", userId);
-
         MypageDto updatedMypageDto = mypageService.updateUser(userId, mypageDto);
         return ResponseEntity.ok(updatedMypageDto);
     }

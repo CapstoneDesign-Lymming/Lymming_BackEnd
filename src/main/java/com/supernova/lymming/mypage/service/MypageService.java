@@ -4,7 +4,6 @@ import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.mypage.dto.MypageDto;
 import com.supernova.lymming.mypage.repository.MypageRepository;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,6 @@ import java.util.Collections;
 
 
 @Service
-@Log4j2
 public class MypageService {
 
     private MypageRepository mypageRepository;

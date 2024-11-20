@@ -9,7 +9,6 @@ import com.supernova.lymming.jwt.JwtAuthenticationFilter;
 import com.supernova.lymming.jwt.JwtTokenProvider;
 import com.supernova.lymming.github.repository.CookieAuthorizationRequestRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @RequiredArgsConstructor
 @EnableWebSecurity
-@Log4j2
 public class WebSecurityConfigure {
     // Security를 설정하기 위한 클래스
 
@@ -38,8 +36,6 @@ public class WebSecurityConfigure {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // HTTP 요청을 처리하는 필터 체인을 구성한다.
 
-        log.info("Configuring security filter chain...");
-
         http
                 .cors() // Cors 설정 활성화
                 .and()
@@ -53,8 +49,6 @@ public class WebSecurityConfigure {
                 .formLogin().disable() // 기본 제공되는 폼 로그인 기능을 비활성화
                 .rememberMe().disable() // 기억하기 기능 비활성화
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션 관리 무상태로 설정해 서버가 클라이언트 세션 유지 하지 않도록 설정
-
-        log.info("Disabled default security features: httpBasic, csrf, formLogin, rememberMe");
 
         // oauth2 로그인 기능 설정
         http.oauth2Login()
@@ -80,9 +74,6 @@ public class WebSecurityConfigure {
                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 // OAuth2 로그인 성공 후 처리할 핸들러 설정
                 .failureHandler(oAuth2AuthenticationFailureHandler);
-        // 실패 후 처리할 핸들러 설정
-
-        log.info("OAuth2 login configured with success and failure handlers");
 
         //예외처리 설정
         http.exceptionHandling()
@@ -91,13 +82,9 @@ public class WebSecurityConfigure {
                 .accessDeniedHandler(jwtAccessDeniedHandler);
         // 권한 거부 시 처리할 핸들러 설정
 
-        log.info("Configured exception handling with custom entry point and access denied handler");
-
         // JWT 필터 추가
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         // JwtAuthenticationFilter을 UsernamePasswordAuthenticationFilter 앞에 추가해 JWT를 기반으로 인증 처리
-
-        log.info("Added JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter");
 
         return http.build();
         // 구성된 HTTP 보안 설정을 바탕으로 SecurittyFilterChain 객체를 빌드해서 반환

@@ -4,16 +4,13 @@ import com.supernova.lymming.github.entity.Gender;
 import com.supernova.lymming.github.entity.LoginType;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.servlet.ModelAndView;
 
-@Log4j2
 @Service
 @RequiredArgsConstructor
 public class CustomOAuthUserService extends DefaultOAuth2UserService {
@@ -23,8 +20,6 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         // OAuth2UserREquest를 받아 깃허브에서 사용자 정보를 로드하는 메소드
-
-        log.info("loadUser Start : " + oAuth2UserRequest.toString());
 
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
         // 기본 사용자 로딩 로직을 호출해 깃허브에서 사용자 정보를 가져온다.
@@ -41,7 +36,6 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
     }
 
     public User createUser(GithubOAuth2UserInfo userInfo) {
-        log.info("메소드 들어오ㅘㅆ다 정보 저장 시작");
         // GitHub 정보로 사용자 객체 생성
         User user = User.builder()
                 .serverNickname(userInfo.getServerNickName())
@@ -55,8 +49,6 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
                 .devStyle("") // 초기값 설정 후, 사용자 입력 필요
                 .loginType(LoginType.Github)
                 .build();
-        log.info("serverNickname : " + userInfo.getServerNickName());
-        log.info("stack: {}",user.getStack());
         return userRepository.save(user); // 사용자 저장
     }
 
