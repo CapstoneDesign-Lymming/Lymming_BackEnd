@@ -4,6 +4,7 @@ import com.supernova.lymming.sharepage.dto.SharePageDto;
 import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.service.SharePageService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +44,7 @@ public class SharePageController {
         return ResponseEntity.ok().body(updatedSharePage);  // SharePageDto를 리턴
     }
 
-    @PutMapping("share/details/{sharePageId}/end")
+    @PutMapping("/share/details/{sharePageId}/end")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<SharePageDto> endSharePage(@PathVariable Long sharePageId) {
         // 종료 상태로 업데이트할 SharePageDto 생성
@@ -56,4 +57,10 @@ public class SharePageController {
         return ResponseEntity.ok().body(updatedSharePage);
     }
 
+    @GetMapping("/share/find/{nickname}")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
+    public ResponseEntity<String> findUser(@PathVariable String nickname) {
+        String userNickname = sharePageService.getUserNickname(nickname);
+        return ResponseEntity.ok().body(userNickname);
+    }
 }

@@ -5,13 +5,11 @@ import com.supernova.lymming.sharepage.dto.SharePageDto;
 import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import com.supernova.lymming.sharepage.repository.SharePageRepository;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
 
-@Log4j2
+import java.util.*;
+
 @Service
 public class SharePageService {
 
@@ -25,11 +23,8 @@ public class SharePageService {
     }
 
     public SharePageDto checkSharePage(Long sharePageId ,SharePageDto sharePageDto) {
-        log.info("sharePageId : {}", sharePageId);
 
         Long currentUserId = sharePageDto.getUserId();
-        log.info("currentUserId : {}", currentUserId);
-
         SharePageEntity sharePage = sharePageRepository.findBySharePageId(sharePageId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 SharePage가 존재하지 않습니다."));
 
@@ -37,10 +32,8 @@ public class SharePageService {
         Long projectOwner = sharePage.getBoard().getUser().getUserId();
 
         if (currentUserId.equals(projectOwner)) {
-            log.info("권한이 확인. 수정 가능합니다.");
             return update(sharePageId, sharePageDto);
         } else {
-            log.info("권한이 없습니다");
             throw new SecurityException("수정 권한이 없습니다");
         }
     }
@@ -132,5 +125,13 @@ public class SharePageService {
                 sharePage.getEnd(),
                 sharePage.getLeader()
         );
+    }
+
+    public String getUserNickname(String nickname) {
+        // Repository에서 닉네임 검색
+        SharePageEntity sharePageEntity = sharePageRepository.findByUser_Nickname(nickname)
+                .orElseThrow(() -> new NoSuchElementException("닉네임을 찾을 수 없습니다." + nickname));
+        // 검색된 닉네임 반환
+        return sharePageEntity.getUser().getNickname();
     }
 }
