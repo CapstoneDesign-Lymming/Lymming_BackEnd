@@ -6,6 +6,7 @@ import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.heart.repository.HeartRepository;
+import com.supernova.lymming.sharepage.dto.SharePageDto;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import com.supernova.lymming.sharepage.repository.SharePageRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +82,10 @@ public class BoardService {
         sharePage.setUser(user);  // User 객체 설정
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
         sharePage.setLeader(board.getUser().getNickname());
+
+//        SharePageDto sharePageDto = new SharePageDto();
+//        sharePageDto.setSharePageId(sharePage.getSharePageId());
+//        log.info("Board 메소드에서의 sharePageDto : {}", sharePageDto);
 
         sharePageRepository.save(sharePage);
         log.info("SharePage 생성됨: {}", sharePage);

@@ -39,8 +39,8 @@ public class SharePageController {
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<SharePageDto> leaderSharePage(@PathVariable Long sharePageId, @RequestBody SharePageDto sharePageDto) {
         // 권한 체크 및 게시물 업데이트
-        log.info("메소드 들어옴");
-        SharePageDto updatedSharePage = sharePageService.checkSharePage(sharePageDto);// 권한 확인 후 업데이트
+        log.info("sharePAgeId:{}", sharePageId);
+        SharePageDto updatedSharePage = sharePageService.checkSharePage(sharePageId,sharePageDto);// 권한 확인 후 업데이트
         log.info("updateSharePage:{}", updatedSharePage);
         return ResponseEntity.ok().body(updatedSharePage);  // SharePageDto를 리턴
     }

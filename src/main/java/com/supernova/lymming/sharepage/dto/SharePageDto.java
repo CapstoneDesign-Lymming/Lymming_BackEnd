@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class SharePageDto {
     private Long sharePageId;
     private Long userId;  // User 엔티티의 user_id 값
