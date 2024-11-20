@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,9 @@ public class SharePageService {
         this.sharePageRepository = sharePageRepository;
         this.boardRepository = boardRepository;
     }
+
+    @Autowired
+    private EntityManager entityManager;
 
     public SharePageDto checkSharePage(Long sharePageId ,SharePageDto sharePageDto) {
         log.info("권한체크 시작");
@@ -97,6 +101,8 @@ public class SharePageService {
         // SharePageEntity를 저장
         sharePageRepository.save(sharePage);
 
+        entityManager.refresh(sharePage);
+
         // SharePageDto 리턴
         return new SharePageDto(
                 sharePage.getSharePageId(),
@@ -112,6 +118,4 @@ public class SharePageService {
                 sharePage.getLeader()
         );
     }
-
-
 }
