@@ -36,5 +36,9 @@ public class ChatMessage {
     private String content;
     @Column(name = "type")
     private String type;
+    @Column(name = "share_page_id")
+    private String sharePageId;
+    @Column(name = "invite_nickname")
+    private String inviteNickname;
 
 }
