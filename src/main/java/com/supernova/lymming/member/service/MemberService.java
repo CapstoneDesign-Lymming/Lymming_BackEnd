@@ -76,7 +76,7 @@ public class MemberService {
         memberInfoDto.setPosition(user.getPosition());
         memberInfoDto.setDevStyle(Collections.singletonList(user.getDevStyle()));
         if (user.getTemperature() == null) {
-            user.setTemperature(0.0f); // 기본값 설정
+            user.setTemperature(36.5f); // 기본값 설정
         }
 
         // 해당 사용자가 작성한 게시판 정보 추가
