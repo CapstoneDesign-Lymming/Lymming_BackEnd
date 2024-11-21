@@ -19,5 +19,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
    @Modifying
    @Query("update BoardEntity b set b.viewCount = b.viewCount + 1 where b.projectId = :projectId")
    void updateCount(Long projectId);
+
+   Optional<BoardEntity> findByRecruitmentCount(int recruitmentCount);
 }
 

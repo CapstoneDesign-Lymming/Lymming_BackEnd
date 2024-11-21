@@ -1,5 +1,6 @@
 package com.supernova.lymming.sharepage.service;
 
+import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
@@ -155,52 +156,68 @@ public class SharePageService {
     }
 
 
-    public ShareTeamAddDto addTeamMember (Long sharePageId, String nickname) {
+    public ShareTeamAddDto addTeamMember(Long sharePageId, String nickname) {
         log.info("addTeamMember 메소드 들어옴");
-        SharePageEntity sharePage = sharePageRepository.findBySharePageId(sharePageId).orElseThrow(() -> new RuntimeException("공유페이지를 찾을 수 없습니다"));
 
-        List<String> teamMember = new ArrayList<>(Arrays.asList(sharePage.getTeamMember().split(",")));
-        teamMember.add(nickname);
-        sharePage.setTeamMember(String.join(",", teamMember));
+        // 공유 페이지 조회
+        SharePageEntity sharePage = sharePageRepository.findBySharePageId(sharePageId)
+                .orElseThrow(() -> new RuntimeException("공유페이지를 찾을 수 없습니다"));
 
-        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+        // 사용자 조회
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+
+        // 팀 멤버 업데이트
+        List<String> teamMembers = new ArrayList<>(Arrays.asList(sharePage.getTeamMember().split(",")));
+        teamMembers.add(nickname);
+        sharePage.setTeamMember(String.join(",", teamMembers));
+
+        // 기존 데이터를 리스트로 가져옴
         List<String> memberUrls = new ArrayList<>();
-        List<String> positions = new ArrayList<>();
+        if (sharePage.getMemberUrlBundle() != null) {
+            memberUrls = new ArrayList<>(Arrays.asList(sharePage.getMemberUrlBundle().split(",")));
+        }
 
-// 사용자 정보를 먼저 추가
+        List<String> positions = new ArrayList<>();
+        if (sharePage.getPositionBundle() != null) {
+            positions = new ArrayList<>(Arrays.asList(sharePage.getPositionBundle().split(",")));
+        }
+
+        // 새로운 사용자 추가
         memberUrls.add(user.getUserImg());
         positions.add(user.getPosition());
 
-        // 기존 sharePage의 데이터를 추가
-        if (sharePage.getMemberUrlBundle() != null && !sharePage.getMemberUrlBundle().isEmpty()) {
-            memberUrls.addAll(Arrays.asList(sharePage.getMemberUrlBundle().split(",")));
-            log.info("기존 memberUrls 추가: {}", memberUrls);
+        // 프로젝트 모집 인원 확인
+        Long projectId = sharePage.getBoard().getProjectId();
+        BoardEntity board = boardRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("BoardEntity를 찾을 수 없습니다"));
+        int maxSize = board.getRecruitmentCount();
+
+        log.info("모집 인원 수 (maxSize): {}", maxSize);
+
+        // 최대 크기를 초과한 경우, 에러
+        if (memberUrls.size() > maxSize) {
+            throw new RuntimeException("최대 모집 인원 수를 초과하여 추가할 수 없습니다.");
         }
 
-        if (sharePage.getPositionBundle() != null && !sharePage.getPositionBundle().isEmpty()) {
-            positions.addAll(Arrays.asList(sharePage.getPositionBundle().split(",")));
-            log.info("기존 positions 추가: {}", positions);
-        }
-
-        // 업데이트된 리스트를 SharePageEntity에 저장
+        // 변경된 데이터 저장
         sharePage.setMemberUrlBundle(String.join(",", memberUrls));
-        log.info("저장된 memberUrlBundle: {}", sharePage.getMemberUrlBundle());
         sharePage.setPositionBundle(String.join(",", positions));
-        log.info("저장된 positionBundle: {}", sharePage.getPositionBundle());
-
         sharePageRepository.save(sharePage);
 
-        log.info("저장됨 :{}",sharePage);
+        log.info("저장된 memberUrlBundle: {}", sharePage.getMemberUrlBundle());
+        log.info("저장된 positionBundle: {}", sharePage.getPositionBundle());
 
-        log.info("리턴 전 확인:{}",sharePage,nickname,teamMember,memberUrls,positions,positions);
-
+        // 결과 반환
         return new ShareTeamAddDto(
                 sharePageId,
                 nickname,
-                String.join(",",teamMember),
-                String.join(",",memberUrls),
-                String.join(",",positions)
+                String.join(",", teamMembers),
+                String.join(",", memberUrls),
+                String.join(",", positions)
         );
     }
+
+
 
 }
