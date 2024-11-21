@@ -97,6 +97,7 @@ public class BoardService {
                     .uploadTime(board.getUploadTime())
                     .recruitmentField(board.getRecruitmentField())
                     .description(board.getDescription())
+                    .userImg(board.getUser().getUserImg())
                     .workType(board.getWorkType())
                     .techStack(board.getTechStack())
                     .deadline(board.getDeadline())
@@ -140,6 +141,7 @@ public class BoardService {
                 .uploadTime(board.getUploadTime())
                 .recruitmentField(board.getRecruitmentField())
                 .description(board.getDescription())
+                .userImg(board.getUser().getUserImg())
                 .workType(board.getWorkType())
                 .techStack(board.getTechStack())
                 .deadline(board.getDeadline())
@@ -213,6 +215,7 @@ public class BoardService {
                     board.getUploadTime(),
                     board.getRecruitmentField(),
                     board.getDescription(),
+                    board.getUser().getUserImg(),
                     board.getWorkType(),
                     board.getTechStack(),
                     board.getDeadline(),
