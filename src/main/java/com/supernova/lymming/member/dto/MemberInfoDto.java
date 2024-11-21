@@ -18,8 +18,8 @@ public class MemberInfoDto {
     private List<String> devStyle;
     private float temperature;
     private Long projectId;
-    private String projectName;
-    private LocalDate deadline;
+    private List<String> projectName;
+    private List<LocalDate> deadline;
 
     public void setMemberInfo(MemberInfoDto memberInfoDto) {
         this.userId = memberInfoDto.getUserId();

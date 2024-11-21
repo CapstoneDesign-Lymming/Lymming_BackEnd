@@ -6,6 +6,8 @@ import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.member.dto.MemberInfoDto;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,12 +44,15 @@ public class MemberService {
                 user.setTemperature(0.0f); // 기본값 설정
             }
 
+            List<String> projectNames = new ArrayList<>();
+            List<LocalDate> deadline = new ArrayList<>();
+
             // 해당 사용자가 작성한 게시판 정보 추가
             for (BoardEntity boardEntity : boardEntities) {
                 if (boardEntity.getUser().getUserId().equals(user.getUserId())) {
                     // 게시판이 해당 사용자의 게시물이라면
-                    memberInfoDto.setProjectName(boardEntity.getProjectName());
-                    memberInfoDto.setDeadline(boardEntity.getDeadline());
+                    projectNames.add(boardEntity.getProjectName());
+                    deadline.add(boardEntity.getDeadline());
 
 
                 }
@@ -80,13 +85,20 @@ public class MemberService {
             user.setTemperature(36.5f); // 기본값 설정
         }
 
-        // 해당 사용자가 작성한 게시판 정보 추가
+        List<String> projectNames = new ArrayList<>();
+        List<LocalDate> deadlines = new ArrayList<>();
+
         if (!boardEntities.isEmpty()) {
-            BoardEntity boardEntity = boardEntities.get(0);  // 게시판 하나만 예시로 가져옴
-            memberInfoDto.setProjectId(boardEntity.getProjectId());
-            memberInfoDto.setProjectName(boardEntity.getProjectName());
-            memberInfoDto.setDeadline(boardEntity.getDeadline());
+            for (BoardEntity boardEntity : boardEntities) {
+                // 각 게시글의 projectName과 deadline을 리스트에 추가
+                projectNames.add(boardEntity.getProjectName());
+                deadlines.add(boardEntity.getDeadline());
+            }
         }
+
+        // MemberInfoDto에 모든 게시글의 projectName과 deadline 저장
+        memberInfoDto.setProjectName(projectNames);
+        memberInfoDto.setDeadline(deadlines);
 
         return memberInfoDto;
     }
