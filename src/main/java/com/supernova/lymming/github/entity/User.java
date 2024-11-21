@@ -57,7 +57,8 @@ public class User {
     private Integer favorites;
 
     @Column(name = "temperature")
-    private Float temperature;
+    @Builder.Default
+    private Float temperature = 36.5f;
 
     @Column(name = "server_nickname")
     private String serverNickname;
