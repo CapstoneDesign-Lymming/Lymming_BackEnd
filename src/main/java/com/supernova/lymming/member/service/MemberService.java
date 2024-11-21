@@ -41,7 +41,7 @@ public class MemberService {
             memberInfoDto.setPosition(user.getPosition());
             memberInfoDto.setDevStyle(Collections.singletonList(user.getDevStyle()));  // 동일하게 리스트 처리
             if (user.getTemperature() == null) {
-                user.setTemperature(0.0f); // 기본값 설정
+                user.setTemperature(36.5f); // 기본값 설정
             }
 
             List<String> projectNames = new ArrayList<>();
