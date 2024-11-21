@@ -1,7 +1,8 @@
 package com.supernova.lymming.evaluation.entity;
 
 
-import com.supernova.lymming.github.entity.User;
+import com.supernova.lymming.board.entity.BoardEntity;
+import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,11 @@ public class EvaluationEntity {
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
+
+    @Column(name = "vote_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private VoteStatus voteStatus;
+
+    @Column(name = "share_page_id")
+    private Long sharePageId;
 }
