@@ -20,4 +20,6 @@ public class SharePageDto {
     private String teamName;
     private End end;
     private String leader;
+    private String memberUrlBundle;
+    private String positionBundle;
 }

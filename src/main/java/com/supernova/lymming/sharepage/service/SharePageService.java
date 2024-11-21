@@ -62,7 +62,9 @@ public class SharePageService {
                     sharePage.getSharePageUrl(),
                     sharePage.getTeamName(),
                     sharePage.getEnd(),
-                    sharePage.getLeader()
+                    sharePage.getLeader(),
+                    sharePage.getMemberUrlBundle(),
+                    sharePage.getPositionBundle()
             );
             SharePageDtoList.add(sharePageDto);
         }
@@ -104,7 +106,9 @@ public class SharePageService {
                 sharePage.getSharePageUrl(),
                 sharePage.getTeamName(),
                 sharePage.getEnd(), // 변경된 'end' 값 리턴
-                sharePage.getLeader()
+                sharePage.getLeader(),
+                sharePage.getMemberUrlBundle(),
+                sharePage.getPositionBundle()
         );
     }
 
@@ -131,7 +135,9 @@ public class SharePageService {
                 sharePage.getSharePageUrl(),
                 sharePage.getTeamName(),
                 sharePage.getEnd(),
-                sharePage.getLeader()
+                sharePage.getLeader(),
+                sharePage.getMemberUrlBundle(),
+                sharePage.getPositionBundle()
         );
     }
 
