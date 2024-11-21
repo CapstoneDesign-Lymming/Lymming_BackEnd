@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 @RestController
 @RequiredArgsConstructor
 public class EvaluationController {
@@ -25,8 +28,9 @@ public class EvaluationController {
     @CrossOrigin(origins = {"https://lymming.link", "https://lymming-back.link"}, maxAge = 3600)
     public ResponseEntity<VoteStatus> getUserVoteStatus(
             @RequestParam Long sharePageId,
-            @RequestParam String nickname) {
-        VoteStatus voteStatus = evaluationService.getUserVoteStatus(sharePageId, nickname);
+            @RequestParam String nickname) throws UnsupportedEncodingException {
+        String decodedNickname = URLDecoder.decode(nickname, "UTF-8");
+        VoteStatus voteStatus = evaluationService.getUserVoteStatus(sharePageId, decodedNickname);
         return ResponseEntity.ok(voteStatus);
     }
 }
