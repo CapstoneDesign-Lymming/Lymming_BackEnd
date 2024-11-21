@@ -14,6 +14,7 @@ public class MemberInfoDto {
     private List<String> stack;
     private String job;
     private String position;
+    private String bio;
     private List<String> devStyle;
     private float temperature;
     private Long projectId;
@@ -33,4 +34,5 @@ public class MemberInfoDto {
         this.projectName = memberInfoDto.getProjectName();
         this.deadline = memberInfoDto.getDeadline();
     }
+
 }

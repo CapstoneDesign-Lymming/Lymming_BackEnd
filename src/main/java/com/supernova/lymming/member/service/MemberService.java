@@ -74,6 +74,7 @@ public class MemberService {
         memberInfoDto.setStack(Collections.singletonList(user.getStack()));
         memberInfoDto.setJob(user.getJob());
         memberInfoDto.setPosition(user.getPosition());
+        memberInfoDto.setBio(user.getBio());
         memberInfoDto.setDevStyle(Collections.singletonList(user.getDevStyle()));
         if (user.getTemperature() == null) {
             user.setTemperature(36.5f); // 기본값 설정

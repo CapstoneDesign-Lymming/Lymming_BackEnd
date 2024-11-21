@@ -30,26 +30,19 @@ public class EvaluationService {
 
         // 접근한 공유페이지 id
         Long currentShareId = evaluationDto.getSharePageId();
-        log.info("접근한 공유페이지 id : {}", currentShareId);
 
         SharePageEntity sharePage = sharePageRepository.findBySharePageId(currentShareId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 SharePage가 존재하지 않습니다."));
 
-        log.info("접근한 공유페이지 id 2번째 : {}", sharePage);
-
         //접근한 사람의 닉네임
         String currentUserNickname = evaluationDto.getNickname();
-
-        log.info("접근한 사용자 닉네임 : {}", currentUserNickname);
 
         if(!sharePage.getTeamMember().contains(currentUserNickname)){
             throw new IllegalArgumentException("팀 멤버가 아닙니다");
         }
 
-        log.info("if문 무사히 통과");
 
         Optional<EvaluationEntity> existingEvalation = evaluationRepository.findByNicknameAndSharePageId(currentUserNickname,currentShareId);
-        log.info("이미 투표한 사용자인지 찾기 : {}",existingEvalation);
 
         if(existingEvalation.isPresent()) {
             throw new IllegalArgumentException("이미 투표한 사용자입니다");
