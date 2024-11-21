@@ -34,7 +34,7 @@ public class MypageService {
         mypageDto.setPosition(user.getPosition());
         mypageDto.setDevStyle(Collections.singletonList(user.getDevStyle()));
         if (user.getTemperature() == null) {
-            user.setTemperature(0.0f); // 기본값 설정
+            user.setTemperature(36.5f); // 기본값 설정
         }
 
         return mypageDto;

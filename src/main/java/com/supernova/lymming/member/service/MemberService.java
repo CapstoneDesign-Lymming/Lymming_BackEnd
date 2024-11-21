@@ -4,7 +4,9 @@ import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
+import com.supernova.lymming.member.dto.MemberInfoDetailDto;
 import com.supernova.lymming.member.dto.MemberInfoDto;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-
+@Log4j2
 public class MemberService {
 
     private final BoardRepository boardRepository;
@@ -39,24 +41,6 @@ public class MemberService {
             memberInfoDto.setStack(Collections.singletonList(user.getStack()));  // 단일 값이면 리스트로 감싸는 방식
             memberInfoDto.setJob(user.getJob());
             memberInfoDto.setPosition(user.getPosition());
-            memberInfoDto.setDevStyle(Collections.singletonList(user.getDevStyle()));  // 동일하게 리스트 처리
-            if (user.getTemperature() == null) {
-                user.setTemperature(36.5f); // 기본값 설정
-            }
-
-            List<String> projectNames = new ArrayList<>();
-            List<LocalDate> deadline = new ArrayList<>();
-
-            // 해당 사용자가 작성한 게시판 정보 추가
-            for (BoardEntity boardEntity : boardEntities) {
-                if (boardEntity.getUser().getUserId().equals(user.getUserId())) {
-                    // 게시판이 해당 사용자의 게시물이라면
-                    projectNames.add(boardEntity.getProjectName());
-                    deadline.add(boardEntity.getDeadline());
-
-
-                }
-            }
 
             // MypageDto 생성 후 user 정보와 게시판 정보 포함
             MemberInfoDto memberDto = new MemberInfoDto();
@@ -69,21 +53,15 @@ public class MemberService {
         return memberInfoDtos;
     }
 
-    public MemberInfoDto getUserInfoByUserId(Long userId) {
+    public MemberInfoDetailDto getUserInfoByUserId(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
         List<BoardEntity> boardEntities = boardRepository.findByUser_UserId(userId);
 
-        MemberInfoDto memberInfoDto = new MemberInfoDto();
-        memberInfoDto.setNickname(user.getNickname());
-        memberInfoDto.setUserImg(user.getUserImg());
-        memberInfoDto.setStack(Collections.singletonList(user.getStack()));
-        memberInfoDto.setJob(user.getJob());
-        memberInfoDto.setPosition(user.getPosition());
-        memberInfoDto.setBio(user.getBio());
-        memberInfoDto.setDevStyle(Collections.singletonList(user.getDevStyle()));
-        if (user.getTemperature() == null) {
-            user.setTemperature(36.5f); // 기본값 설정
-        }
+        MemberInfoDetailDto memberInfoDetailDto = new MemberInfoDetailDto();
+        memberInfoDetailDto.setNickname(user.getNickname());
+        memberInfoDetailDto.setUserImg(user.getUserImg());
+        memberInfoDetailDto.setDevStyle(Collections.singletonList(user.getDevStyle()));
+        memberInfoDetailDto.setTemperature(user.getTemperature());
 
         List<String> projectNames = new ArrayList<>();
         List<LocalDate> deadlines = new ArrayList<>();
@@ -97,10 +75,10 @@ public class MemberService {
         }
 
         // MemberInfoDto에 모든 게시글의 projectName과 deadline 저장
-        memberInfoDto.setProjectName(projectNames);
-        memberInfoDto.setDeadline(deadlines);
+        memberInfoDetailDto.setProjectNames(projectNames);
+        memberInfoDetailDto.setDeadlines(deadlines);
 
-        return memberInfoDto;
+        return memberInfoDetailDto;
     }
 }
 

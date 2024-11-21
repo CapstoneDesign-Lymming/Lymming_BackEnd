@@ -1,5 +1,6 @@
 package com.supernova.lymming.member.controller;
 
+import com.supernova.lymming.member.dto.MemberInfoDetailDto;
 import com.supernova.lymming.member.dto.MemberInfoDto;
 import com.supernova.lymming.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,9 @@ public class MemberController {
     // 특정 사용자 상세 정보 반환
     @GetMapping("/member/list/{userId}")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
-    public ResponseEntity<MemberInfoDto> getUserInfoDetail(@PathVariable Long userId) {
+    public ResponseEntity<MemberInfoDetailDto> getUserInfoDetail(@PathVariable Long userId) {
         // 특정 사용자에 대한 정보 반환
-        MemberInfoDto memberInfoDto = memberService.getUserInfoByUserId(userId);
-        return ResponseEntity.ok(memberInfoDto);
+        MemberInfoDetailDto memberInfoDetailDto = memberService.getUserInfoByUserId(userId);
+        return ResponseEntity.ok(memberInfoDetailDto);
     }
 }

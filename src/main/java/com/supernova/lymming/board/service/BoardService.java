@@ -193,7 +193,6 @@ public class BoardService {
 
     @Transactional
     public List<BoardDto> getBoardsWithHearts(Long userId) {
-        log.info("getBoardsWithHearts 메소드 들어옴");
 
         // 사용자 정보 조회
         User user = userRepository.findById(userId)

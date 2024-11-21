@@ -143,13 +143,11 @@ public class SharePageService {
     }
 
     public ShareUserInfoDto getUserNickname(String nickname, Long sharePageId) {
-        log.info("getUserNickname에서 닉네임은 : {}", nickname);
 
         // UserRepository에서 닉네임 검색
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new NoSuchElementException("닉네임을 찾을 수 없습니다: " + nickname));
 
-        log.info("SharePageID는 : {}", sharePageId);
 
         // 검색된 닉네임과 sharePageId를 ShareUserInfoDto로 반환
         return new ShareUserInfoDto(sharePageId, user.getNickname());
@@ -157,7 +155,6 @@ public class SharePageService {
 
 
     public ShareTeamAddDto addTeamMember(Long sharePageId, String nickname) {
-        log.info("addTeamMember 메소드 들어옴");
 
         // 공유 페이지 조회
         SharePageEntity sharePage = sharePageRepository.findBySharePageId(sharePageId)
@@ -193,7 +190,6 @@ public class SharePageService {
                 .orElseThrow(() -> new RuntimeException("BoardEntity를 찾을 수 없습니다"));
         int maxSize = board.getRecruitmentCount();
 
-        log.info("모집 인원 수 (maxSize): {}", maxSize);
 
         // 최대 크기를 초과한 경우, 에러
         if (memberUrls.size() > maxSize) {
@@ -204,9 +200,6 @@ public class SharePageService {
         sharePage.setMemberUrlBundle(String.join(",", memberUrls));
         sharePage.setPositionBundle(String.join(",", positions));
         sharePageRepository.save(sharePage);
-
-        log.info("저장된 memberUrlBundle: {}", sharePage.getMemberUrlBundle());
-        log.info("저장된 positionBundle: {}", sharePage.getPositionBundle());
 
         // 결과 반환
         return new ShareTeamAddDto(
