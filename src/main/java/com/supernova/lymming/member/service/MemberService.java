@@ -41,6 +41,8 @@ public class MemberService {
             memberInfoDto.setStack(Collections.singletonList(user.getStack()));  // 단일 값이면 리스트로 감싸는 방식
             memberInfoDto.setJob(user.getJob());
             memberInfoDto.setPosition(user.getPosition());
+            memberInfoDto.setBio(user.getBio());
+            memberInfoDto.setDevStyle(Collections.singletonList(user.getDevStyle()));
 
             // MypageDto 생성 후 user 정보와 게시판 정보 포함
             MemberInfoDto memberDto = new MemberInfoDto();
