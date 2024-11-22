@@ -17,6 +17,8 @@ public class MemberInfoDetailDto {
     private String userImg;
     private List<String> devStyle;
     private Float temperature;
-    private List<String> projectNames; // 여러 개의 프로젝트 이름
-    private List<LocalDate> deadlines; // 여러 개의 마감일
+    private String bio;
+    private String job;
+    private String position;
+
 }
