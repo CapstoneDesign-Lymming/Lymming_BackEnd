@@ -101,7 +101,7 @@ public class KakaoService {
                 .stack(kakaoUser.getStack())
                 .gender(kakaoUser.getGender())
                 .job(kakaoUser.getJob())
-                .category(kakaoUser.getCategory())
+                .developerType(kakaoUser.getDeveloperType())
                 .bio(kakaoUser.getBio())
                 .favorites(kakaoUser.getFavorites())
                 .temperature(kakaoUser.getTemperature())

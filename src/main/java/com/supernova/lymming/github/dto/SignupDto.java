@@ -23,7 +23,7 @@ public class SignupDto {
     private String stack;
     private Gender gender;
     private String job;
-    private String category;
+    private Integer developerType;
     private String bio;
     private Integer favorites;
     private Float temperature;

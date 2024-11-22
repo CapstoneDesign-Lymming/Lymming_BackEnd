@@ -63,6 +63,9 @@ public class GithubUserController {
         if (userUpdateDto.getJob() != null) {
             existingUser.setJob(userUpdateDto.getJob());
         }
+        if (userUpdateDto.getDeveloperType()!=null){
+            existingUser.setDeveloperType(userUpdateDto.getDeveloperType());
+        }
         if (userUpdateDto.getBio() != null) {
             existingUser.setBio(userUpdateDto.getBio());
         }
