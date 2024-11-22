@@ -169,6 +169,8 @@ public class SharePageService {
         teamMembers.add(nickname);
         sharePage.setTeamMember(String.join(",", teamMembers));
 
+        log.info("팀 멤버 업데이트 : {}",sharePage.getTeamMember());
+
         // 기존 데이터를 리스트로 가져옴
         List<String> memberUrls = new ArrayList<>();
         if (sharePage.getMemberUrlBundle() != null) {
@@ -200,6 +202,8 @@ public class SharePageService {
         sharePage.setMemberUrlBundle(String.join(",", memberUrls));
         sharePage.setPositionBundle(String.join(",", positions));
         sharePageRepository.save(sharePage);
+
+        log.info("sharePage : {}",sharePage);
 
         // 결과 반환
         return new ShareTeamAddDto(
