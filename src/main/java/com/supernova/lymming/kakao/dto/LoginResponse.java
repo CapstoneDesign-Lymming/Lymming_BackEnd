@@ -16,7 +16,7 @@ public class LoginResponse {
     private String stack;
     private String gender;
     private String job;
-    private Integer developerType;
+    private Integer developer_type;
     private String bio;
     private Integer favorites;
     private Float temperature;

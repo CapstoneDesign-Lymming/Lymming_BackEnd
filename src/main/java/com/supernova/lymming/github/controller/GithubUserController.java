@@ -65,10 +65,10 @@ public class GithubUserController {
         if (userUpdateDto.getJob() != null) {
             existingUser.setJob(userUpdateDto.getJob());
         }
-        if (userUpdateDto.getDeveloperType()!=null){
-            existingUser.setDeveloperType(userUpdateDto.getDeveloperType());
+        if (userUpdateDto.getDeveloper_type()!=null){
+            existingUser.setDeveloper_type(userUpdateDto.getDeveloper_type());
         }
-        log.info("Developer Type은 : {}",userUpdateDto.getDeveloperType());
+        log.info("Developer Type은 : {}",userUpdateDto.getDeveloper_type());
 
         if (userUpdateDto.getBio() != null) {
             existingUser.setBio(userUpdateDto.getBio());

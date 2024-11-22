@@ -48,7 +48,7 @@ public class User {
     private String job;
 
     @Column(name = "developer_type")
-    private Integer developerType;
+    private Integer developer_type;
 
     @Column(name = "bio")
     private String bio;
