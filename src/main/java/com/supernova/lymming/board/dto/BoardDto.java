@@ -19,6 +19,7 @@ public class BoardDto {
     private LocalDate uploadTime;
     private String recruitmentField;
     private String description;
+    private String userImg;
     private String workType;
     private String techStack;
     private LocalDate deadline;

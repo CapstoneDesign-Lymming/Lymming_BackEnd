@@ -3,10 +3,7 @@ package com.supernova.lymming.member.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.github.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,6 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name = "member_info")
+@Builder
 public class MemberInfo {
 
     @Id
@@ -51,7 +49,8 @@ public class MemberInfo {
     private String job;
 
     @Column(name = "temperature")
-    private Float temperature;
+    @Builder.Default
+    private Float temperature = 36.5f;
 
     @Column(name = "project_name", nullable = false)
     private String projectName;

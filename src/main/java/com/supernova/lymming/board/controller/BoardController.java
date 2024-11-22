@@ -1,6 +1,7 @@
 package com.supernova.lymming.board.controller;
 
 import com.supernova.lymming.board.dto.BoardDto;
+import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class BoardController {
     }
 
     //프로젝트 수정
-    @PutMapping("/projectId")
+    @PutMapping("/{projectId}")
     @CrossOrigin(origins = {"https://lymming.link", "https://lymming-back.link"}, maxAge = 3600)
     public ResponseEntity<BoardDto> updateBoard(@PathVariable Long projectId, @RequestBody BoardDto boardDto) {
         BoardDto updateBorad = boardService.update(projectId,boardDto);
@@ -58,6 +59,13 @@ public class BoardController {
     public ResponseEntity<List<BoardDto>> getBoards(@PathVariable Long userId) {
         List<BoardDto> boards = boardService.getBoardsWithHearts(userId);
         return ResponseEntity.ok().body(boards);
+    }
+
+    @GetMapping("/list/project/{userId}")
+    @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
+    public ResponseEntity<List<BoardDto>> getUserProject(@PathVariable Long userId) {
+        List<BoardDto> userProject = boardService.getUserProject(userId);
+        return ResponseEntity.ok(userProject);
     }
 
 }

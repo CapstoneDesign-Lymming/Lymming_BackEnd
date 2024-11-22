@@ -9,14 +9,12 @@ import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.SecretKey;
 import java.util.*;
 
 @Log4j2
@@ -152,22 +150,15 @@ public class AuthService {
         return userInfo;
     }
 
-    // SecretKey 객체 생성
-    private SecretKey getSigningKey() {
-        // String 형식의 secretKey를 SecretKey 객체로 변환
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
-    }
-
     public String createJwt(Map<String, Object> userInfo) {
 
         String serverNickname = (String) userInfo.get("login");// GitHub 사용자 이름 또는 고유 ID 등 필요한 정보 추출
 
-        // JWT 생성
         String jwt = Jwts.builder()
                 .setSubject(serverNickname) // JWT의 주체 설정
                 .setIssuedAt(new Date()) // 발급 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간 설정
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // 서명 알고리즘 및 비밀 키 설정
+                .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 알고리즘 및 비밀 키 설정
                 .compact(); // JWT 생성
 
         // refreshToken을 DB에 저장
@@ -175,7 +166,6 @@ public class AuthService {
 
         return jwt;
     }
-
 
     public void saveRefreshTokenToDatabase(String refreshToken, String serverNickname) {
         // 새로운 사용자 객체 생성 또는 기존 사용자 업데이트

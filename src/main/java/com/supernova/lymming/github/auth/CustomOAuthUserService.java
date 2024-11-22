@@ -41,7 +41,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
                 .serverNickname(userInfo.getServerNickName())
                 .nickname("") // 초기값 설정 후, 사용자 입력 필요
                 .stack("") // 초기값 설정 후, 사용자 입력 필요
-                .gender(Gender.UNKNOWN) // 초기값 설정 후, 사용자 입력 필요
+                .gender(Gender.기타) // 초기값 설정 후, 사용자 입력 필요
                 .job("") // 초기값 설정 후, 사용자 입력 필요
                 .bio("") // 초기값 설정 후, 사용자 입력 필요
                 .favorites(0) // 초기값 설정 후, 사용자 입력 필요

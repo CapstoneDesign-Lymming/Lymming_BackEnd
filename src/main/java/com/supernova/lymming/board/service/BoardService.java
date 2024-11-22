@@ -97,6 +97,7 @@ public class BoardService {
                     .uploadTime(board.getUploadTime())
                     .recruitmentField(board.getRecruitmentField())
                     .description(board.getDescription())
+                    .userImg(board.getUser().getUserImg())
                     .workType(board.getWorkType())
                     .techStack(board.getTechStack())
                     .deadline(board.getDeadline())
@@ -140,6 +141,7 @@ public class BoardService {
                 .uploadTime(board.getUploadTime())
                 .recruitmentField(board.getRecruitmentField())
                 .description(board.getDescription())
+                .userImg(board.getUser().getUserImg())
                 .workType(board.getWorkType())
                 .techStack(board.getTechStack())
                 .deadline(board.getDeadline())
@@ -191,7 +193,6 @@ public class BoardService {
 
     @Transactional
     public List<BoardDto> getBoardsWithHearts(Long userId) {
-        log.info("getBoardsWithHearts 메소드 들어옴");
 
         // 사용자 정보 조회
         User user = userRepository.findById(userId)
@@ -213,6 +214,7 @@ public class BoardService {
                     board.getUploadTime(),
                     board.getRecruitmentField(),
                     board.getDescription(),
+                    board.getUser().getUserImg(),
                     board.getWorkType(),
                     board.getTechStack(),
                     board.getDeadline(),
@@ -232,4 +234,36 @@ public class BoardService {
         return boardDtoList;
     }
 
+    @Transactional
+    public List<BoardDto> getUserProject(Long userId) {
+        // 사용자가 작성한 게시글들을 조회
+        List<BoardEntity> boardList = boardRepository.findByUser_UserId(userId);
+        List<BoardDto> boardDtoList = new ArrayList<>();
+
+        for (BoardEntity board : boardList) {
+            BoardDto boardDto = BoardDto.builder()
+                    .projectId(board.getProjectId())
+                    .userId(board.getUser().getUserId()) // UserId
+                    .studyType(board.getStudyType())
+                    .uploadTime(board.getUploadTime())
+                    .recruitmentField(board.getRecruitmentField())
+                    .description(board.getDescription())
+                    .userImg(board.getUser().getUserImg()) // User 이미지
+                    .workType(board.getWorkType())
+                    .techStack(board.getTechStack())
+                    .deadline(board.getDeadline())
+                    .projectImg(board.getProjectImg())
+                    .recruitmentCount(board.getRecruitmentCount())
+                    .studyMethod(board.getStudyMethod())
+                    .projectDuration(board.getProjectDuration())
+                    .projectName(board.getProjectName())
+                    .nickname(board.getNickname()) // 닉네임
+                    .viewCount(board.getViewCount()) // 조회수
+                    .build();
+
+            boardDtoList.add(boardDto);
+        }
+
+        return boardDtoList;
+    }
 }
