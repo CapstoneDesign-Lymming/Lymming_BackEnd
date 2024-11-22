@@ -16,18 +16,10 @@ public class MemberInfoDto {
     private String userImg;
     private List<String> stack;
     private String job;
-    private String position;
     private String bio;
+    private String position;
     private List<String> devStyle;
-
-    public void setMemberInfo(MemberInfoDto memberInfoDto) {
-        this.userId = memberInfoDto.getUserId();
-        this.nickname = memberInfoDto.getNickname();
-        this.userImg = memberInfoDto.getUserImg();
-        this.stack = memberInfoDto.getStack();
-        this.job = memberInfoDto.getJob();
-        this.position = memberInfoDto.getPosition();
-        this.bio = memberInfoDto.getBio();
-        this.devStyle = memberInfoDto.getDevStyle();
-    }
+    private Float temperature;
+    private List<String> projectNames; // 여러 개의 프로젝트 이름
+    private List<LocalDate> deadlines; // 여러 개의 마감일
 }

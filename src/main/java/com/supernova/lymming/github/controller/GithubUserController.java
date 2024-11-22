@@ -7,6 +7,7 @@ import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.github.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Log4j2
 public class GithubUserController {
 
     private final UserRepository userRepository;
@@ -63,6 +65,11 @@ public class GithubUserController {
         if (userUpdateDto.getJob() != null) {
             existingUser.setJob(userUpdateDto.getJob());
         }
+        if (userUpdateDto.getDeveloper_type()!=null){
+            existingUser.setDeveloper_type(userUpdateDto.getDeveloper_type());
+        }
+        log.info("Developer Type은 : {}",userUpdateDto.getDeveloper_type());
+
         if (userUpdateDto.getBio() != null) {
             existingUser.setBio(userUpdateDto.getBio());
         }

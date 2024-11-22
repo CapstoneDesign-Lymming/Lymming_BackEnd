@@ -2,8 +2,7 @@ package com.supernova.lymming.kakao.entity;
 
 import com.supernova.lymming.github.entity.Gender;
 import com.supernova.lymming.github.entity.LoginType;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,10 +14,11 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user")
 public class KakaoUser implements UserDetails {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -54,8 +54,8 @@ public class KakaoUser implements UserDetails {
     @Column(name = "job")
     private String job;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "developer_type")
+    private Integer developer_type;
 
     @Column(name = "bio")
     private String bio;
@@ -64,7 +64,8 @@ public class KakaoUser implements UserDetails {
     private Integer favorites;
 
     @Column(name = "temperature")
-    private Float temperature;
+    @Builder.Default
+    private Float temperature = 36.5f;
 
     @Column(name = "interests")
     private String interests;
