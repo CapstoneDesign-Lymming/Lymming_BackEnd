@@ -2,8 +2,7 @@ package com.supernova.lymming.kakao.entity;
 
 import com.supernova.lymming.github.entity.Gender;
 import com.supernova.lymming.github.entity.LoginType;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,6 +15,9 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "user")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class KakaoUser implements UserDetails {
 
 
@@ -64,7 +66,8 @@ public class KakaoUser implements UserDetails {
     private Integer favorites;
 
     @Column(name = "temperature")
-    private Float temperature;
+    @Builder.Default
+    private Float temperature = 36.5f;
 
     @Column(name = "interests")
     private String interests;
