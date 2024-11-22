@@ -90,6 +90,10 @@ public class MemberService {
 
         return memberInfoDto;
     }
+
+    public boolean checkNicknameByUserNickname(String nickname){
+
+    }
 }
 
 
