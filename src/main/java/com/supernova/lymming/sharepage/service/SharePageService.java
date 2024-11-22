@@ -69,7 +69,7 @@ public class SharePageService {
             );
             SharePageDtoList.add(sharePageDto);
         }
-
+        log.info("공유페이지 리스트 조회 : {}", SharePageDtoList);
         return SharePageDtoList;
     }
 
@@ -94,6 +94,8 @@ public class SharePageService {
 
         // SharePageEntity를 저장
         sharePageRepository.save(sharePage);
+
+        log.info("공유페이지 저장:{}", sharePage);
 
         // SharePageDto 리턴
         return new SharePageDto(
