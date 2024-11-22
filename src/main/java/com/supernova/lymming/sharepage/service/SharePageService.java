@@ -69,7 +69,7 @@ public class SharePageService {
             );
             SharePageDtoList.add(sharePageDto);
         }
-
+        log.info("공유페이지 리스트 조회 : {}", SharePageDtoList);
         return SharePageDtoList;
     }
 
@@ -94,6 +94,8 @@ public class SharePageService {
 
         // SharePageEntity를 저장
         sharePageRepository.save(sharePage);
+
+        log.info("공유페이지 저장:{}", sharePage);
 
         // SharePageDto 리턴
         return new SharePageDto(
@@ -169,20 +171,29 @@ public class SharePageService {
         teamMembers.add(nickname);
         sharePage.setTeamMember(String.join(",", teamMembers));
 
+        log.info("팀 멤버 업데이트 : {}",sharePage.getTeamMember());
+
         // 기존 데이터를 리스트로 가져옴
         List<String> memberUrls = new ArrayList<>();
         if (sharePage.getMemberUrlBundle() != null) {
             memberUrls = new ArrayList<>(Arrays.asList(sharePage.getMemberUrlBundle().split(",")));
         }
 
+        log.info("기존 데이터를 가져옴 : {}",memberUrls);
+
         List<String> positions = new ArrayList<>();
         if (sharePage.getPositionBundle() != null) {
             positions = new ArrayList<>(Arrays.asList(sharePage.getPositionBundle().split(",")));
         }
 
+        log.info("기존 포지션을 가져옴 : {}",positions);
+
         // 새로운 사용자 추가
         memberUrls.add(user.getUserImg());
         positions.add(user.getPosition());
+
+        log.info("추가된 사진: {}", memberUrls);
+        log.info("추가된 포지션: {}", positions);
 
         // 프로젝트 모집 인원 확인
         Long projectId = sharePage.getBoard().getProjectId();
@@ -200,6 +211,8 @@ public class SharePageService {
         sharePage.setMemberUrlBundle(String.join(",", memberUrls));
         sharePage.setPositionBundle(String.join(",", positions));
         sharePageRepository.save(sharePage);
+
+        log.info("sharePage : {}",sharePage);
 
         // 결과 반환
         return new ShareTeamAddDto(
