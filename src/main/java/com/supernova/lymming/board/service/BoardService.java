@@ -6,6 +6,7 @@ import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.heart.repository.HeartRepository;
+import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import com.supernova.lymming.sharepage.repository.SharePageRepository;
 import lombok.extern.log4j.Log4j2;
@@ -76,6 +77,9 @@ public class BoardService {
         sharePage.setMemberUrlBundle(user.getUserImg());
         sharePage.setPositionBundle(user.getPosition());
         sharePage.setTeamMember(user.getNickname());
+        if(sharePage.getEnd()==null){
+            sharePage.setEnd(End.FALSE);
+        }
 
         sharePageRepository.save(sharePage);
 
