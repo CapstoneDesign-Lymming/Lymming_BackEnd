@@ -47,8 +47,8 @@ public class User {
     @Column(name = "job")
     private String job;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "developer_type")
+    private int developerType;
 
     @Column(name = "bio")
     private String bio;
