@@ -68,7 +68,7 @@ public class BoardService {
         // 게시판 저장
         boardRepository.save(board);
 
-        // SharePageEntity 생성 및 저장
+        // SharePageEntity 생성 및 저장하기
         SharePageEntity sharePage = new SharePageEntity();
         sharePage.setUser(user);  // User 객체 설정
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
