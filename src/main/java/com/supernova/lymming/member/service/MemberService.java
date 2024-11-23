@@ -7,6 +7,7 @@ import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.member.dto.MemberInfoDetailDto;
 import com.supernova.lymming.member.dto.MemberInfoDto;
 import com.supernova.lymming.member.repository.MemberRepository;
+import com.supernova.lymming.member.repository.MemberRepository2;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,13 @@ public class MemberService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
+    private final MemberRepository2 memberRepository2;
 
-    public MemberService(BoardRepository boardRepository, UserRepository userRepository, MemberRepository memberRepository) {
+    public MemberService(BoardRepository boardRepository, UserRepository userRepository, MemberRepository memberRepository, MemberRepository2 memberRepository2) {
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
         this.memberRepository = memberRepository;
+        this.memberRepository2 = memberRepository2;
     }
 
     public List<MemberInfoDto> getUserList() {
@@ -85,8 +88,7 @@ public class MemberService {
     }
 
     public boolean checkNicknameByUserNickname(String nickname) {
-        boolean existNickname = memberRepository.existsByNickname(nickname);
-
+        boolean existNickname = memberRepository2.existsByNickname(nickname);
         return !existNickname;
     }
 }
