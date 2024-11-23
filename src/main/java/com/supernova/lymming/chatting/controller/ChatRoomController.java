@@ -36,7 +36,7 @@ public class ChatRoomController {
         String user2Img = user2Opt.map(User::getUserImg).orElse(null);
 
 
-        ChatRoomDto chatRoom = chatRoomService.createChatRoom(roomId, userId1, userId2,user1Img ,user2Img);
+        ChatRoomDto chatRoom = chatRoomService.createChatRoom(roomId, userId1, userId2, user1Img, user2Img);
         return ResponseEntity.ok(chatRoom);
     }
 
@@ -58,6 +58,7 @@ public class ChatRoomController {
 
         List<ChatRoomDto> chatRooms = chatRoomService.getChatroomsByUserId(userId);
 
+     
         return chatRooms;
     }
 

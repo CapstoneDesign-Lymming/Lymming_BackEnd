@@ -28,12 +28,13 @@ public class ChatRoomDto {
     }
 
 
-    public ChatRoomDto(String roomId, String userId1, String userId2, String user1Img, String user2Img) {
+    public ChatRoomDto(String roomId, String userId1, String userId2, String user1Img, String user2Img,ChatMessage lastMessage) {
         this.roomId = roomId;
         this.userId1 = userId1;
         this.userId2 = userId2;
         this.user1Img = user1Img;
         this.user2Img = user2Img;
+        this.lastMessage = lastMessage;
     }
 
 

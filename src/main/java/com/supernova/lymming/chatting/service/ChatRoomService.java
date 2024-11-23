@@ -38,30 +38,19 @@ public class ChatRoomService {
                     String user1Img = user1Opt.map(User::getUserImg).orElse(null); // 없으면 null
                     String user2Img = user2Opt.map(User::getUserImg).orElse(null); // 없으면 null
 
+                    ChatMessage lastMessage = getLastChatByRoomId(chatRoom.getRoomId());
                     // ChatRoomDto 객체로 변환하면서 이미지 추가
                     return new ChatRoomDto(
                             chatRoom.getRoomId(),
                             chatRoom.getUserId1(),
                             chatRoom.getUserId2(),
                             user1Img,
-                            user2Img
+                            user2Img,
+                            lastMessage
                     );
                 })
                 .collect(Collectors.toList());
 
-    }
-
-    private ChatRoomDto convertToDto(UserChatRooms userChatRooms) {
-        ChatRoomDto dto = new ChatRoomDto();
-        dto.setRoomId(userChatRooms.getRoomId());
-        dto.setUserId1(userChatRooms.getUserId1());
-        dto.setUserId2(userChatRooms.getUserId2());
-
-        // 마지막 채팅 메시지 설정
-        ChatMessage lastChat = getLastChatByRoomId(userChatRooms.getRoomId());
-        dto.setLastMessage(lastChat != null ? lastChat : null);
-
-        return dto;
     }
 
     // 마지막 채팅 추출
@@ -85,6 +74,7 @@ public class ChatRoomService {
             // userId1과 userId2를 사용하여 User 조회
             Optional<User> user1Opt = userRepository.findByNickname(chatRoom.getUserId1());
             Optional<User> user2Opt = userRepository.findByNickname(chatRoom.getUserId2());
+            ChatMessage lastMessage = getLastChatByRoomId(chatRoom.getRoomId());
 
             // 각 사용자 이미지 설정
             String user1Img = user1Opt.map(User::getUserImg).orElse(null);  // user1이 존재하면 userImg 반환, 없으면 null
@@ -97,7 +87,8 @@ public class ChatRoomService {
                     chatRoom.getUserId1(),
                     chatRoom.getUserId2(),
                     user1Img,
-                    user2Img
+                    user2Img,
+                    lastMessage
 
             );
         } else {
@@ -118,7 +109,7 @@ public class ChatRoomService {
             chatRoomRepository.save(userChatRooms);
         }
 
-        return new ChatRoomDto(roomId, userId1, userId2, user1Img, user2Img);
+        return new ChatRoomDto(roomId, userId1, userId2, user1Img, user2Img,null);
     }
 
     public boolean doesChatRoomExist(String roomId) {
