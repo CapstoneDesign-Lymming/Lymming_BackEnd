@@ -44,4 +44,6 @@ public class MemberController {
             return ResponseEntity.ok(false);
         }
     }
+
+    //개발자 추천 넘겨주기
 }

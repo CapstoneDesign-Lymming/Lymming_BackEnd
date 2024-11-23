@@ -2,6 +2,7 @@ package com.supernova.lymming.member.service;
 
 import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.board.repository.BoardRepository;
+import com.supernova.lymming.github.dto.SignupDto;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.member.dto.MemberInfoDetailDto;
@@ -90,6 +91,22 @@ public class MemberService {
     public boolean checkNicknameByUserNickname(String nickname) {
         boolean existNickname = memberRepository2.existsByNickname(nickname);
         return existNickname;
+    }
+
+    public List<SignupDto> getRandomUsersByDeveloperType(Long userId){
+        User currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
+
+        int currentUserDeveloperType = currentUser.getDeveloper_type();
+
+        List<User> allUser = userRepository.findAll().stream()
+                .filter(user -> user.getDeveloper_type().equals(currentUserDeveloperType) && !user.getUserId().equals(userId))
+                .collect(Collectors.toList());
+
+        //동시성 문제를 해결하기 위해 각 쓰레드마다 생성된 인스턴스에서 각각 난수를 반환하는 ThreadLocalRandom 사용
+        //random은 전역적으로 난수를 발생시키기 때문에 쓰레드가 한번에 몰리면 서버가 먹통이 될 수 있다.
+
+        return null;
     }
 }
 
