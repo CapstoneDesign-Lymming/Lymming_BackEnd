@@ -35,11 +35,12 @@ public class MemberController {
 
     // 닉네임 중복확인
     @GetMapping("/member/check-nickname")
-    public ResponseEntity<Boolean> checkUserNickname(@RequestParam String nickname){
+    public ResponseEntity<Boolean> checkUserNickname(@RequestParam String nickname) {
         boolean isExist = memberService.checkNicknameByUserNickname(nickname);
-        if(!isExist){
+
+        if (!isExist) {
             return ResponseEntity.ok(true);
-        }else{
+        } else {
             return ResponseEntity.ok(false);
         }
     }
