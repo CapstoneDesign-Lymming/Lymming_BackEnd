@@ -4,13 +4,17 @@ import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.mypage.dto.MypageDto;
 import com.supernova.lymming.mypage.repository.MypageRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 
 @Service
+@Log4j2
 public class MypageService {
 
     private MypageRepository mypageRepository;
@@ -29,13 +33,13 @@ public class MypageService {
         mypageDto.setUserId(user.getUserId());
         mypageDto.setNickname(user.getNickname());
         mypageDto.setUserImg(user.getUserImg());
-        mypageDto.setStack(Collections.singletonList(user.getStack()));
+        mypageDto.setStack(user.getStack());
         mypageDto.setJob(user.getJob());
         mypageDto.setPosition(user.getPosition());
-        mypageDto.setDevStyle(Collections.singletonList(user.getDevStyle()));
-        if (user.getTemperature() == null) {
-            user.setTemperature(36.5f); // 기본값 설정
-        }
+        log.info("postion : {}",user.getPosition());
+        log.info("mypageDto.setPostion: {} ",mypageDto.getPosition());
+        mypageDto.setTemperature(user.getTemperature());
+
 
         return mypageDto;
     }
@@ -51,16 +55,13 @@ public class MypageService {
             user.setUserImg(mypageDto.getUserImg());
         }
         if (mypageDto.getStack() != null && !mypageDto.getStack().isEmpty()) {
-            user.setStack(mypageDto.getStack().get(0)); // stack은 단일 항목 리스트
+            user.setStack(mypageDto.getStack());
         }
         if (mypageDto.getJob() != null) {
             user.setJob(mypageDto.getJob());
         }
         if (mypageDto.getPosition() != null) {
             user.setPosition(mypageDto.getPosition());
-        }
-        if (mypageDto.getDevStyle() != null && !mypageDto.getDevStyle().isEmpty()) {
-            user.setDevStyle(mypageDto.getDevStyle().get(0)); // devStyle은 리스트 형태
         }
 
         // 사용자 정보 저장
