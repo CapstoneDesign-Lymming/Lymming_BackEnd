@@ -48,6 +48,8 @@ public class EvaluationService {
         }
 
         VoteStatus voteStatus = getUserVoteStatus(currentShareId, currentUserNickname);
+
+        log.info("voteStatus : {}", voteStatus);
         if (voteStatus == VoteStatus.TRUE) {
             throw new IllegalArgumentException("이미 투표한 사용자입니다");
         }
@@ -68,5 +70,8 @@ public class EvaluationService {
 
         // EvaluationEntity 저장
         evaluationRepository.save(evaluationEntity);
+
+        log.info("투표 결과 : {}",evaluationEntity);
+
     }
 }

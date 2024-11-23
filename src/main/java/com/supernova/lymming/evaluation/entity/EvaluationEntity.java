@@ -28,7 +28,7 @@ public class EvaluationEntity {
 
     @Column(name = "vote_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private VoteStatus voteStatus;
+    private VoteStatus voteStatus = VoteStatus.FALSE;
 
     @Column(name = "share_page_id")
     private Long sharePageId;
