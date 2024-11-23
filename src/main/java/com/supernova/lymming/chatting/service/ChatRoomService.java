@@ -6,6 +6,8 @@ import com.supernova.lymming.chatting.dto.ChatRoomDto;
 import com.supernova.lymming.chatting.domain.UserChatRooms;
 import com.supernova.lymming.chatting.repository.ChatRoomRepository;
 
+import com.supernova.lymming.github.entity.User;
+import com.supernova.lymming.github.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChattingService chattingService;
-
+    private final UserRepository userRepository;
 
     public List<ChatRoomDto> getChatroomsByUserId(String userId1) {
 
@@ -63,12 +65,23 @@ public class ChatRoomService {
     public ChatRoomDto getChatRoomByRoomId(String roomId) {
         Optional<UserChatRooms> existingRoom = chatRoomRepository.findByRoomId(roomId);
         if (existingRoom.isPresent()) {
-            // 채팅방 정보를 가져와 DTO로 변환
             UserChatRooms chatRoom = existingRoom.get();
+            // userId1과 userId2를 사용하여 User 조회
+            Optional<User> user1Opt = userRepository.findByNickname(chatRoom.getUserId1());
+            Optional<User> user2Opt = userRepository.findByNickname(chatRoom.getUserId2());
+
+            // 각 사용자 이미지 설정
+            String user1Img = user1Opt.map(User::getUserImg).orElse(null);  // user1이 존재하면 userImg 반환, 없으면 null
+            String user2Img = user2Opt.map(User::getUserImg).orElse(null);  // user2이 존재하면 userImg 반환, 없으면 null
+  System.out.println("사용자 이미지"+user1Img);
+
+            // 채팅방 정보를 가져와 DTO로 변환
             return new ChatRoomDto(
                     chatRoom.getRoomId(),
                     chatRoom.getUserId1(),
-                    chatRoom.getUserId2()
+                    chatRoom.getUserId2(),
+                    user1Img,
+                    user2Img
 
             );
         } else {
@@ -77,7 +90,7 @@ public class ChatRoomService {
         }
     }
 
-    public ChatRoomDto createChatRoom(String roomId, String userId1, String userId2) {
+    public ChatRoomDto createChatRoom(String roomId, String userId1, String userId2, String user1Img, String user2Img) {
         // 중복되는 room_id가 있는지 먼저 확인
         Optional<UserChatRooms> existingRoom = chatRoomRepository.findByRoomId(roomId);
 
@@ -89,7 +102,7 @@ public class ChatRoomService {
             chatRoomRepository.save(userChatRooms);
         }
 
-        return new ChatRoomDto(roomId, userId1, userId2);
+        return new ChatRoomDto(roomId, userId1, userId2, user1Img, user2Img);
     }
 
     public boolean doesChatRoomExist(String roomId) {
