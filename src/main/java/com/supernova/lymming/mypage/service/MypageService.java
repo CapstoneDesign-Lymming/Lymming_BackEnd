@@ -2,6 +2,7 @@ package com.supernova.lymming.mypage.service;
 
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
+import com.supernova.lymming.member.service.MemberService;
 import com.supernova.lymming.mypage.dto.MypageDto;
 import com.supernova.lymming.mypage.repository.MypageRepository;
 import lombok.extern.log4j.Log4j2;
@@ -19,11 +20,13 @@ public class MypageService {
 
     private MypageRepository mypageRepository;
     private UserRepository userRepository;
+    private MemberService memberService;
 
     @Autowired
-    public MypageService(MypageRepository mypageRepository, UserRepository userRepository) {
+    public MypageService(MypageRepository mypageRepository, UserRepository userRepository,MemberService memberService) {
         this.mypageRepository = mypageRepository;
         this.userRepository = userRepository;
+        this.memberService = memberService;
     }
 
     public MypageDto findUser(Long userId) {
@@ -47,6 +50,10 @@ public class MypageService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
 
         if (mypageDto.getNickname() != null) {
+            boolean isExist = memberService.checkNicknameByUserNickname(mypageDto.getNickname());
+            if (isExist) {
+                throw new RuntimeException("이미 사용 중인 닉네임입니다.");
+            }
             user.setNickname(mypageDto.getNickname());
         }
         if (mypageDto.getUserImg() != null) {

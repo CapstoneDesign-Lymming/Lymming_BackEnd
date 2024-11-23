@@ -88,6 +88,7 @@ public class MemberService {
         return memberInfoDetailDto;
     }
 
+
     public boolean checkNicknameByUserNickname(String nickname) {
         boolean existNickname = memberRepository2.existsByNickname(nickname);
         return existNickname;
