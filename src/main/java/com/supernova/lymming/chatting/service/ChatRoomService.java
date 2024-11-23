@@ -30,7 +30,23 @@ public class ChatRoomService {
 
 
         return chatRooms.stream()
-                .map(this::convertToDto)
+                .map(chatRoom -> {
+                    // userId1과 userId2에 해당하는 사용자 이미지 조회
+                    Optional<User> user1Opt = userRepository.findByNickname(chatRoom.getUserId1());
+                    Optional<User> user2Opt = userRepository.findByNickname(chatRoom.getUserId2());
+
+                    String user1Img = user1Opt.map(User::getUserImg).orElse(null); // 없으면 null
+                    String user2Img = user2Opt.map(User::getUserImg).orElse(null); // 없으면 null
+
+                    // ChatRoomDto 객체로 변환하면서 이미지 추가
+                    return new ChatRoomDto(
+                            chatRoom.getRoomId(),
+                            chatRoom.getUserId1(),
+                            chatRoom.getUserId2(),
+                            user1Img,
+                            user2Img
+                    );
+                })
                 .collect(Collectors.toList());
 
     }
