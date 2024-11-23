@@ -36,8 +36,6 @@ public class MypageService {
         mypageDto.setStack(user.getStack());
         mypageDto.setJob(user.getJob());
         mypageDto.setPosition(user.getPosition());
-        log.info("postion : {}",user.getPosition());
-        log.info("mypageDto.setPostion: {} ",mypageDto.getPosition());
         mypageDto.setTemperature(user.getTemperature());
 
 
