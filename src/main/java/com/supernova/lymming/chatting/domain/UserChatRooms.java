@@ -1,6 +1,7 @@
 package com.supernova.lymming.chatting.domain;
 
 
+import com.supernova.lymming.github.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
