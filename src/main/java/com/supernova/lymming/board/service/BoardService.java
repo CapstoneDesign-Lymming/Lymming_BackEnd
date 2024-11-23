@@ -64,7 +64,6 @@ public class BoardService {
         // nickname을 BoardEntity에 설정
         board.setNickname(user.getNickname());
 
-        log.info("팀빌딩 저장 : {}", board);
         // 게시판 저장
         boardRepository.save(board);
 
@@ -117,7 +116,6 @@ public class BoardService {
 
             boardDtoList.add(boardDto);
         }
-        log.info("팀빌딩 겟 : {}",boardDtoList);
 
         return boardDtoList;
     }
