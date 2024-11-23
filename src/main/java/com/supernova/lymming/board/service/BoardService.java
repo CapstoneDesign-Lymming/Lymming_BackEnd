@@ -6,6 +6,7 @@ import com.supernova.lymming.board.repository.BoardRepository;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.heart.repository.HeartRepository;
+import com.supernova.lymming.sharepage.entity.End;
 import com.supernova.lymming.sharepage.entity.SharePageEntity;
 import com.supernova.lymming.sharepage.repository.SharePageRepository;
 import lombok.extern.log4j.Log4j2;
@@ -63,10 +64,11 @@ public class BoardService {
         // nickname을 BoardEntity에 설정
         board.setNickname(user.getNickname());
 
+        log.info("팀빌딩 저장 : {}", board);
         // 게시판 저장
         boardRepository.save(board);
 
-        // SharePageEntity 생성 및 저장
+        // SharePageEntity 생성 및 저장하기
         SharePageEntity sharePage = new SharePageEntity();
         sharePage.setUser(user);  // User 객체 설정
         sharePage.setBoard(board);  // 생성된 BoardEntity와 연결
@@ -75,6 +77,9 @@ public class BoardService {
         sharePage.setMemberUrlBundle(user.getUserImg());
         sharePage.setPositionBundle(user.getPosition());
         sharePage.setTeamMember(user.getNickname());
+        if(sharePage.getEnd()==null){
+            sharePage.setEnd(End.FALSE);
+        }
 
         sharePageRepository.save(sharePage);
 
@@ -112,6 +117,7 @@ public class BoardService {
 
             boardDtoList.add(boardDto);
         }
+        log.info("팀빌딩 겟 : {}",boardDtoList);
 
         return boardDtoList;
     }

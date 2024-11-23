@@ -32,4 +32,16 @@ public class MemberController {
         MemberInfoDetailDto memberInfoDetailDto = memberService.getUserInfoByUserId(userId);
         return ResponseEntity.ok(memberInfoDetailDto);
     }
+
+    // 닉네임 중복확인
+    @GetMapping("/member/check-nickname")
+    public ResponseEntity<Boolean> checkUserNickname(@RequestParam String nickname) {
+        boolean isExist = memberService.checkNicknameByUserNickname(nickname);
+
+        if (!isExist) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
 }
