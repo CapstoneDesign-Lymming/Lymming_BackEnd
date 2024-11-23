@@ -49,13 +49,13 @@ public class MypageService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
 
-        if (mypageDto.getNickname() != null && !mypageDto.getNickname().equals(user.getNickname())) {
-            boolean isExist = memberService.checkNicknameByUserNickname(mypageDto.getNickname());
-            if (isExist) {
-                throw new RuntimeException("이미 사용 중인 닉네임입니다.");
-            }
-            user.setNickname(mypageDto.getNickname());
-        }
+//        if (mypageDto.getNickname() != null && !mypageDto.getNickname().equals(user.getNickname())) {
+//            boolean isExist = memberService.checkNicknameByUserNickname(mypageDto.getNickname());
+//            if (isExist) {
+//                throw new RuntimeException("이미 사용 중인 닉네임입니다.");
+//            }
+//            user.setNickname(mypageDto.getNickname());
+//        }
 
         if (mypageDto.getUserImg() != null) {
             user.setUserImg(mypageDto.getUserImg());
