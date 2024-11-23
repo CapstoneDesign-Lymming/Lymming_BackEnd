@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,7 +95,8 @@ public class MemberService {
         return existNickname;
     }
 
-    public List<SignupDto> getRandomUsersByDeveloperType(Long userId){
+    public List<MemberInfoDto> getRandomUsersByDeveloperType(Long userId){
+        List<BoardEntity> boardEntities = boardRepository.findAll();
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
@@ -106,8 +108,44 @@ public class MemberService {
 
         //동시성 문제를 해결하기 위해 각 쓰레드마다 생성된 인스턴스에서 각각 난수를 반환하는 ThreadLocalRandom 사용
         //random은 전역적으로 난수를 발생시키기 때문에 쓰레드가 한번에 몰리면 서버가 먹통이 될 수 있다.
+        //Collection.shuffle()은 배열과 리스트를 랜덤으로 섞어준다.
 
-        return null;
+        Collections.shuffle(allUser, ThreadLocalRandom.current());
+        List<User> randomUsers = allUser.stream()
+                .limit(3)
+                .collect(Collectors.toList());
+
+        List<MemberInfoDto> memberInfoDtos = randomUsers.stream()
+                .map(user -> {
+                    MemberInfoDto dto = new MemberInfoDto();
+                    dto.setUserId(user.getUserId());
+                    dto.setNickname(user.getNickname());
+                    dto.setUserId(user.getUserId());
+                    dto.setUserImg(user.getUserImg());
+                    dto.setStack(Collections.singletonList(user.getStack()));
+                    dto.setJob(user.getJob());
+                    dto.setBio(user.getBio());
+                    dto.setPosition(user.getPosition());
+                    dto.setDevStyle(Collections.singletonList(user.getDevStyle()));
+                    dto.setTemperature(user.getTemperature());
+
+                    List<String> projectNames = boardEntities.stream()
+                            .filter(board -> board.getUser().getUserId().equals(user.getUserId())) // 사용자 ID가 일치하는 게시판만 필터링
+                            .map(BoardEntity::getProjectName)
+                            .collect(Collectors.toList());
+
+                    List<LocalDate> deadlines = boardEntities.stream()
+                            .filter(board -> board.getUser().getUserId().equals(user.getUserId())) // 사용자 ID가 일치하는 게시판만 필터링
+                            .map(BoardEntity::getDeadline)
+                            .collect(Collectors.toList());
+
+                    dto.setProjectNames(projectNames);
+                    dto.setDeadlines(deadlines);
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return memberInfoDtos;
     }
 }
 

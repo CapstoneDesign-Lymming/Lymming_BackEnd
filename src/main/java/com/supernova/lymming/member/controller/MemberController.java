@@ -46,4 +46,9 @@ public class MemberController {
     }
 
     //개발자 추천 넘겨주기
+    @GetMapping("/member/random/list/{userId}")
+    public ResponseEntity<List<MemberInfoDto>> getRandomUserList(@PathVariable Long userId) {
+        List<MemberInfoDto> randomMember = memberService.getRandomUsersByDeveloperType(userId);
+        return ResponseEntity.ok(randomMember);
+    }
 }
