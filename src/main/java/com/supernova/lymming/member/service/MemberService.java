@@ -89,7 +89,7 @@ public class MemberService {
 
     public boolean checkNicknameByUserNickname(String nickname) {
         boolean existNickname = memberRepository2.existsByNickname(nickname);
-        return !existNickname;
+        return existNickname;
     }
 }
 
