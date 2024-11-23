@@ -46,7 +46,7 @@ public class HeartService {
         // 좋아요가 눌린 프로젝트라면 like를 true로 설정
         // heartRepository에서 해당 프로젝트에 좋아요가 눌렸는지 확인 후 처리
         boolean like = heartRepository.existsByUserIdAndProjectId(user, project);
-        boardDto.setLike(like);  // like가 true이면 좋아요 누른 상태
+        boardDto.setLike(true);  // like가 true이면 좋아요 누른 상태
     }
 
     public void unlikeProject(Long userId, Long projectId) {
