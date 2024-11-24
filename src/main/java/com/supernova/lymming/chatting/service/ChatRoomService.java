@@ -56,7 +56,7 @@ public class ChatRoomService {
     // 마지막 채팅 추출
     public ChatMessage getLastChatByRoomId(String roomId) {
         List<ChatMessage> chatData = chattingService.getChatHistory(roomId);
-        System.out.println(chatData);
+//        System.out.println(chatData);
         if (chatData.isEmpty()) {
             return null;
         }
@@ -79,7 +79,7 @@ public class ChatRoomService {
             // 각 사용자 이미지 설정
             String user1Img = user1Opt.map(User::getUserImg).orElse(null);  // user1이 존재하면 userImg 반환, 없으면 null
             String user2Img = user2Opt.map(User::getUserImg).orElse(null);  // user2이 존재하면 userImg 반환, 없으면 null
-  System.out.println("사용자 이미지"+user1Img);
+//  System.out.println("사용자 이미지"+user1Img);
 
             // 채팅방 정보를 가져와 DTO로 변환
             return new ChatRoomDto(
@@ -92,7 +92,7 @@ public class ChatRoomService {
 
             );
         } else {
-            System.out.println(("채팅방없음"));
+//            System.out.println(("채팅방없음"));
             return null;
         }
     }

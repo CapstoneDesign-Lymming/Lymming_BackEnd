@@ -6,6 +6,7 @@ import com.supernova.lymming.github.entity.Gender;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.github.service.AuthService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class GithubUserController {
     private final AuthService authService;
 
     @GetMapping("/api/auth/current-user")
+    @ApiOperation(value = "기존 유저 로그인", notes = "토큰이 저장되어 있는 기존 유저의 로그인 시 실행되는 API")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     // 메소드 진입을 위해 USER 역할 필요
     public User getCurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
@@ -37,13 +39,14 @@ public class GithubUserController {
     }
 
     @PutMapping("/api/auth/sign-up")
+    @ApiOperation(value = "회원가입", notes = "신규 가입자 회원가입 API")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<User> updateUser(@AuthenticationPrincipal CustomUserDetails user,
                                            @RequestBody SignupDto userUpdateDto) {
 
         String refreshToken = userUpdateDto.getRefreshToken();
 
-        System.out.println(refreshToken+"토큰");
+//        System.out.println(refreshToken+"토큰");
 
         User existingUser = userRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(()->new IllegalStateException("등록된유저가 아닙니다"));

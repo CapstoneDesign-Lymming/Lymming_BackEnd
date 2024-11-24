@@ -76,9 +76,9 @@ public class KakaoService {
 
         // 닉네임으로 사용자 조회시 사욪가가 db에 있으면 사용자 정보 없으면 null
         KakaoUser kakaoUser = kakaoUserRepository.findByServerNickname(nickName).orElse(null);
-        System.out.println("User ID: " + uid);
-        System.out.println("Nickname: " + nickName);
-        System.out.println("kakaoUser: " + kakaoUser);
+//        System.out.println("User ID: " + uid);
+//        System.out.println("Nickname: " + nickName);
+//        System.out.println("kakaoUser: " + kakaoUser);
 
         // 사용자가 있을경우 토큰 생성 없을경우 사용자 추가하고 토큰 생성
         if (kakaoUser == null) {
@@ -88,7 +88,7 @@ public class KakaoService {
             kakaoUser.setLoginType("Kakao");
             kakaoUser.setRefreshToken(tokens);
             kakaoUserRepository.save(kakaoUser);
-            System.out.println("사용자 생성");
+//            System.out.println("사용자 생성");
         }
 
         // LoginResponse 객체 생성

@@ -2,6 +2,7 @@ package com.supernova.lymming.kakao.controller;
 
 import com.supernova.lymming.kakao.dto.LoginResponse;
 import com.supernova.lymming.kakao.service.KakaoService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,11 @@ public class KakaoUserController {
     private final KakaoService kakaoService;
 
     @PostMapping("/api/kakao/login")
+    @ApiOperation(value = "카카오 로그인", notes = "카카오로 로그인 시 실행되는 API")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     public ResponseEntity<LoginResponse> kakaoLogin(@RequestBody Map<String, String> requestBody, HttpServletRequest request){
         String code = requestBody.get("code");  // 클라이언트에서 보낸 "code" 값 추출
-        System.out.println("Received code: " + code);
+//        System.out.println("Received code: " + code);
         try {
             // 현재 도메인 확인
             String currentDomain = request.getServerName();

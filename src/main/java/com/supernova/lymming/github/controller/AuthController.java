@@ -4,6 +4,7 @@ import com.supernova.lymming.github.auth.CustomOAuthUserService;
 import com.supernova.lymming.github.entity.User;
 import com.supernova.lymming.github.repository.UserRepository;
 import com.supernova.lymming.github.service.AuthService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class AuthController {
     private final UserRepository userRepository;
 
     @PostMapping("/api/login/code/github")
+    @ApiOperation(value = "GitHub 인증을 통한 로그인", notes = "GitHub 계정으로 로그인하기 위한 API")
     @CrossOrigin(origins = {"https://lymming.link", "https://lymming-back.link"}, maxAge = 3600)
     public ResponseEntity<?> loginWithGithub(@RequestBody Map<String, String> request) {
 
@@ -68,6 +70,7 @@ public class AuthController {
     }
 
     @PostMapping("/api/refresh")
+    @ApiOperation(value = "Refresh Token 갱신", notes = "Refresh Token을 갱신하기 위한 API,Token 필요")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
     // 토큰 갱신 요청을 처리하는 앤드포인트
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
