@@ -96,23 +96,33 @@ public class MemberService {
     }
 
     public List<MemberInfoDto> getRandomUsersByDeveloperType(Long userId){
+
         List<BoardEntity> boardEntities = boardRepository.findAll();
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
         int currentUserDeveloperType = currentUser.getDeveloper_type();
 
-        List<User> allUser = userRepository.findAll().stream()
-                .filter(user -> user.getDeveloper_type().equals(currentUserDeveloperType) && !user.getUserId().equals(userId))
-                .collect(Collectors.toList());
+        List<User> allUser;
 
+        if (currentUserDeveloperType == 0) {
+            // 유형이 0일 때: 전체 유저 중 본인 제외
+            allUser = userRepository.findAll().stream()
+                    .filter(user -> !user.getUserId().equals(userId))
+                    .collect(Collectors.toList());
+        } else {
+            // 그 외의 경우: 같은 유형의 유저 중 본인 제외
+            allUser = userRepository.findAll().stream()
+                    .filter(user -> user.getDeveloper_type().equals(currentUserDeveloperType) && !user.getUserId().equals(userId))
+                    .collect(Collectors.toList());
+        }
         //동시성 문제를 해결하기 위해 각 쓰레드마다 생성된 인스턴스에서 각각 난수를 반환하는 ThreadLocalRandom 사용
         //random은 전역적으로 난수를 발생시키기 때문에 쓰레드가 한번에 몰리면 서버가 먹통이 될 수 있다.
         //Collection.shuffle()은 배열과 리스트를 랜덤으로 섞어준다.
 
         Collections.shuffle(allUser, ThreadLocalRandom.current());
         List<User> randomUsers = allUser.stream()
-                .limit(3)
+                .limit(5)
                 .collect(Collectors.toList());
 
         List<MemberInfoDto> memberInfoDtos = randomUsers.stream()
