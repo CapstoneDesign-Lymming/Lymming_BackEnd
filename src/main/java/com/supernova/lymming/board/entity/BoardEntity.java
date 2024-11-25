@@ -74,4 +74,6 @@ public class BoardEntity {
 
     @Column(name = "view_count")
     private int viewCount;
+
+
 }

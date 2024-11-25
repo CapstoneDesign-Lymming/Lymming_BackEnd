@@ -11,4 +11,5 @@ public class HeartDto {
     private Long heartId;
     private Long userId;
     private Long projectId;
+    private Boolean isLike;
 }

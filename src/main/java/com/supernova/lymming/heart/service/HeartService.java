@@ -59,10 +59,14 @@ public class HeartService {
         heartRepository.delete(heart);
     }
 
-    public List<BoardEntity> getLikeProjects(Long userId) {
+    public List<BoardDto> getLikeProjects(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        // HeartEntity에서 projectId와 true를 함께 반환
         return heartRepository.findAllByUserId(user).stream()
-                .map(HeartEntity::getProjectId)
+                .map(heart -> new BoardDto(heart.getProjectId(),true)) // BoardDto를 생성하여 반환
                 .collect(Collectors.toList());
     }
+
 }
+

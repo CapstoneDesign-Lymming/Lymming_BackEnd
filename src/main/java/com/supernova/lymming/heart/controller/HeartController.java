@@ -1,5 +1,6 @@
 package com.supernova.lymming.heart.controller;
 
+import com.supernova.lymming.board.dto.BoardDto;
 import com.supernova.lymming.board.entity.BoardEntity;
 import com.supernova.lymming.heart.service.HeartService;
 import io.swagger.annotations.ApiOperation;
@@ -40,8 +41,8 @@ public class HeartController {
     @GetMapping("/favorites/list/{userId}")
     @ApiOperation(value = "찜 목록 조회", notes = "마이페이지에서 찜한 프로젝트 리스트때 실행되는 API, Token 필요")
     @CrossOrigin(origins = "https://lymming.link", maxAge = 3600)
-    public ResponseEntity<List<BoardEntity>> getLikedProjects(@PathVariable Long userId) {
-        List<BoardEntity> likedProjects = heartService.getLikeProjects(userId);
+    public ResponseEntity<List<BoardDto>> getLikedProjects(@PathVariable Long userId) {
+        List<BoardDto> likedProjects = heartService.getLikeProjects(userId);
         return ResponseEntity.ok(likedProjects);
     }
 }

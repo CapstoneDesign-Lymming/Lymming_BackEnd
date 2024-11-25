@@ -111,7 +111,7 @@ public class BoardService {
                     .projectDuration(board.getProjectDuration())
                     .projectName(board.getProjectName())
                     .nickname(board.getNickname())
-                    .viewCount(board.getViewCount()) // isHearted는 제외
+                    .viewCount(board.getViewCount())
                     .build();
 
             boardDtoList.add(boardDto);
@@ -210,6 +210,7 @@ public class BoardService {
             // 해당 게시글을 사용자가 찜했는지 확인
             boolean isHearted = heartRepository.existsByUserIdAndProjectId(user, board);
 
+
             // BoardDto 생성
             BoardDto boardDto = new BoardDto(
                     board.getProjectId(),
@@ -229,8 +230,10 @@ public class BoardService {
                     board.getProjectName(),
                     board.getNickname(),
                     board.getViewCount(),
-                    isHearted // 찜 여부 추가
+                    isHearted
             );
+
+            log.info("isHeart : {}",isHearted);
 
             boardDtoList.add(boardDto);
         }
@@ -240,6 +243,10 @@ public class BoardService {
 
     @Transactional
     public List<BoardDto> getUserProject(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
         // 사용자가 작성한 게시글들을 조회
         List<BoardEntity> boardList = boardRepository.findByUser_UserId(userId);
         List<BoardDto> boardDtoList = new ArrayList<>();
@@ -263,6 +270,7 @@ public class BoardService {
                     .projectName(board.getProjectName())
                     .nickname(board.getNickname()) // 닉네임
                     .viewCount(board.getViewCount()) // 조회수
+                    .like(heartRepository.findByUserIdAndProjectId(user, board).isPresent())
                     .build();
 
             boardDtoList.add(boardDto);

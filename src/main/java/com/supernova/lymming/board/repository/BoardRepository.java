@@ -1,5 +1,6 @@
 package com.supernova.lymming.board.repository;
 
+import com.supernova.lymming.board.dto.BoardDto;
 import com.supernova.lymming.board.entity.BoardEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
