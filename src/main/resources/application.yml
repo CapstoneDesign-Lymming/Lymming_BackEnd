@@ -32,7 +32,8 @@ spring:
 
 custom:
   jwt:
-    secretKey: ${JWT_SECRET_KEY}
+    secretKey : ${JWT_SECRET_KEY}
+
 ---
 
 springdoc:
@@ -79,3 +80,8 @@ app:
 logging:
   level:
     com.supernova.lymming: info
+
+---
+spring:
+  main:
+    allow-bean-definition-overriding: true
