@@ -41,13 +41,13 @@
 |----------|----------|
 | <img src="https://github.com/user-attachments/assets/43035c63-046d-4023-ac37-b3a8403e8629" width="300" height="300" /> | <img src="https://github.com/user-attachments/assets/e99a010d-c7d5-4704-8c5e-d2b6f0914e67" width="300" height="300" /> |
 
-## 프론트엔드 Skill Stacks
-- 코어: React, TypeScript
-- 상태 관리: Zustand, React-Qeury
-- 스타일링: Sass, Lottie-React
-- 패키지 매니저: npm
-- 빌드: Vite, ESBuild
-- CI/CD: GitHub Actions
+## 백엔드 Skill Stacks
+- 프레임워크 : Spring Boot
+- OAuth 인증 : Kakao Auth, Github Auth
+- 실시간 채팅 : STOMP, Socket.js
+- 서버 운영 및 리버스 프록시: Nginx, AWS EC2
+- CI/CD: Jenkin Actions
+- 데이터베이스 : AWS RDS, MySql
 ---
 
 ## 기능 소개
